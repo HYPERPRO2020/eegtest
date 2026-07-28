@@ -86,6 +86,12 @@ def _score_band(data_uv: np.ndarray, sfreq: float, band_name: str,
         ch: round(float(quality[:, i].mean()), 2) for i, ch in enumerate(CHANNEL_ORDER)
     }
     epoch_quality_pct = [round(float(v), 2) for v in quality.mean(axis=1)]
+    # Per-channel, per-epoch (not averaged across channels) -- lets the
+    # waveform viewer highlight exactly which channel is bad at which moment,
+    # instead of tinting every channel the same shared, averaged color.
+    channel_epoch_quality_pct = {
+        ch: [round(float(v), 1) for v in quality[:, i]] for i, ch in enumerate(CHANNEL_ORDER)
+    }
 
     penalty_by_detector = {name: float(arr.sum()) for name, arr in contribs.items()}
     total_penalty = sum(penalty_by_detector.values())
@@ -117,6 +123,7 @@ def _score_band(data_uv: np.ndarray, sfreq: float, band_name: str,
         "grade": grade_from_pct(overall_pct),
         "channel_quality_pct": channel_quality_pct,
         "epoch_quality_pct": epoch_quality_pct,
+        "channel_epoch_quality_pct": channel_epoch_quality_pct,
         "detector_penalty_share_pct": detector_penalty_share_pct,
         "top_offenders": top_offenders,
     }

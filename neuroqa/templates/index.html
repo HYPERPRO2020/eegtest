@@ -1,7 +1,12 @@
 <title>NeuroQA — EEG Quality Grader</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  .viz-root {
+  /* Variables live on :root (html), not on .viz-root -- .viz-root is a <div>
+     INSIDE <body>, so a scope on .viz-root is invisible to body's own
+     background/color rules (custom properties only cascade to descendants,
+     and body is .viz-root's ancestor). Defining them on :root instead lets
+     body, .viz-root, and every descendant all see the same values. */
+  :root {
     color-scheme: light;
     --surface-1:      #fcfcfb;
     --page-plane:     #f9f9f7;
@@ -25,7 +30,7 @@
     --series-primary-fill: rgba(42,120,214,0.12);
   }
   @media (prefers-color-scheme: dark) {
-    :root:where(:not([data-theme="light"])) .viz-root {
+    :root:where(:not([data-theme="light"])) {
       color-scheme: dark;
       --surface-1:      #1a1a19;
       --page-plane:     #0d0d0d;
@@ -49,7 +54,7 @@
       --series-primary-fill: rgba(57,135,229,0.16);
     }
   }
-  :root[data-theme="dark"] .viz-root {
+  :root[data-theme="dark"] {
     color-scheme: dark;
     --surface-1:      #1a1a19;
     --page-plane:     #0d0d0d;
@@ -79,8 +84,15 @@
     background: var(--page-plane); color: var(--text-primary);
   }
   .page { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+  .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   header h1 { font-size: 1.6rem; margin: 0 0 4px; }
   header p { color: var(--text-secondary); margin: 0 0 28px; }
+  .theme-toggle {
+    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface-1); cursor: pointer; font-size: 1.1rem; line-height: 1;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .theme-toggle:hover { background: var(--series-primary-fill); }
 
   .card {
     background: var(--surface-1); border: 1px solid var(--border);
@@ -176,7 +188,10 @@
 
 <div class="viz-root page">
   <header>
-    <h1>NeuroQA</h1>
+    <div class="header-row">
+      <h1>NeuroQA</h1>
+      <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+    </div>
     <p>Upload a resting-state EEG (.edf). It scores every epoch/channel against the detected artifacts, weighted by how much each artifact overlaps the frequency band you're measuring — then shows exactly where the points went.</p>
   </header>
 
@@ -227,7 +242,7 @@
     </div>
 
     <div class="card">
-      <h2>Raw waveform <span class="hint">— the actual filtered signal; shaded background = quality in the selected band</span></h2>
+      <h2>Raw waveform <span class="hint">— the actual filtered signal; a channel's trace turns amber/red exactly where and when it's flagged in the selected band</span></h2>
       <div class="wave-controls">
         <button type="button" id="wave-prev" class="wave-btn" aria-label="Earlier">&larr;</button>
         <span id="wave-time-label" class="wave-time">0:00 – 0:10</span>
@@ -308,6 +323,40 @@
   const gradeColor = (grade) => (["A", "B"].includes(grade) ? cssVar("--good") : grade === "C" ? cssVar("--warning") : cssVar("--critical"));
 
   let state = { data: null, charts: {} };
+
+  // ---- Theme toggle: explicit override, doesn't rely solely on the OS/
+  // browser prefers-color-scheme setting (which isn't always what the user
+  // wants control over). Persisted so it sticks across reloads.
+  const THEME_KEY = "neuroqa-theme";
+  const themeToggleBtn = document.getElementById("theme-toggle");
+
+  function isDarkNow() {
+    const attr = document.documentElement.getAttribute("data-theme");
+    if (attr === "dark") return true;
+    if (attr === "light") return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
+  function applyTheme(theme) {
+    if (theme === "dark" || theme === "light") {
+      document.documentElement.setAttribute("data-theme", theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    themeToggleBtn.textContent = isDarkNow() ? "☀️" : "🌙";
+    // Chart.js/canvas colors are read from CSS vars at draw time, not
+    // reactive -- force a redraw so an in-session toggle actually recolors
+    // the charts and waveform, not just the surrounding page chrome.
+    if (state.data) render(document.getElementById("band-select").value);
+  }
+
+  themeToggleBtn.addEventListener("click", () => {
+    const next = isDarkNow() ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+
+  applyTheme(localStorage.getItem(THEME_KEY));
 
   const dropZone = document.getElementById("drop-zone");
   const fileInput = document.getElementById("file-input");
@@ -620,22 +669,15 @@
     const plotWidth = plotRight - plotLeft;
     const plotTop = WAVE_MARGIN.top, plotBottom = cssHeight - WAVE_MARGIN.bottom;
 
-    // Background shading: non-overlapping step_sec bins, colored by that
-    // epoch's quality in the currently-selected band.
     const stepSec = data.step_sec;
     const firstBin = Math.floor(win.start_sec / stepSec);
     const lastBin = Math.ceil((win.start_sec + win.duration_sec) / stepSec);
-    for (let bin = firstBin; bin < lastBin; bin++) {
-      if (bin < 0 || bin >= band.epoch_quality_pct.length) continue;
-      const q = band.epoch_quality_pct[bin];
+    const binX = (bin) => {
       const binStart = bin * stepSec, binEnd = binStart + stepSec;
       const x0 = plotLeft + ((Math.max(binStart, win.start_sec) - win.start_sec) / win.duration_sec) * plotWidth;
       const x1 = plotLeft + ((Math.min(binEnd, win.start_sec + win.duration_sec) - win.start_sec) / win.duration_sec) * plotWidth;
-      ctx.fillStyle = statusColor(q);
-      ctx.globalAlpha = 0.12;
-      ctx.fillRect(x0, plotTop, Math.max(0, x1 - x0), plotBottom - plotTop);
-      ctx.globalAlpha = 1;
-    }
+      return [x0, x1];
+    };
 
     // Gridlines + time labels
     const gridStep = win.duration_sec > 15 ? 5 : 1;
@@ -656,10 +698,33 @@
     const scale = (BAND_HEIGHT / 2 * 0.85) / maxAbs;
     waveScaleLabel.textContent = `full scale ≈ ±${maxAbs.toFixed(0)} µV`;
 
+    // Per-channel, per-epoch quality (not the all-channel average) -- this
+    // is what makes the highlight land on the actual offending channel and
+    // moment instead of tinting every row the same shared color.
+    const chQualityAll = band.channel_epoch_quality_pct || {};
+
     channels.forEach((ch, i) => {
-      const yCenter = plotTop + i * BAND_HEIGHT + BAND_HEIGHT / 2;
+      const rowTop = plotTop + i * BAND_HEIGHT;
+      const yCenter = rowTop + BAND_HEIGHT / 2;
       const samples = win.samples[i];
       const isHighlighted = waveState.highlightChannel === ch;
+      const chQuality = chQualityAll[ch];
+
+      // Background: only shade bins where THIS channel actually has a
+      // problem (quality < 90), so a clean channel next to a bad one stays
+      // visually calm instead of getting the same blanket tint.
+      if (chQuality) {
+        for (let bin = firstBin; bin < lastBin; bin++) {
+          if (bin < 0 || bin >= chQuality.length) continue;
+          const q = chQuality[bin];
+          if (q >= 90) continue;
+          const [x0, x1] = binX(bin);
+          ctx.fillStyle = statusColor(q);
+          ctx.globalAlpha = 0.18;
+          ctx.fillRect(x0, rowTop, Math.max(0, x1 - x0), BAND_HEIGHT);
+          ctx.globalAlpha = 1;
+        }
+      }
 
       ctx.textAlign = "right";
       ctx.font = isHighlighted ? "bold 11px system-ui, sans-serif" : "11px system-ui, sans-serif";
@@ -670,15 +735,42 @@
       ctx.lineWidth = 0.5;
       ctx.beginPath(); ctx.moveTo(plotLeft, yCenter); ctx.lineTo(plotRight, yCenter); ctx.stroke();
 
-      ctx.strokeStyle = isHighlighted ? cssVar("--critical") : cssVar("--series-primary");
-      ctx.lineWidth = isHighlighted ? 1.6 : 1;
-      ctx.beginPath();
-      samples.forEach((v, si) => {
-        const x = plotLeft + (si / (samples.length - 1)) * plotWidth;
-        const y = yCenter - v * scale;
-        if (si === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
+      // Trace: colored in grouped runs -- normal color where this channel's
+      // quality is fine, statusColor (thicker) exactly where it isn't. Runs
+      // are grouped (not stroked per-sample) so a 2560-sample window doesn't
+      // mean 2560 stroke() calls.
+      const baseColor = isHighlighted ? cssVar("--critical") : cssVar("--series-primary");
+      const baseWidth = isHighlighted ? 1.6 : 1;
+      const n = samples.length;
+      let currentColor = null, currentWidth = baseWidth;
+      for (let si = 0; si < n; si++) {
+        const x = plotLeft + (si / (n - 1)) * plotWidth;
+        const y = yCenter - samples[si] * scale;
+        const tAbs = win.start_sec + (si / (n - 1)) * win.duration_sec;
+        const bin = Math.floor(tAbs / stepSec);
+        const q = chQuality ? chQuality[bin] : undefined;
+        const flagged = q !== undefined && q < 90;
+        const segColor = flagged ? statusColor(q) : baseColor;
+        const segWidth = flagged ? Math.max(2, baseWidth + 0.8) : baseWidth;
+
+        if (segColor !== currentColor) {
+          if (currentColor !== null) ctx.stroke();
+          ctx.beginPath();
+          ctx.strokeStyle = segColor;
+          ctx.lineWidth = segWidth;
+          currentColor = segColor;
+          currentWidth = segWidth;
+          if (si > 0) {
+            const px = plotLeft + ((si - 1) / (n - 1)) * plotWidth;
+            const py = yCenter - samples[si - 1] * scale;
+            ctx.moveTo(px, py);
+          } else {
+            ctx.moveTo(x, y);
+          }
+        }
+        ctx.lineTo(x, y);
+      }
+      if (currentColor !== null) ctx.stroke();
     });
   }
 
