@@ -12,3 +12,6 @@ v1/outputs/
 # Local tool state
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+
+.vercel
+.env*

@@ -21,9 +21,18 @@ then open http://127.0.0.1:5000
 
 from __future__ import annotations
 
+import sys
 import tempfile
 import traceback
 from pathlib import Path
+
+# Running `python webapp.py` locally puts this file's directory on sys.path
+# automatically, so `from analyze import ...` just works. Vercel's Python
+# runtime loads this module by absolute path through its own loader, which
+# does NOT do that -- the sibling imports below fail with ModuleNotFoundError
+# unless the directory is added explicitly, so do it unconditionally (a
+# no-op duplicate in the local case, required in Vercel's).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from flask import Flask, jsonify, render_template, request
 from werkzeug.utils import secure_filename
