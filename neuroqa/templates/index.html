@@ -1,0 +1,732 @@
+<title>NeuroQA — EEG Quality Grader</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page-plane:     #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --good:    #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical:#d03b3b;
+    --series-eog:        #2a78d6; /* slot 1 blue */
+    --series-emg:        #eb6834; /* slot 2 orange */
+    --series-pop:        #1baf7a; /* slot 3 aqua */
+    --series-line_noise: #eda100; /* slot 4 yellow */
+    --series-motion:     #e87ba4; /* slot 5 magenta */
+    --series-cardiac:    #008300; /* slot 6 green */
+    --series-primary:    #2a78d6;
+    --series-primary-fill: rgba(42,120,214,0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page-plane:     #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --good:    #0ca30c;
+      --warning: #fab219;
+      --serious: #ec835a;
+      --critical:#e66767;
+      --series-eog:        #3987e5;
+      --series-emg:        #d95926;
+      --series-pop:        #199e70;
+      --series-line_noise: #c98500;
+      --series-motion:     #d55181;
+      --series-cardiac:    #008300;
+      --series-primary:    #3987e5;
+      --series-primary-fill: rgba(57,135,229,0.16);
+    }
+  }
+  :root[data-theme="dark"] .viz-root {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --page-plane:     #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --good:    #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical:#e66767;
+    --series-eog:        #3987e5;
+    --series-emg:        #d95926;
+    --series-pop:        #199e70;
+    --series-line_noise: #c98500;
+    --series-motion:     #d55181;
+    --series-cardiac:    #008300;
+    --series-primary:    #3987e5;
+    --series-primary-fill: rgba(57,135,229,0.16);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page-plane); color: var(--text-primary);
+  }
+  .page { max-width: 980px; margin: 0 auto; padding: 32px 20px 80px; }
+  header h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  header p { color: var(--text-secondary); margin: 0 0 28px; }
+
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px; margin-bottom: 20px;
+  }
+  .card h2 { font-size: 1rem; margin: 0 0 14px; color: var(--text-primary); }
+  .card h2 .hint { font-weight: 400; color: var(--text-muted); font-size: 0.85rem; }
+
+  #drop-zone {
+    border: 2px dashed var(--baseline); border-radius: 12px; padding: 36px 20px;
+    text-align: center; cursor: pointer; transition: border-color 0.15s;
+  }
+  #drop-zone.drag-over { border-color: var(--series-primary); background: var(--series-primary-fill); }
+  #drop-zone p { margin: 6px 0; color: var(--text-secondary); }
+  #drop-zone .browse { color: var(--series-primary); text-decoration: underline; }
+  #file-input { display: none; }
+  #upload-status { margin-top: 14px; font-size: 0.9rem; color: var(--text-secondary); }
+  #upload-status.error { color: var(--critical); }
+  .spinner {
+    display: inline-block; width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid var(--gridline); border-top-color: var(--series-primary);
+    animation: spin 0.7s linear infinite; vertical-align: -2px; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .controls-row {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px; margin-bottom: 18px;
+  }
+  .meta { color: var(--text-secondary); font-size: 0.9rem; }
+  .meta strong { color: var(--text-primary); }
+  select#band-select {
+    font: inherit; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface-1); color: var(--text-primary);
+  }
+
+  .hero-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+  .stat-tile {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .stat-tile .label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; }
+  .stat-tile .value { font-size: 1.9rem; font-weight: 600; line-height: 1; font-variant-numeric: proportional-nums; }
+  .stat-tile .sub { font-size: 0.8rem; color: var(--text-secondary); margin-top: 6px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; font-size: 0.82rem; color: var(--text-secondary); }
+  .legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--gridline); }
+  th { color: var(--text-muted); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.02em; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+  .pill { padding: 2px 8px; border-radius: 999px; font-size: 0.78rem; color: white; }
+
+  details summary { cursor: pointer; color: var(--series-primary); font-size: 0.85rem; margin-top: 10px; }
+
+  .chart-wrap { position: relative; width: 100%; height: 220px; }
+  .chart-wrap.tall { height: 280px; }
+  canvas { max-width: 100%; }
+
+  .wave-controls { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+  .wave-btn {
+    width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface-1); color: var(--text-primary); cursor: pointer; font-size: 1rem;
+  }
+  .wave-btn:hover { background: var(--series-primary-fill); }
+  .wave-btn:disabled { opacity: 0.35; cursor: default; }
+  .wave-time { font-variant-numeric: tabular-nums; color: var(--text-secondary); font-size: 0.88rem; min-width: 110px; }
+  .wave-window-label { font-size: 0.85rem; color: var(--text-secondary); margin-left: auto; }
+  .wave-window-label select {
+    font: inherit; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface-1); color: var(--text-primary); margin-left: 6px;
+  }
+  .wave-scale { font-size: 0.8rem; color: var(--text-muted); }
+  .wave-wrap { position: relative; width: 100%; overflow: hidden; border-radius: 8px; border: 1px solid var(--border); }
+  #wave-canvas, #wave-overlay-canvas { display: block; width: 100%; }
+  #wave-canvas { cursor: crosshair; }
+  #wave-overlay-canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+  .wave-tooltip {
+    position: absolute; pointer-events: none; background: var(--text-primary); color: var(--surface-1);
+    font-size: 0.76rem; padding: 5px 8px; border-radius: 6px; transform: translate(-50%, -110%);
+    white-space: nowrap; z-index: 5;
+  }
+
+  @media (max-width: 720px) {
+    .hero-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<div class="viz-root page">
+  <header>
+    <h1>NeuroQA</h1>
+    <p>Upload a resting-state EEG (.edf). It scores every epoch/channel against the detected artifacts, weighted by how much each artifact overlaps the frequency band you're measuring — then shows exactly where the points went.</p>
+  </header>
+
+  <section class="card" id="upload-section">
+    <div id="drop-zone">
+      <p><strong>Drop a .edf file here</strong></p>
+      <p>or <span class="browse">browse for a file</span></p>
+      <input type="file" id="file-input" accept=".edf">
+    </div>
+    <div id="upload-status"></div>
+  </section>
+
+  <section id="results" hidden>
+    <div class="controls-row">
+      <div class="meta" id="meta"></div>
+      <label>Measuring band:
+        <select id="band-select">
+          <option value="delta">Delta (0.5–4 Hz)</option>
+          <option value="theta">Theta (4–8 Hz)</option>
+          <option value="alpha" selected>Alpha (8–13 Hz)</option>
+          <option value="beta">Beta (13–30 Hz)</option>
+          <option value="gamma">Gamma (30–45 Hz)</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="hero-row">
+      <div class="stat-tile">
+        <div class="label">Grade</div>
+        <div class="value badge"><span class="dot" id="grade-dot"></span><span id="grade-value">—</span></div>
+        <div class="sub" id="grade-sub"></div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">Quality</div>
+        <div class="value" id="quality-value">—</div>
+        <div class="sub">mean over all epoch×channel cells</div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">Worst channel</div>
+        <div class="value" id="worst-channel-value">—</div>
+        <div class="sub" id="worst-channel-sub"></div>
+      </div>
+      <div class="stat-tile">
+        <div class="label">Worst moment</div>
+        <div class="value" id="worst-epoch-value">—</div>
+        <div class="sub" id="worst-epoch-sub"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Raw waveform <span class="hint">— the actual filtered signal; shaded background = quality in the selected band</span></h2>
+      <div class="wave-controls">
+        <button type="button" id="wave-prev" class="wave-btn" aria-label="Earlier">&larr;</button>
+        <span id="wave-time-label" class="wave-time">0:00 – 0:10</span>
+        <button type="button" id="wave-next" class="wave-btn" aria-label="Later">&rarr;</button>
+        <label class="wave-window-label">Window
+          <select id="wave-window-select">
+            <option value="4">4s</option>
+            <option value="10" selected>10s</option>
+            <option value="20">20s</option>
+            <option value="30">30s</option>
+          </select>
+        </label>
+        <span class="wave-scale" id="wave-scale-label"></span>
+      </div>
+      <div class="wave-wrap">
+        <canvas id="wave-canvas"></canvas>
+        <canvas id="wave-overlay-canvas"></canvas>
+        <div id="wave-tooltip" class="wave-tooltip" hidden></div>
+      </div>
+      <div class="legend">
+        <span class="item"><span class="swatch" style="background:var(--good);opacity:.35"></span>good</span>
+        <span class="item"><span class="swatch" style="background:var(--warning);opacity:.35"></span>warning</span>
+        <span class="item"><span class="swatch" style="background:var(--critical);opacity:.35"></span>critical</span>
+        <span class="item">click a row in "Worst offenders" below to jump here</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Where points were lost <span class="hint">— share of total penalty, by artifact type</span></h2>
+      <div class="chart-wrap"><canvas id="detector-chart"></canvas></div>
+      <details>
+        <summary>View as table</summary>
+        <table id="detector-table"><thead><tr><th>Artifact type</th><th class="num">Share of penalty</th></tr></thead><tbody></tbody></table>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>Quality by channel <span class="hint">— &ge;90% good, 70–90% warning, &lt;70% critical</span></h2>
+      <div class="chart-wrap tall"><canvas id="channel-chart"></canvas></div>
+      <div class="legend">
+        <span class="item"><span class="swatch" style="background:var(--good)"></span>good</span>
+        <span class="item"><span class="swatch" style="background:var(--warning)"></span>warning</span>
+        <span class="item"><span class="swatch" style="background:var(--critical)"></span>critical</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Quality over time <span class="hint">— mean across channels per epoch; red = one of the 5 worst moments</span></h2>
+      <div class="chart-wrap tall"><canvas id="timeline-chart"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h2>Worst offenders <span class="hint">— the individual epoch×channel cells that cost the most</span></h2>
+      <table id="offenders-table">
+        <thead><tr><th>Time</th><th>Channel</th><th class="num">Quality</th><th>Cause</th><th class="num">Severity</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  const DETECTOR_LABELS = {
+    eog: "Eye blink / movement (EOG)",
+    emg: "Muscle (EMG)",
+    pop: "Electrode pop",
+    line_noise: "Line noise (50 Hz)",
+    motion: "Motion",
+    cardiac: "Cardiac / pulse",
+  };
+  const DETECTOR_ORDER = ["eog", "emg", "pop", "line_noise", "motion", "cardiac"];
+  const root = document.querySelector(".viz-root");
+  const cssVar = (name) => getComputedStyle(root).getPropertyValue(name).trim();
+  const detectorColor = (name) => cssVar(`--series-${name}`);
+  const statusColor = (pct) => (pct >= 90 ? cssVar("--good") : pct >= 70 ? cssVar("--warning") : cssVar("--critical"));
+  const gradeColor = (grade) => (["A", "B"].includes(grade) ? cssVar("--good") : grade === "C" ? cssVar("--warning") : cssVar("--critical"));
+
+  let state = { data: null, charts: {} };
+
+  const dropZone = document.getElementById("drop-zone");
+  const fileInput = document.getElementById("file-input");
+  const statusEl = document.getElementById("upload-status");
+
+  dropZone.addEventListener("click", () => fileInput.click());
+  ["dragenter", "dragover"].forEach((evt) =>
+    dropZone.addEventListener(evt, (e) => { e.preventDefault(); dropZone.classList.add("drag-over"); })
+  );
+  ["dragleave", "drop"].forEach((evt) =>
+    dropZone.addEventListener(evt, (e) => { e.preventDefault(); dropZone.classList.remove("drag-over"); })
+  );
+  dropZone.addEventListener("drop", (e) => {
+    const file = e.dataTransfer.files[0];
+    if (file) analyzeFile(file);
+  });
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files[0]) analyzeFile(fileInput.files[0]);
+  });
+
+  async function analyzeFile(file) {
+    statusEl.className = "";
+    statusEl.innerHTML = `<span class="spinner"></span>scoring ${file.name}… (usually a few seconds)`;
+    document.getElementById("results").hidden = true;
+
+    const form = new FormData();
+    form.append("edf", file);
+    try {
+      const res = await fetch("/analyze", { method: "POST", body: form });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "analysis failed");
+      state.data = json;
+      statusEl.textContent = "";
+      document.getElementById("results").hidden = false;
+      document.getElementById("band-select").value = json.primary_band;
+      render(json.primary_band);
+      initWaveform(json);
+    } catch (err) {
+      statusEl.className = "error";
+      statusEl.textContent = err.message;
+    }
+  }
+
+  document.getElementById("band-select").addEventListener("change", (e) => render(e.target.value));
+
+  function render(bandName) {
+    const data = state.data;
+    const band = data.bands[bandName];
+    const durationSec = (data.n_epochs - 1) * data.step_sec + data.epoch_sec;
+
+    document.getElementById("meta").innerHTML =
+      `<strong>${data.filename}</strong> &middot; ${data.n_epochs} epochs &middot; ` +
+      `${durationSec.toFixed(0)}s &middot; ${data.sfreq.toFixed(0)} Hz &middot; ${data.n_channels} channels`;
+
+    document.getElementById("grade-value").textContent = band.grade;
+    document.getElementById("grade-dot").style.background = gradeColor(band.grade);
+    document.getElementById("grade-sub").textContent = `measuring ${bandName}`;
+    document.getElementById("quality-value").textContent = band.overall_quality_pct.toFixed(1) + "%";
+
+    const channelEntries = Object.entries(band.channel_quality_pct).sort((a, b) => a[1] - b[1]);
+    const [worstCh, worstChPct] = channelEntries[0];
+    document.getElementById("worst-channel-value").textContent = worstCh;
+    document.getElementById("worst-channel-sub").textContent = `${worstChPct.toFixed(1)}% quality`;
+
+    if (band.top_offenders.length) {
+      const top = band.top_offenders[0];
+      document.getElementById("worst-epoch-value").textContent = `${top.time_sec.toFixed(0)}s`;
+      document.getElementById("worst-epoch-sub").textContent = `${top.channel} · ${DETECTOR_LABELS[top.dominant_detector]}`;
+    } else {
+      document.getElementById("worst-epoch-value").textContent = "none";
+      document.getElementById("worst-epoch-sub").textContent = "no meaningful penalty detected";
+    }
+
+    renderDetectorChart(band);
+    renderChannelChart(channelEntries);
+    renderTimelineChart(data, band);
+    renderOffendersTable(band);
+    if (waveState.lastWindow) drawWave(bandName);
+  }
+
+  function destroy(key) {
+    if (state.charts[key]) { state.charts[key].destroy(); delete state.charts[key]; }
+  }
+
+  function renderDetectorChart(band) {
+    destroy("detector");
+    const entries = DETECTOR_ORDER.map((name) => [name, band.detector_penalty_share_pct[name] || 0]);
+    const tbody = document.querySelector("#detector-table tbody");
+    tbody.innerHTML = entries.map(([name, pct]) =>
+      `<tr><td>${DETECTOR_LABELS[name]}</td><td class="num">${pct.toFixed(1)}%</td></tr>`).join("");
+
+    const ctx = document.getElementById("detector-chart");
+    state.charts.detector = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: entries.map(([name]) => DETECTOR_LABELS[name]),
+        datasets: [{
+          data: entries.map(([, pct]) => pct),
+          backgroundColor: entries.map(([name]) => detectorColor(name)),
+          borderRadius: 4, borderSkipped: false, maxBarThickness: 26,
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        indexAxis: "y",
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (c) => `${c.parsed.x.toFixed(1)}% of total penalty` } },
+        },
+        scales: {
+          x: { beginAtZero: true, max: 100, ticks: { callback: (v) => v + "%", color: cssVar("--text-muted") },
+               grid: { color: cssVar("--gridline") } },
+          y: { ticks: { color: cssVar("--text-secondary") }, grid: { display: false } },
+        },
+      },
+    });
+  }
+
+  function renderChannelChart(channelEntries) {
+    destroy("channel");
+    const ctx = document.getElementById("channel-chart");
+    state.charts.channel = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: channelEntries.map(([ch]) => ch),
+        datasets: [{
+          data: channelEntries.map(([, pct]) => pct),
+          backgroundColor: channelEntries.map(([, pct]) => statusColor(pct)),
+          borderRadius: 4, borderSkipped: false, maxBarThickness: 26,
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (c) => `${c.parsed.y.toFixed(1)}% quality` } },
+        },
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { callback: (v) => v + "%", color: cssVar("--text-muted") },
+               grid: { color: cssVar("--gridline") } },
+          x: { ticks: { color: cssVar("--text-secondary") }, grid: { display: false } },
+        },
+      },
+    });
+  }
+
+  function renderTimelineChart(data, band) {
+    destroy("timeline");
+    const times = band.epoch_quality_pct.map((_, i) => (i * data.step_sec).toFixed(0));
+    const worstIdx = new Set(
+      band.epoch_quality_pct.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0]).slice(0, 5).map((p) => p[1])
+    );
+    const ctx = document.getElementById("timeline-chart");
+    state.charts.timeline = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: times,
+        datasets: [{
+          data: band.epoch_quality_pct,
+          borderColor: cssVar("--series-primary"),
+          backgroundColor: cssVar("--series-primary-fill"),
+          borderWidth: 2, fill: true, tension: 0.15,
+          pointRadius: band.epoch_quality_pct.map((_, i) => (worstIdx.has(i) ? 4 : 0)),
+          pointBackgroundColor: cssVar("--critical"),
+          pointBorderColor: cssVar("--critical"),
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        onClick: (evt, elements) => {
+          if (!elements.length) return;
+          const i = elements[0].index;
+          jumpToWave(i * state.data.step_sec, null);
+        },
+        onHover: (evt, elements) => { evt.native.target.style.cursor = elements.length ? "pointer" : "default"; },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: (c) => `${c.parsed.y.toFixed(1)}% quality (click to view waveform)` } },
+        },
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { callback: (v) => v + "%", color: cssVar("--text-muted") },
+               grid: { color: cssVar("--gridline") } },
+          x: { title: { display: true, text: "seconds into recording", color: cssVar("--text-muted") },
+               ticks: { color: cssVar("--text-secondary"), maxTicksLimit: 12 }, grid: { display: false } },
+        },
+      },
+    });
+  }
+
+  function renderOffendersTable(band) {
+    const tbody = document.querySelector("#offenders-table tbody");
+    if (!band.top_offenders.length) {
+      tbody.innerHTML = `<tr><td colspan="5">No meaningful penalty detected for this band.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = band.top_offenders.map((o) => `
+      <tr class="offender-row" data-time="${o.time_sec}" data-channel="${o.channel}" style="cursor:pointer">
+        <td>${o.time_sec.toFixed(0)}s (epoch ${o.epoch})</td>
+        <td>${o.channel}</td>
+        <td class="num">${o.quality_pct.toFixed(1)}%</td>
+        <td><span class="pill" style="background:${detectorColor(o.dominant_detector)}">${DETECTOR_LABELS[o.dominant_detector]}</span></td>
+        <td class="num">${o.dominant_detector_severity.toFixed(2)}</td>
+      </tr>
+    `).join("");
+    tbody.querySelectorAll(".offender-row").forEach((row) => {
+      row.addEventListener("click", () => jumpToWave(parseFloat(row.dataset.time), row.dataset.channel));
+    });
+  }
+
+  // ---- Raw waveform viewer -------------------------------------------
+  const waveState = {
+    analysisId: null, recordingDuration: 0, windowSec: 10, startSec: 0,
+    lastWindow: null, highlightChannel: null,
+  };
+  const BAND_HEIGHT = 30;
+  const WAVE_MARGIN = { top: 10, right: 16, bottom: 24, left: 44 };
+  const waveCanvas = document.getElementById("wave-canvas");
+  const waveOverlay = document.getElementById("wave-overlay-canvas");
+  const waveWrap = document.querySelector(".wave-wrap");
+  const waveTooltip = document.getElementById("wave-tooltip");
+  const waveTimeLabel = document.getElementById("wave-time-label");
+  const waveScaleLabel = document.getElementById("wave-scale-label");
+  const wavePrevBtn = document.getElementById("wave-prev");
+  const waveNextBtn = document.getElementById("wave-next");
+  const waveWindowSelect = document.getElementById("wave-window-select");
+
+  function initWaveform(data) {
+    waveState.analysisId = data.analysis_id;
+    waveState.recordingDuration = data.duration_sec;
+    waveState.windowSec = parseFloat(waveWindowSelect.value);
+    waveState.startSec = 0;
+    waveState.highlightChannel = null;
+    fetchAndDrawWave();
+  }
+
+  async function fetchAndDrawWave() {
+    const { analysisId, startSec, windowSec } = waveState;
+    if (!analysisId) return;
+    const res = await fetch(`/waveform/${analysisId}?start=${startSec}&duration=${windowSec}`);
+    const json = await res.json();
+    if (!res.ok) return;
+    waveState.lastWindow = json;
+    updateWaveControlsUI();
+    drawWave(document.getElementById("band-select").value);
+  }
+
+  function updateWaveControlsUI() {
+    const { startSec, windowSec, recordingDuration } = waveState;
+    const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+    waveTimeLabel.textContent = `${fmt(startSec)} – ${fmt(Math.min(startSec + windowSec, recordingDuration))}`;
+    wavePrevBtn.disabled = startSec <= 0;
+    waveNextBtn.disabled = startSec + windowSec >= recordingDuration;
+  }
+
+  wavePrevBtn.addEventListener("click", () => {
+    waveState.startSec = Math.max(0, waveState.startSec - waveState.windowSec);
+    fetchAndDrawWave();
+  });
+  waveNextBtn.addEventListener("click", () => {
+    const maxStart = Math.max(0, waveState.recordingDuration - waveState.windowSec);
+    waveState.startSec = Math.min(maxStart, waveState.startSec + waveState.windowSec);
+    fetchAndDrawWave();
+  });
+  waveWindowSelect.addEventListener("change", () => {
+    waveState.windowSec = parseFloat(waveWindowSelect.value);
+    waveState.startSec = Math.min(waveState.startSec, Math.max(0, waveState.recordingDuration - waveState.windowSec));
+    fetchAndDrawWave();
+  });
+
+  function jumpToWave(timeSec, channelName) {
+    if (!waveState.analysisId) return;
+    const half = waveState.windowSec / 2;
+    const maxStart = Math.max(0, waveState.recordingDuration - waveState.windowSec);
+    waveState.startSec = Math.max(0, Math.min(timeSec - half, maxStart));
+    waveState.highlightChannel = channelName;
+    fetchAndDrawWave().then(() => {
+      waveWrap.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (channelName) {
+        setTimeout(() => {
+          waveState.highlightChannel = null;
+          drawWave(document.getElementById("band-select").value);
+        }, 3000);
+      }
+    });
+  }
+
+  function drawWave(bandName) {
+    const win = waveState.lastWindow;
+    if (!win) return;
+    const data = state.data;
+    const band = data.bands[bandName];
+    const channels = win.channels;
+
+    const dpr = window.devicePixelRatio || 1;
+    const cssWidth = waveWrap.clientWidth;
+    const cssHeight = WAVE_MARGIN.top + WAVE_MARGIN.bottom + channels.length * BAND_HEIGHT;
+
+    [waveCanvas, waveOverlay].forEach((cv) => {
+      cv.style.width = cssWidth + "px";
+      cv.style.height = cssHeight + "px";
+      cv.width = Math.round(cssWidth * dpr);
+      cv.height = Math.round(cssHeight * dpr);
+    });
+
+    const ctx = waveCanvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+    const plotLeft = WAVE_MARGIN.left, plotRight = cssWidth - WAVE_MARGIN.right;
+    const plotWidth = plotRight - plotLeft;
+    const plotTop = WAVE_MARGIN.top, plotBottom = cssHeight - WAVE_MARGIN.bottom;
+
+    // Background shading: non-overlapping step_sec bins, colored by that
+    // epoch's quality in the currently-selected band.
+    const stepSec = data.step_sec;
+    const firstBin = Math.floor(win.start_sec / stepSec);
+    const lastBin = Math.ceil((win.start_sec + win.duration_sec) / stepSec);
+    for (let bin = firstBin; bin < lastBin; bin++) {
+      if (bin < 0 || bin >= band.epoch_quality_pct.length) continue;
+      const q = band.epoch_quality_pct[bin];
+      const binStart = bin * stepSec, binEnd = binStart + stepSec;
+      const x0 = plotLeft + ((Math.max(binStart, win.start_sec) - win.start_sec) / win.duration_sec) * plotWidth;
+      const x1 = plotLeft + ((Math.min(binEnd, win.start_sec + win.duration_sec) - win.start_sec) / win.duration_sec) * plotWidth;
+      ctx.fillStyle = statusColor(q);
+      ctx.globalAlpha = 0.12;
+      ctx.fillRect(x0, plotTop, Math.max(0, x1 - x0), plotBottom - plotTop);
+      ctx.globalAlpha = 1;
+    }
+
+    // Gridlines + time labels
+    const gridStep = win.duration_sec > 15 ? 5 : 1;
+    ctx.strokeStyle = cssVar("--gridline");
+    ctx.lineWidth = 1;
+    ctx.fillStyle = cssVar("--text-muted");
+    ctx.font = "10px system-ui, sans-serif";
+    ctx.textAlign = "center";
+    for (let t = Math.ceil(win.start_sec / gridStep) * gridStep; t <= win.start_sec + win.duration_sec; t += gridStep) {
+      const x = plotLeft + ((t - win.start_sec) / win.duration_sec) * plotWidth;
+      ctx.beginPath(); ctx.moveTo(x, plotTop); ctx.lineTo(x, plotBottom); ctx.stroke();
+      ctx.fillText(`${t.toFixed(0)}s`, x, cssHeight - 8);
+    }
+
+    // Shared amplitude scale across all channels in this window
+    let maxAbs = 1;
+    win.samples.forEach((chData) => chData.forEach((v) => { if (Math.abs(v) > maxAbs) maxAbs = Math.abs(v); }));
+    const scale = (BAND_HEIGHT / 2 * 0.85) / maxAbs;
+    waveScaleLabel.textContent = `full scale ≈ ±${maxAbs.toFixed(0)} µV`;
+
+    channels.forEach((ch, i) => {
+      const yCenter = plotTop + i * BAND_HEIGHT + BAND_HEIGHT / 2;
+      const samples = win.samples[i];
+      const isHighlighted = waveState.highlightChannel === ch;
+
+      ctx.textAlign = "right";
+      ctx.font = isHighlighted ? "bold 11px system-ui, sans-serif" : "11px system-ui, sans-serif";
+      ctx.fillStyle = isHighlighted ? cssVar("--critical") : cssVar("--text-secondary");
+      ctx.fillText(ch, plotLeft - 8, yCenter + 4);
+
+      ctx.strokeStyle = cssVar("--gridline");
+      ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(plotLeft, yCenter); ctx.lineTo(plotRight, yCenter); ctx.stroke();
+
+      ctx.strokeStyle = isHighlighted ? cssVar("--critical") : cssVar("--series-primary");
+      ctx.lineWidth = isHighlighted ? 1.6 : 1;
+      ctx.beginPath();
+      samples.forEach((v, si) => {
+        const x = plotLeft + (si / (samples.length - 1)) * plotWidth;
+        const y = yCenter - v * scale;
+        if (si === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    });
+  }
+
+  function hideWaveHover() {
+    waveTooltip.hidden = true;
+    const octx = waveOverlay.getContext("2d");
+    octx.clearRect(0, 0, waveOverlay.width, waveOverlay.height);
+  }
+
+  waveCanvas.addEventListener("mousemove", (e) => {
+    const win = waveState.lastWindow;
+    if (!win) return;
+    const rect = waveCanvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const plotLeft = WAVE_MARGIN.left, plotWidth = rect.width - WAVE_MARGIN.left - WAVE_MARGIN.right;
+    if (x < plotLeft || x > plotLeft + plotWidth || y < WAVE_MARGIN.top) { hideWaveHover(); return; }
+    const frac = (x - plotLeft) / plotWidth;
+    const t = win.start_sec + frac * win.duration_sec;
+    const chIdx = Math.min(win.channels.length - 1, Math.max(0, Math.floor((y - WAVE_MARGIN.top) / BAND_HEIGHT)));
+    const ch = win.channels[chIdx];
+    const samples = win.samples[chIdx];
+    const sampleIdx = Math.min(samples.length - 1, Math.round(frac * (samples.length - 1)));
+    const val = samples[sampleIdx];
+
+    const dpr = window.devicePixelRatio || 1;
+    const octx = waveOverlay.getContext("2d");
+    octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    octx.clearRect(0, 0, rect.width, rect.height);
+    octx.strokeStyle = cssVar("--text-muted");
+    octx.lineWidth = 1;
+    octx.beginPath(); octx.moveTo(x, WAVE_MARGIN.top); octx.lineTo(x, rect.height - WAVE_MARGIN.bottom); octx.stroke();
+
+    waveTooltip.hidden = false;
+    waveTooltip.style.left = x + "px";
+    waveTooltip.style.top = Math.max(0, WAVE_MARGIN.top + chIdx * BAND_HEIGHT) + "px";
+    waveTooltip.textContent = `${ch} · ${t.toFixed(2)}s · ${val.toFixed(1)} µV`;
+  });
+  waveCanvas.addEventListener("mouseleave", hideWaveHover);
+
+  let waveResizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(waveResizeTimer);
+    waveResizeTimer = setTimeout(() => {
+      if (waveState.lastWindow) drawWave(document.getElementById("band-select").value);
+    }, 120);
+  });
+
+  window.__NeuroQA = { render, state, analyzeFile, waveState, drawWave, jumpToWave, initWaveform };  // debug hook, harmless in production
+})();
+</script>

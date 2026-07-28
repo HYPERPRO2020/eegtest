@@ -1,0 +1,16 @@
+# Core webapp (webapp.py, analyze.py, and everything they import:
+# artifact_detectors.py, bands.py, ingest.py, preprocess.py, quality_index.py,
+# score.py, faa.py)
+Flask==3.1.3
+Werkzeug==3.1.8
+mne==1.12.1
+numpy==2.4.6
+scipy==1.18.0
+pandas==3.0.3
+
+# Only needed for the batch study scripts (causal_quality.py, study_a.py,
+# study_b.py) -- not required to run the webapp itself.
+scikit-learn==1.9.0
+statsmodels==0.14.6
+autoreject==0.4.4
+matplotlib==3.11.0

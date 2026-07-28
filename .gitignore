@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Large / regeneratable data -- not needed to run the webapp
+data/
+v1/Data/
+neuroqa/outputs/
+v1/outputs/
+
+# Local tool state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
