@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "neuroqa/webapp.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "neuroqa/webapp.py" }
+  ],
+  "functions": {
+    "neuroqa/webapp.py": { "maxDuration": 60 }
+  }
+}

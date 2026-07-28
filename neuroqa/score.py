@@ -19,11 +19,14 @@ from __future__ import annotations
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 
 from artifact_detectors import DETECTORS, run_all
 from bands import EEG_BANDS
 from quality_index import compute_quality, contributions
+
+# pandas is only needed by main()'s manifest/summary CSV I/O, not by
+# score_recording() or grade_from_pct() (which analyze.py imports) --
+# imported lazily in main() so the webapp doesn't drag pandas in.
 
 OUT_DIR = Path(__file__).resolve().parent / "outputs"
 EPOCH_DIR = OUT_DIR / "epochs"
@@ -83,6 +86,8 @@ def score_recording(npz_path: Path) -> tuple[dict, list[dict]]:
 
 
 def main():
+    import pandas as pd
+
     manifest = pd.read_csv(OUT_DIR / "ingest_manifest.csv")
     manifest = manifest[manifest.load_error.isna()]
 

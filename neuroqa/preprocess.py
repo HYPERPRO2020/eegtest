@@ -21,9 +21,12 @@ from pathlib import Path
 
 import mne
 import numpy as np
-import pandas as pd
 
 from ingest import EXPECTED_CHANNELS, clean_channel_name
+
+# pandas is only needed by main()'s manifest CSV I/O, not by preprocess_file()
+# itself -- imported lazily there so the webapp's import of CHANNEL_ORDER/
+# EPOCH_SEC/etc. doesn't drag pandas (67MB) in.
 
 mne.set_log_level("ERROR")
 
@@ -56,6 +59,8 @@ def preprocess_file(path: str) -> tuple[np.ndarray, float]:
 
 
 def main():
+    import pandas as pd
+
     manifest_path = OUT_DIR / "ingest_manifest.csv"
     if not manifest_path.exists():
         raise SystemExit("run neuroqa/ingest.py first — outputs/ingest_manifest.csv is missing")

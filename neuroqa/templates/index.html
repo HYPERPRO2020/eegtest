@@ -567,8 +567,13 @@
   }
 
   // ---- Raw waveform viewer -------------------------------------------
+  // The full (possibly decimated, see analyze.py) waveform ships in the
+  // /analyze response itself -- panning/zooming/jumping just slices that
+  // array locally, no network round trip. This also means it works on a
+  // stateless deployment (e.g. Vercel) where a later request has no
+  // guarantee of hitting the process that did the original analysis.
   const waveState = {
-    analysisId: null, recordingDuration: 0, windowSec: 10, startSec: 0,
+    waveform: null, recordingDuration: 0, windowSec: 10, startSec: 0,
     lastWindow: null, highlightChannel: null,
   };
   const BAND_HEIGHT = 30;
@@ -584,21 +589,27 @@
   const waveWindowSelect = document.getElementById("wave-window-select");
 
   function initWaveform(data) {
-    waveState.analysisId = data.analysis_id;
-    waveState.recordingDuration = data.duration_sec;
+    waveState.waveform = data.waveform;
+    waveState.recordingDuration = data.waveform.duration_sec;
     waveState.windowSec = parseFloat(waveWindowSelect.value);
     waveState.startSec = 0;
     waveState.highlightChannel = null;
-    fetchAndDrawWave();
+    updateWaveWindow();
   }
 
-  async function fetchAndDrawWave() {
-    const { analysisId, startSec, windowSec } = waveState;
-    if (!analysisId) return;
-    const res = await fetch(`/waveform/${analysisId}?start=${startSec}&duration=${windowSec}`);
-    const json = await res.json();
-    if (!res.ok) return;
-    waveState.lastWindow = json;
+  function updateWaveWindow() {
+    const wf = waveState.waveform;
+    if (!wf) return;
+    const { startSec, windowSec } = waveState;
+    const startIdx = Math.floor(startSec * wf.sfreq);
+    const endIdx = Math.min(wf.samples[0].length, Math.ceil((startSec + windowSec) * wf.sfreq));
+    waveState.lastWindow = {
+      start_sec: startIdx / wf.sfreq,
+      duration_sec: (endIdx - startIdx) / wf.sfreq,
+      sfreq: wf.sfreq,
+      channels: wf.channels,
+      samples: wf.samples.map((chData) => chData.slice(startIdx, endIdx)),
+    };
     updateWaveControlsUI();
     drawWave(document.getElementById("band-select").value);
   }
@@ -613,34 +624,33 @@
 
   wavePrevBtn.addEventListener("click", () => {
     waveState.startSec = Math.max(0, waveState.startSec - waveState.windowSec);
-    fetchAndDrawWave();
+    updateWaveWindow();
   });
   waveNextBtn.addEventListener("click", () => {
     const maxStart = Math.max(0, waveState.recordingDuration - waveState.windowSec);
     waveState.startSec = Math.min(maxStart, waveState.startSec + waveState.windowSec);
-    fetchAndDrawWave();
+    updateWaveWindow();
   });
   waveWindowSelect.addEventListener("change", () => {
     waveState.windowSec = parseFloat(waveWindowSelect.value);
     waveState.startSec = Math.min(waveState.startSec, Math.max(0, waveState.recordingDuration - waveState.windowSec));
-    fetchAndDrawWave();
+    updateWaveWindow();
   });
 
   function jumpToWave(timeSec, channelName) {
-    if (!waveState.analysisId) return;
+    if (!waveState.waveform) return;
     const half = waveState.windowSec / 2;
     const maxStart = Math.max(0, waveState.recordingDuration - waveState.windowSec);
     waveState.startSec = Math.max(0, Math.min(timeSec - half, maxStart));
     waveState.highlightChannel = channelName;
-    fetchAndDrawWave().then(() => {
-      waveWrap.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (channelName) {
-        setTimeout(() => {
-          waveState.highlightChannel = null;
-          drawWave(document.getElementById("band-select").value);
-        }, 3000);
-      }
-    });
+    updateWaveWindow();
+    waveWrap.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (channelName) {
+      setTimeout(() => {
+        waveState.highlightChannel = null;
+        drawWave(document.getElementById("band-select").value);
+      }, 3000);
+    }
   }
 
   function drawWave(bandName) {

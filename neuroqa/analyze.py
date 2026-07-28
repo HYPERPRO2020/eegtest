@@ -30,6 +30,18 @@ mne.set_log_level("ERROR")
 
 TOP_OFFENDERS_N = 15
 
+# Waveform decimation: two rules, whichever bites.
+#   1. Never decimate below MIN_DISPLAY_HZ -- the signal is bandpassed to
+#      45 Hz, so a naive stride-decimate (no anti-alias lowpass) below
+#      ~2x that would visibly alias exactly the muscle-band (20-45 Hz)
+#      artifacts this tool exists to show. 100 Hz keeps real headroom.
+#   2. If even that leaves the payload too big (pathologically long
+#      recordings), fall back to a hard cap on total values shipped --
+#      accepting some aliasing risk only in that edge case, not the
+#      ~5 minute resting-state clips this pipeline is built around.
+MIN_DISPLAY_HZ = 100.0
+MAX_WAVEFORM_VALUES = 900_000
+
 
 class AnalysisError(ValueError):
     """Raised for problems with the uploaded file itself (bad channels, too
@@ -129,18 +141,43 @@ def _score_band(data_uv: np.ndarray, sfreq: float, band_name: str,
     }
 
 
-def analyze_edf(path: str | Path, filename: str | None = None) -> tuple[dict, dict]:
+def _build_waveform_payload(continuous_uv: np.ndarray, sfreq: float) -> dict:
+    """JSON-ready waveform block: {sfreq, channels, duration_sec, samples}.
+
+    samples is channel-major: [[ch0_sample0, ch0_sample1, ...], [ch1...], ...].
+    Sent whole in the /analyze response (see MAX_WAVEFORM_VALUES) so the
+    frontend can pan/zoom by slicing this array locally -- no follow-up
+    request to a server that, on a stateless/serverless deployment, might not
+    even be the same process that did the original analysis.
+
+    Decimation, when it kicks in, is simple stride-based downsampling (no
+    anti-alias lowpass first) -- a real simplification, acceptable here
+    because it only engages for recordings long enough to need it and the
+    signal's already lowpassed to 45 Hz, but worth knowing if the display
+    ever looks aliased on an unusually long recording.
+    """
+    n_channels, n_samples = continuous_uv.shape
+    stride = max(1, int(sfreq // MIN_DISPLAY_HZ))
+    if (n_channels * n_samples) / stride > MAX_WAVEFORM_VALUES:
+        stride = max(1, round((n_channels * n_samples) / MAX_WAVEFORM_VALUES))
+    decimated = continuous_uv[:, ::stride]
+    return {
+        "sfreq": sfreq / stride,
+        "channels": CHANNEL_ORDER,
+        "duration_sec": n_samples / sfreq,
+        "samples": np.round(decimated, 1).tolist(),
+    }
+
+
+def analyze_edf(path: str | Path, filename: str | None = None) -> dict:
     """Run the full endpoint-aware pipeline on one uploaded .edf.
 
-    Returns (result, waveform):
-      result   -- JSON-ready dict: {filename, n_epochs, n_channels, sfreq,
-                  epoch_sec, step_sec, channels, primary_band, bands: {...}}.
-      waveform -- NOT JSON-ready (holds a raw ndarray): {data (n_channels,
-                  n_samples) uV, sfreq, channels, duration_sec}. Meant to be
-                  cached server-side (webapp.py) and served in slices via
-                  /waveform/<id>, not sent whole -- a multi-minute recording
-                  at native sample rate is tens of MB as JSON.
-    Raises AnalysisError for problems with the file itself.
+    Returns one JSON-ready dict: {filename, n_epochs, n_channels, sfreq,
+    epoch_sec, step_sec, channels, primary_band, bands: {...}, waveform: {...}}.
+    Everything the UI needs -- including the (possibly decimated) waveform
+    for panning/zooming -- comes back in this single response; nothing is
+    held server-side between requests. Raises AnalysisError for problems
+    with the file itself.
     """
     data_uv, continuous_uv, sfreq = _load_epochs(path)
     n_epochs, n_channels, _ = data_uv.shape
@@ -153,7 +190,7 @@ def analyze_edf(path: str | Path, filename: str | None = None) -> tuple[dict, di
         for band_name in EEG_BANDS
     }
 
-    result = {
+    return {
         "filename": filename or Path(path).name,
         "n_epochs": n_epochs,
         "n_channels": n_channels,
@@ -163,11 +200,5 @@ def analyze_edf(path: str | Path, filename: str | None = None) -> tuple[dict, di
         "channels": CHANNEL_ORDER,
         "primary_band": "alpha",
         "bands": bands_out,
+        "waveform": _build_waveform_payload(continuous_uv, sfreq),
     }
-    waveform = {
-        "data": continuous_uv,
-        "sfreq": sfreq,
-        "channels": CHANNEL_ORDER,
-        "duration_sec": continuous_uv.shape[1] / sfreq,
-    }
-    return result, waveform

@@ -19,9 +19,13 @@ import re
 from pathlib import Path
 
 import mne
-import pandas as pd
 
 mne.set_log_level("ERROR")
+
+# pandas (67MB) is only needed by ingest()/main()'s own CSV output, not by
+# the constants/functions the webapp imports (EXPECTED_CHANNELS,
+# clean_channel_name) -- imported lazily inside ingest() so importing this
+# module doesn't drag pandas into the webapp's dependency footprint.
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "v1" / "Data"
@@ -71,6 +75,8 @@ def md5sum(path: Path, chunk: int = 1 << 20) -> str:
 
 
 def ingest() -> pd.DataFrame:
+    import pandas as pd
+
     files = sorted(DATA_DIR.glob("*.edf"))
     rows = []
     for path in files:
