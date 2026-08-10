@@ -192,14 +192,15 @@
       <h1>NeuroQA</h1>
       <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
     </div>
-    <p>Upload a resting-state EEG (.edf). It scores every epoch/channel against the detected artifacts, weighted by how much each artifact overlaps the frequency band you're measuring — then shows exactly where the points went.</p>
+    <p>Upload a resting-state EEG (.edf/.bdf/.cnt/.set/.fif). It scores every epoch/channel against the detected artifacts, weighted by how much each artifact overlaps the frequency band you're measuring — then shows exactly where the points went.</p>
+    <p><a href="/study">Have a labeled batch? Run the full Study A / Study B pipeline &rarr;</a></p>
   </header>
 
   <section class="card" id="upload-section">
     <div id="drop-zone">
-      <p><strong>Drop a .edf file here</strong></p>
+      <p><strong>Drop a recording here</strong></p>
       <p>or <span class="browse">browse for a file</span></p>
-      <input type="file" id="file-input" accept=".edf">
+      <input type="file" id="file-input" accept=".edf,.bdf,.cnt,.set,.fif">
     </div>
     <div id="upload-status"></div>
   </section>

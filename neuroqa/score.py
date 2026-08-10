@@ -1,35 +1,27 @@
-"""NeuroQA Step 4 — endpoint-aware scoring and output.
+"""NeuroQA Step 4 — endpoint-aware scoring.
 
 Runs the Step 3 detectors once per recording, then scores the result with
 quality_index.py's endpoint-aware penalty for every canonical EEG band. The
 headline deliverable is not one quality number per recording -- it's that
 the number moves depending on which band you're about to measure (see
-quality_index.py's docstring for why). This script reports one quality_pct
-column per band so that's directly visible in the output CSV, plus a
-per-channel detail table and an artifact-type penalty breakdown for the
-alpha band specifically (the endpoint Study A/B and faa.py care about, since
-FAA is an alpha-band measurement).
+quality_index.py's docstring for why). Reports one quality_pct column per
+band, plus a per-channel detail table and an artifact-type penalty
+breakdown for the alpha band specifically (the endpoint Study A/B and
+faa.py care about, since FAA is an alpha-band measurement).
 
-Usage (from repo root, after ingest.py and preprocess.py):
-    .venv/Scripts/python.exe neuroqa/score.py
+score_recording() takes already-epoched (data, ch_names, sfreq) in memory --
+callers (pipeline.py for the upload-driven flow, analyze.py for the
+single-file webapp) are responsible for getting a recording into that shape
+via preprocess.py, this module doesn't do any file/manifest I/O itself.
 """
 
 from __future__ import annotations
-
-from pathlib import Path
 
 import numpy as np
 
 from artifact_detectors import DETECTORS, run_all
 from bands import EEG_BANDS
 from quality_index import compute_quality, contributions
-
-# pandas is only needed by main()'s manifest/summary CSV I/O, not by
-# score_recording() or grade_from_pct() (which analyze.py imports) --
-# imported lazily in main() so the webapp doesn't drag pandas in.
-
-OUT_DIR = Path(__file__).resolve().parent / "outputs"
-EPOCH_DIR = OUT_DIR / "epochs"
 
 PRIMARY_ENDPOINT = "alpha"  # what channel detail / artifact breakdown report on
 GRADE_BINS = [(90, "A"), (80, "B"), (70, "C"), (60, "D"), (0, "F")]
@@ -42,9 +34,15 @@ def grade_from_pct(pct: float) -> str:
     return "F"  # unreachable, last bin is (0, "F")
 
 
-def score_recording(npz_path: Path) -> tuple[dict, list[dict]]:
-    d = np.load(npz_path, allow_pickle=True)
-    data, ch_names, sfreq = d["data"], list(d["ch_names"]), float(d["sfreq"])
+def score_recording(data: np.ndarray, ch_names: list[str], sfreq: float) -> tuple[dict, list[dict]]:
+    """Score one recording's epoched data across every canonical EEG band.
+
+    data: (n_epochs, n_channels, n_samples) in microvolts (see preprocess.py).
+    Returns (row, channel_detail): `row` is a flat dict of summary numbers
+    (one quality_<band>_pct per band, grade, worst channel, raw_severity_mean,
+    per-detector alpha-endpoint penalty share); `channel_detail` is a list of
+    {channel, quality_pct} for the primary (alpha) endpoint.
+    """
     n_epochs, n_channels, _ = data.shape
 
     # Detector severities don't depend on the endpoint band, so compute once
@@ -83,52 +81,3 @@ def score_recording(npz_path: Path) -> tuple[dict, list[dict]]:
         for ch, q in zip(ch_names, channel_quality_pct)
     ]
     return row, channel_detail
-
-
-def main():
-    import pandas as pd
-
-    manifest = pd.read_csv(OUT_DIR / "ingest_manifest.csv")
-    manifest = manifest[manifest.load_error.isna()]
-
-    summary_rows = []
-    channel_rows = []
-    for _, r in manifest.iterrows():
-        npz_path = EPOCH_DIR / (Path(r["file"]).stem + ".npz")
-        if not npz_path.exists():
-            print(f"  [skip] no preprocessed epochs for {r['file']}")
-            continue
-        row, channel_detail = score_recording(npz_path)
-        row = {
-            "file": r["file"], "group": r["group"], "subject": r["subject"],
-            "condition": r["condition"], "is_duplicate": bool(r["is_duplicate"]),
-            **row,
-        }
-        summary_rows.append(row)
-        for c in channel_detail:
-            channel_rows.append({"file": r["file"], **c})
-        print(f"  {r['file']:28s} grade={row['grade']}  "
-              f"quality[{PRIMARY_ENDPOINT}]={row[f'quality_{PRIMARY_ENDPOINT}_pct']:5.1f}%  "
-              f"quality[delta]={row['quality_delta_pct']:5.1f}%  "
-              f"worst_ch={row['worst_channel']}({row['worst_channel_quality_pct']:.0f}%)")
-
-    summary = pd.DataFrame(summary_rows)
-    summary_path = OUT_DIR / "quality_summary.csv"
-    summary.to_csv(summary_path, index=False)
-
-    detail = pd.DataFrame(channel_rows)
-    detail_path = OUT_DIR / "channel_quality_detail.csv"
-    detail.to_csv(detail_path, index=False)
-
-    print(f"\nscored {len(summary)} recordings")
-    print("grade distribution (alpha endpoint):")
-    print(summary.grade.value_counts().sort_index().to_string())
-    print("\nmean quality_pct by endpoint band (shows the score moving with the endpoint):")
-    for band_name in EEG_BANDS:
-        print(f"  {band_name:6s} {summary[f'quality_{band_name}_pct'].mean():5.1f}%")
-    print(f"\nwrote {summary_path}  (the deliverable)")
-    print(f"wrote {detail_path}  (per-channel drill-down, alpha endpoint)")
-
-
-if __name__ == "__main__":
-    main()

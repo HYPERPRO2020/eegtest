@@ -38,6 +38,7 @@ from flask import Flask, jsonify, render_template, request
 from werkzeug.utils import secure_filename
 
 from analyze import AnalysisError, analyze_edf
+from manifest import SUPPORTED_SUFFIXES
 
 MAX_UPLOAD_MB = 100  # local Flask use; Vercel's own request-size limit (much
 # smaller, a few MB depending on plan) applies first when deployed there --
@@ -56,6 +57,11 @@ def index():
     return render_template("index.html")
 
 
+@app.get("/study")
+def study():
+    return render_template("study.html")
+
+
 @app.post("/analyze")
 def analyze():
     upload = request.files.get("edf")
@@ -63,8 +69,11 @@ def analyze():
         return jsonify({"error": "no file uploaded"}), 400
 
     filename = secure_filename(upload.filename)
-    if not filename.lower().endswith(".edf"):
-        return jsonify({"error": "please upload a .edf file"}), 400
+    suffix = Path(filename).suffix.lower()
+    if suffix not in SUPPORTED_SUFFIXES:
+        return jsonify({
+            "error": f"unsupported file type '{suffix}' -- expected one of {sorted(SUPPORTED_SUFFIXES)}"
+        }), 400
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp_path = Path(tmp) / filename

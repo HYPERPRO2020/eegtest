@@ -13,41 +13,29 @@
        leakage regression 1 is checking for, from the other direction:
        quality should NOT be a usable depression classifier on its own.
 
-Uses quality_summary.csv (score.py) and faa_summary.csv (faa.py), merged on
-file, restricted to condition=="EC" (one row per subject, avoiding the
-pseudo-replication of counting EC and EO as independent) and deduplicated by
-md5 (see ingest.py -- this dataset ships byte-identical recordings under
-different subject labels).
-
-Usage (from repo root, after score.py and faa.py):
-    .venv/Scripts/python.exe neuroqa/study_b.py
+Operates on an in-memory list of per-recording rows (one dict per accepted,
+successfully-scored upload) rather than reading fixed local CSVs -- the
+caller (pipeline.py) assembles that list from whatever the user uploaded.
+Each row needs: file, group ("healthy"/"depressed"), quality_alpha_pct,
+raw_severity_mean, faa.
 """
 
 from __future__ import annotations
-
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
-OUT_DIR = Path(__file__).resolve().parent / "outputs"
+CV_SEED = 0
 
 
-def load_merged() -> pd.DataFrame:
-    quality = pd.read_csv(OUT_DIR / "quality_summary.csv")
-    faa = pd.read_csv(OUT_DIR / "faa_summary.csv")
-    manifest = pd.read_csv(OUT_DIR / "ingest_manifest.csv")[["file", "md5"]]
-
-    df = quality.merge(faa[["file", "faa"]], on="file", how="inner")
-    df = df.merge(manifest, on="file", how="left")
-    df = df[df.condition == "EC"]
-    df = df.drop_duplicates(subset="md5")
-    df = df.dropna(subset=["quality_alpha_pct", "raw_severity_mean", "faa"])
-    df["group_mdd"] = (df.group == "MDD").astype(int)
+def rows_to_frame(rows: list[dict]) -> pd.DataFrame:
+    df = pd.DataFrame(rows)
+    df = df.dropna(subset=["quality_alpha_pct", "raw_severity_mean", "faa", "group"])
+    df["group_mdd"] = (df.group == "depressed").astype(int)
     return df.reset_index(drop=True)
 
 
@@ -55,76 +43,88 @@ def regression_1(df: pd.DataFrame):
     """quality ~ group + severity"""
     X = sm.add_constant(df[["group_mdd", "raw_severity_mean"]])
     y = df["quality_alpha_pct"]
-    model = sm.OLS(y, X).fit()
-    return model
+    return sm.OLS(y, X).fit()
 
 
 def regression_2(df: pd.DataFrame):
     """FAA ~ group + quality"""
     X = sm.add_constant(df[["group_mdd", "quality_alpha_pct"]])
     y = df["faa"]
-    model = sm.OLS(y, X).fit()
-    return model
+    return sm.OLS(y, X).fit()
 
 
-def regression_3(df: pd.DataFrame):
-    """quality alone -> group classifier, 5-fold stratified CV."""
+def regression_3(df: pd.DataFrame, n_splits: int = 5) -> dict:
+    """quality alone -> group classifier, stratified CV.
+
+    n_splits is capped to the smaller class's count (StratifiedKFold can't
+    have more folds than the rarest class has members) -- relevant for
+    small uploaded batches near the MIN_PER_GROUP floor in manifest.py.
+    """
     X = df[["quality_alpha_pct"]].values
     y = df["group_mdd"].values
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+    n_splits = max(2, min(n_splits, int(np.bincount(y).min())))
+    cv = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=CV_SEED)
     clf = LogisticRegression()
     proba = cross_val_predict(clf, X, y, cv=cv, method="predict_proba")[:, 1]
     pred = (proba >= 0.5).astype(int)
     acc = accuracy_score(y, pred)
-    auc = roc_auc_score(y, proba)
-    baseline = max(y.mean(), 1 - y.mean())  # majority-class accuracy
-    return {"accuracy": acc, "auc": auc, "majority_class_baseline": baseline, "n": len(y)}
+    auc = roc_auc_score(y, proba) if len(set(y)) > 1 else float("nan")
+    baseline = max(y.mean(), 1 - y.mean())
+    return {
+        "accuracy": float(acc), "auc": float(auc),
+        "majority_class_baseline": float(baseline), "n": int(len(y)), "n_splits": n_splits,
+        "leakage_flag": bool(auc > 0.65) if not np.isnan(auc) else False,
+    }
 
 
-def main():
-    df = load_merged()
-    print(f"Study B sample: {len(df)} recordings "
-          f"({df.group.value_counts().to_dict()}), condition=EC, deduplicated by md5\n")
+def _ols_summary(model) -> dict:
+    return {
+        "params": {k: float(v) for k, v in model.params.items()},
+        "pvalues": {k: float(v) for k, v in model.pvalues.items()},
+        "conf_int": {k: [float(v) for v in row] for k, row in model.conf_int().iterrows()},
+        "rsquared": float(model.rsquared),
+        "nobs": int(model.nobs),
+    }
 
-    print("=" * 70)
-    print("Regression 1: quality[alpha] ~ group + raw_severity_mean")
-    print("=" * 70)
+
+def run_study_b(rows: list[dict]) -> dict:
+    """Run all three analyses over an uploaded batch's per-recording rows.
+
+    Returns a JSON-safe dict: {n, regression_1, regression_2, regression_3,
+    finding}. `finding` is a short, honest, direction-agnostic statement --
+    see module docstring; this does not get tuned toward a dramatic result.
+    """
+    df = rows_to_frame(rows)
     m1 = regression_1(df)
-    print(m1.summary().tables[1])
-
-    print("\n" + "=" * 70)
-    print("Regression 2: FAA ~ group + quality[alpha]")
-    print("=" * 70)
     m2 = regression_2(df)
-    print(m2.summary().tables[1])
-
-    print("\n" + "=" * 70)
-    print("Regression 3: quality[alpha] alone -> group (5-fold CV logistic regression)")
-    print("=" * 70)
     r3 = regression_3(df)
-    print(f"  accuracy               : {r3['accuracy']:.3f}")
-    print(f"  AUC                    : {r3['auc']:.3f}")
-    print(f"  majority-class baseline: {r3['majority_class_baseline']:.3f}")
-    print(f"  n                      : {r3['n']}")
-    if r3["auc"] > 0.65:
-        print("  NOTE: quality alone predicts group meaningfully above chance --")
-        print("  that's a leakage warning (quality should track signal cleanliness,")
-        print("  not depression status), not a feature to lean on.")
+
+    group_coef_p = m2.pvalues.get("group_mdd", 1.0)
+    quality_coef_p = m2.pvalues.get("quality_alpha_pct", 1.0)
+    if r3["leakage_flag"]:
+        finding = (
+            "quality alone predicts group meaningfully above chance "
+            f"(AUC={r3['auc']:.2f} vs. {r3['majority_class_baseline']:.2f} baseline) -- "
+            "that's a leakage warning: the group difference in FAA may be substantially "
+            "a contamination artifact rather than a brain-signal difference."
+        )
+    elif group_coef_p < 0.05 and quality_coef_p < 0.05:
+        finding = (
+            "group predicts FAA independent of quality, and quality alone doesn't predict "
+            "group above chance -- consistent with FAA carrying real signal in this sample, "
+            "not just contamination correlated with diagnosis."
+        )
     else:
-        print("  quality alone is close to chance at predicting group -- consistent")
-        print("  with quality measuring signal cleanliness rather than leaking group.")
+        finding = (
+            "no strong evidence either way in this sample (group and/or quality effects on "
+            "FAA are not significant at p<0.05) -- treat this as inconclusive, not as support "
+            "for either an artifact or a real-signal reading of FAA."
+        )
 
-    summary_path = OUT_DIR / "study_b_summary.txt"
-    with open(summary_path, "w") as f:
-        f.write("Regression 1: quality[alpha] ~ group + raw_severity_mean\n")
-        f.write(str(m1.summary()))
-        f.write("\n\nRegression 2: FAA ~ group + quality[alpha]\n")
-        f.write(str(m2.summary()))
-        f.write("\n\nRegression 3: quality[alpha] alone -> group (5-fold CV)\n")
-        for k, v in r3.items():
-            f.write(f"  {k}: {v}\n")
-    print(f"\nwrote {summary_path}")
-
-
-if __name__ == "__main__":
-    main()
+    return {
+        "n": int(len(df)),
+        "regression_1_quality_on_group_severity": _ols_summary(m1),
+        "regression_2_faa_on_group_quality": _ols_summary(m2),
+        "regression_3_quality_classifies_group": r3,
+        "finding": finding,
+    }

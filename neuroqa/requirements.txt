@@ -1,21 +1,21 @@
-# Core webapp (webapp.py, analyze.py, and everything they import at request
-# time: artifact_detectors.py, bands.py, ingest.py, preprocess.py,
-# quality_index.py, score.py, faa.py). Kept deliberately minimal -- this is
-# what gets deployed (e.g. to Vercel's Python serverless runtime, which has
-# a real size ceiling), and mne alone pulls in scipy as a hard dependency
-# for its own filtering, so there's no getting below roughly this footprint.
+# Deployed dependency set for webapp.py's single-file quick-grader route
+# (analyze.py, manifest.py, preprocess.py, quality_index.py,
+# artifact_detectors.py, bands.py, score.py, faa.py). Kept lean -- this
+# route doesn't run Study A/B, so it skips pandas/scikit-learn/statsmodels/
+# autoreject (see api/requirements.txt for the heavier set those need).
+#
+# See ARCHITECTURE.md section 1: mne pulls in matplotlib as a hard runtime
+# dependency now (confirmed empirically, not just a declared "extra"), and
+# the Python runtime's real limit is 500MB uncompressed (confirmed against
+# Vercel's current docs), not the 250MB the previous version of this file
+# assumed -- this set measures well under that either way.
 Flask==3.1.3
 Werkzeug==3.1.8
 mne==1.12.1
 numpy==2.4.6
-scipy==1.18.0
+scipy==1.17.1
 
-# Only needed for the batch CLI scripts' own main()/CSV output (ingest.py,
-# preprocess.py, score.py) and the study scripts (causal_quality.py,
-# study_a.py, study_b.py) -- never imported by the webapp's request path,
-# so NOT needed for deployment. Install these only for local batch use:
-#   pandas==3.0.3
-#   scikit-learn==1.9.0
-#   statsmodels==0.14.6
-#   autoreject==0.4.4
-#   matplotlib==3.11.0
+# For the local batch CLI (run_local.py) and the api/*.py functions' own
+# Study A/B pipeline -- not needed by webapp.py itself, so not required to
+# run the single-file quick-grader. Install for local batch use:
+#   pip install -r ../api/requirements.txt

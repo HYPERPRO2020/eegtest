@@ -1,79 +1,84 @@
 # NeuroQA
 
-Endpoint-aware EEG quality scoring: existing artifact detectors (blink, muscle,
-electrode pop, line noise, motion, cardiac) weighted by how much each detected
-artifact's frequency band overlaps the band you're actually measuring, instead
-of a single generic "clean vs. dirty" score.
+Testing whether frontal alpha asymmetry (FAA), a long-studied EEG depression
+marker, is partly an artifact of muscle-noise contamination rather than a
+real brain signal. The core piece is an **endpoint-aware quality scorer**:
+existing artifact detectors (blink, muscle, electrode pop, line noise,
+motion, cardiac) weighted by how much each detected artifact's frequency
+band overlaps the band you're actually measuring, instead of a single
+generic "clean vs. dirty" score. See `../ARCHITECTURE.md` for the Vercel
+deployment design and what's/isn't verified.
 
-## Run the web UI
+## Two ways to use this
+
+**1. Single-file quick grader** (`/`) — drop in one resting-state recording,
+see its quality grade per band, a breakdown of which artifact type cost the
+most points, the filtered waveform with offending moments highlighted, and
+a ranked list of the worst epoch x channel cells.
+
+**2. Study runner** (`/study`) — upload a *labeled batch* (diagnosis +
+severity per recording via a manifest) and run the full pipeline: per-file
+validation with a specific reason for any rejection, Study A (how much the
+depressed-vs-healthy FAA difference moves across 5 preprocessing pipelines x
+2 reference schemes), and Study B (is contamination itself tied to
+diagnosis, does it confound FAA, and does quality alone leak group above
+chance). This is the deliverable the project brief actually asks for; the
+single-file grader is a smaller, useful side tool built on the same scorer.
+
+Both accept any format MNE reads well: .edf, .bdf, .cnt, .set, .fif, or a
+.vhdr/.eeg/.vmrk BrainVision triplet.
+
+## Run locally
 
 ```
-pip install -r requirements.txt
+pip install -r requirements.txt        # single-file grader only
+pip install -r ../api/requirements.txt # + Study A/B (pandas/sklearn/statsmodels/autoreject)
 python webapp.py
 ```
+Then open http://127.0.0.1:5000.
 
-Then open http://127.0.0.1:5000 and drop in a resting-state `.edf` recorded
-with the standard 19-channel 10-20 montage. It shows the grade/quality per
-frequency band, a breakdown of which artifact type cost the most points, the
-actual filtered waveform with the offending channel/time highlighted, and a
-ranked list of the worst epoch x channel cells. `/analyze` is stateless --
-everything (including the waveform, decimated if needed) comes back in one
-response, nothing is held server-side between requests.
+`/study`'s upload flow needs Vercel Blob (client uploads + job state, see
+`../ARCHITECTURE.md`) so it only works end to end once deployed. To run the
+same pipeline locally without Vercel at all:
+```
+python run_local.py <folder-of-recordings> <manifest.csv> --out outputs/
+```
+`manifest.csv` needs filename/diagnosis/severity columns (or common
+synonyms — see `manifest.parse_manifest_csv`).
 
-## Deploy to Vercel
+## Tests
 
-`vercel.json` (repo root) points Vercel's Python runtime at `neuroqa/webapp.py`.
-Connect the GitHub repo in the Vercel dashboard (Import Project) -- no CLI
-needed, it builds on push.
-
-Worth knowing before relying on this:
-- **Dependency size.** `mne` + `scipy` + `numpy` (scipy is a hard dependency
-  of mne's own filtering, not something this app pulls in directly) is
-  roughly 170-180MB installed. Vercel's serverless Python functions have a
-  size ceiling around 250MB -- this fits, but without much room to spare, so
-  don't add new dependencies to `requirements.txt` without checking the size
-  again.
-- **Upload size.** Vercel's own request-size limit (a few MB, depends on
-  plan) applies before `webapp.py`'s own `MAX_CONTENT_LENGTH` ever sees the
-  request. A large recording that uploads fine locally may get rejected by
-  the platform on Vercel.
-- **Cold starts + execution time.** Importing mne/scipy from cold plus
-  actually running the pipeline (a few seconds locally, warm) can be slow on
-  a cold serverless invocation. `vercel.json` raises `maxDuration` to 60s as
-  a hedge; whether that's enough -- and whether your plan even honors that
-  setting -- depends on the plan.
-- **Untested.** This config was written from established Vercel Python/Flask
-  deployment patterns, not verified against an actual deploy -- there's no
-  Vercel CLI/account in the environment this was built in. If it fails to
-  build or times out, the error log from the Vercel dashboard is the next
-  debugging step.
-
-## Batch pipeline (scripts, in order)
-
-1. `ingest.py` -- scans a directory of `.edf` files, validates channels/sample
-   rate, writes `outputs/ingest_manifest.csv`.
-2. `preprocess.py` -- filters + epochs each recording into `outputs/epochs/*.npz`.
-3. `score.py` -- runs the endpoint-aware quality index over every recording,
-   writes `outputs/quality_summary.csv`.
-4. `faa.py` -- frontal alpha asymmetry per recording.
-5. `causal_quality.py` -- proves the quality index is already causal (streaming
-   replay vs. batch) and prototypes a causal per-channel baseline.
-6. `study_a.py` / `study_b.py` -- FAA across preprocessing pipelines/reference
-   schemes, and the group/quality/severity regressions.
-
-`ingest.py`/`preprocess.py`/`score.py`'s own CLI output and `study_a.py` /
-`study_b.py` / `causal_quality.py` need the extra packages commented out at
-the bottom of `requirements.txt` (`pip install pandas scikit-learn
-statsmodels autoreject matplotlib`) -- the webapp itself does not, which is
-why they're commented out rather than listed normally: keeping them out of
-`pip install -r requirements.txt` is what keeps the deployed footprint small.
+```
+pip install -r ../api/requirements.txt pytest
+python -m pytest tests/ -v
+```
+Hand-checks the scorer against synthetic clean vs. artifact-injected
+recordings (confirms it's genuinely endpoint-aware: the same planted
+blink/EMG costs far less alpha-band quality than delta-band quality),
+manifest validation, and reproducibility (same input -> bit-identical
+output).
 
 ## Module map
 
-- `bands.py` -- frequency bands, artifact-type -> band mapping, and the
-  placeholder `WEIGHT` dict (pending real physics-derived weights).
-- `quality_index.py` -- the endpoint-aware penalty/quality computation itself.
-- `artifact_detectors.py` -- the six Step 3 detectors (severity in [0, 1]).
-- `analyze.py` -- runs the full pipeline on one uploaded file for the webapp,
-  including building the (possibly decimated) waveform payload.
-- `webapp.py` -- Flask app: serves the page and the single `/analyze` route.
+- `bands.py` — frequency bands, artifact-type -> band mapping, and the
+  placeholder `WEIGHT` dict (pending real physics-derived weights from
+  Peter — see the module docstring, not tuned against any result here).
+- `artifact_detectors.py` — the six Step 3 detectors (severity in [0, 1]).
+- `quality_index.py` — the endpoint-aware penalty/quality computation.
+- `faa.py` — frontal alpha asymmetry, optionally quality-weighted.
+- `manifest.py` — upload validation: labeled, has severity, F3/F4 present,
+  heuristic "still looks raw, not already cleaned/re-referenced" checks.
+- `preprocess.py` — channel-name canonicalization, filtering, epoching.
+- `score.py` — runs the detectors + quality index across every band.
+- `study_a.py` — the 5-pipeline x 2-reference FAA sweep, per recording.
+- `study_b.py` — the three group/quality/severity/FAA regressions.
+- `pipeline.py` — ties the above together; imported by both `run_local.py`
+  and every `../api/*.py` route, so there's exactly one implementation of
+  "how a recording gets scored," not one per entry point.
+- `blob_client.py` — thin Vercel Blob wrapper for the job/state model.
+- `analyze.py` / `webapp.py` — the single-file quick grader.
+- `run_local.py` — batch CLI, no Vercel needed.
+- `tests/test_pipeline.py` — synthetic-data hand-checks.
+
+`causal_quality.py` (the streaming/causal scorer prototype) was removed —
+explicitly out of scope for this build per the project brief.

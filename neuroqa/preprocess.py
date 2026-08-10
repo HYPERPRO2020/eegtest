@@ -1,18 +1,24 @@
 """NeuroQA Step 2 — preprocessing.
 
-Filters each ingested recording and segments it into fixed-length epochs,
-ready for the (currently blocked) Step 3 artifact detectors to score. This
-step does **not** reject anything — rejection is Step 3's job, once the
-scientist's taxonomy doc has real thresholds. Step 2 only filters and cuts.
+Filters an uploaded recording and segments it into fixed-length epochs. This
+step does **not** reject anything — rejection is Step 3's job. Step 2 only
+canonicalizes channel names, filters, and cuts.
 
 Pipeline per recording:
-    pick the 19 10-20 channels (drop A2-A1 reference / extra aux channels)
-    -> 50 Hz notch (line noise; this dataset is Malaysian mains, 50 Hz not 60 Hz)
+    read whatever MNE-supported format it is (see manifest.READERS)
+    -> canonicalize channel names, keep only recognized 10-20 channels
+       (F3/F4 guaranteed present -- manifest.validate_recording already
+       checked that before this ever runs)
+    -> 50 Hz notch (override with LINE_FREQ=60.0 for US-mains recordings)
     -> 0.5-45 Hz bandpass
     -> 4-second epochs, 50% overlap (2-second step)
 
-Usage (from repo root, after ingest.py):
-    .venv/Scripts/python.exe neuroqa/preprocess.py
+Generalized from the previous version, which required a fixed 19-channel
+HUSM-dataset montage and only read .edf. Different uploaded recordings can
+legitimately carry different channel subsets (only F3/F4 is a hard
+requirement, see manifest.py) -- callers index channels by name
+(`ch_names.index(...)`), never by a fixed position, so a variable per-file
+channel list is safe throughout the rest of the pipeline.
 """
 
 from __future__ import annotations
@@ -22,88 +28,78 @@ from pathlib import Path
 import mne
 import numpy as np
 
-from ingest import EXPECTED_CHANNELS, clean_channel_name
-
-# pandas is only needed by main()'s manifest CSV I/O, not by preprocess_file()
-# itself -- imported lazily there so the webapp's import of CHANNEL_ORDER/
-# EPOCH_SEC/etc. doesn't drag pandas (67MB) in.
+from manifest import STANDARD_1020, _read_raw_any, canonical_channel_name
 
 mne.set_log_level("ERROR")
 
-ROOT = Path(__file__).resolve().parent.parent
-OUT_DIR = Path(__file__).resolve().parent / "outputs"
-EPOCH_DIR = OUT_DIR / "epochs"
-
 L_FREQ, H_FREQ = 0.5, 45.0
-LINE_FREQ = 50.0  # Malaysia mains — NOT 60 Hz, see task-sheet correction
+LINE_FREQ = 50.0  # mains hum frequency; override to 60.0 for US-acquired recordings
 EPOCH_SEC = 4.0
 OVERLAP_SEC = 2.0  # 50% overlap
 
-# Fixed channel order so every recording's epoch array lines up the same way.
-CHANNEL_ORDER = sorted(EXPECTED_CHANNELS)
+# Fixed reference ORDER (not a required set) -- when a recording carries a
+# given channel, it always lands at this channel's relative position among
+# the channels present, so eyeballing two recordings' channel lists side by
+# side stays predictable. Everything downstream indexes by name, not
+# position, so a recording missing some of these is fine as long as F3/F4
+# survive (already enforced by manifest.validate_recording upstream).
+STANDARD_1020_ORDER = [
+    "Fp1", "Fp2", "F7", "F3", "Fz", "F4", "F8", "T3", "T7", "C3", "Cz", "C4",
+    "T4", "T8", "T5", "P7", "P3", "Pz", "P4", "T6", "P8", "O1", "O2",
+]
 
 
-def preprocess_file(path: str) -> tuple[np.ndarray, float]:
-    raw = mne.io.read_raw_edf(path, preload=True, verbose=False)
-    raw.rename_channels({ch: clean_channel_name(ch) for ch in raw.ch_names})
-    raw.pick(CHANNEL_ORDER)  # drops A2-A1 reference + any extra aux channels
-    raw.reorder_channels(CHANNEL_ORDER)
+def load_and_filter(path: str | Path) -> tuple[mne.io.BaseRaw, list[str]]:
+    """Load an uploaded recording, canonicalize+select channels, filter.
+
+    Returns (raw, ch_names) with raw already notch+bandpass filtered and
+    picked down to `ch_names` (a subset of STANDARD_1020_ORDER, always
+    including F3/F4). Split out from preprocess_file() so callers that need
+    the continuous (pre-epoching) signal too -- e.g. analyze.py's waveform
+    viewer -- don't have to re-filter it themselves.
+    """
+    raw = _read_raw_any(Path(path))
+    raw.load_data()
+    raw.rename_channels({ch: canonical_channel_name(ch) for ch in raw.ch_names})
+
+    # Two channels canonicalizing to the same name (rare — e.g. a duplicate
+    # export) would break pick(); keep only the first occurrence of each.
+    seen = set()
+    keep = []
+    for ch in raw.ch_names:
+        if ch not in seen:
+            seen.add(ch)
+            keep.append(ch)
+    if len(keep) != len(raw.ch_names):
+        raw.pick(keep)
+
+    present = [ch for ch in STANDARD_1020_ORDER if ch in raw.ch_names]
+    if "F3" not in present or "F4" not in present:
+        raise ValueError(
+            f"F3/F4 not found after channel-name canonicalization "
+            f"(recognized channels: {present or 'none'})"
+        )
+    raw.pick(present)
+    raw.reorder_channels(present)
+
     raw.notch_filter(LINE_FREQ, verbose=False)
     raw.filter(L_FREQ, H_FREQ, verbose=False)
+    return raw, present
 
+
+def preprocess_file(path: str | Path) -> tuple[np.ndarray, list[str], float]:
+    """Load, filter, and epoch one uploaded recording.
+
+    Returns (data_uv, ch_names, sfreq): data_uv is (n_epochs, n_channels,
+    n_samples) in microvolts, ch_names is the canonicalized channel list
+    actually present. Raises ValueError if F3/F4 don't survive
+    canonicalization or the recording is too short to epoch.
+    """
+    raw, present = load_and_filter(path)
     epochs = mne.make_fixed_length_epochs(
         raw, duration=EPOCH_SEC, overlap=OVERLAP_SEC, preload=True, verbose=False,
     )
+    if len(epochs) == 0:
+        raise ValueError(f"recording too short to produce a single {EPOCH_SEC:.0f}s epoch")
     data_uv = epochs.get_data() * 1e6  # MNE returns volts; store microvolts (QC thresholds are in uV)
-    return data_uv, raw.info["sfreq"]
-
-
-def main():
-    import pandas as pd
-
-    manifest_path = OUT_DIR / "ingest_manifest.csv"
-    if not manifest_path.exists():
-        raise SystemExit("run neuroqa/ingest.py first — outputs/ingest_manifest.csv is missing")
-    manifest = pd.read_csv(manifest_path)
-    manifest = manifest[manifest.load_error.isna()] if "load_error" in manifest else manifest
-
-    EPOCH_DIR.mkdir(parents=True, exist_ok=True)
-    rows = []
-    for _, r in manifest.iterrows():
-        try:
-            data, sfreq = preprocess_file(r["path"])
-        except Exception as e:
-            print(f"  [ERROR] {r['file']}: {e}")
-            rows.append({"file": r["file"], "group": r["group"], "subject": r["subject"],
-                         "condition": r["condition"], "n_epochs": 0, "error": str(e)})
-            continue
-
-        out_name = Path(r["file"]).stem + ".npz"
-        np.savez_compressed(
-            EPOCH_DIR / out_name,
-            data=data.astype(np.float32),  # microvolts
-            ch_names=np.array(CHANNEL_ORDER),
-            sfreq=sfreq,
-        )
-        rows.append({
-            "file": r["file"], "group": r["group"], "subject": r["subject"],
-            "condition": r["condition"], "n_epochs": data.shape[0],
-            "epoch_sec": EPOCH_SEC, "overlap_sec": OVERLAP_SEC,
-            "n_channels": data.shape[1], "sfreq": sfreq, "error": None,
-        })
-        print(f"  {r['file']:28s} -> {data.shape[0]:4d} epochs "
-              f"({data.shape[0] * (EPOCH_SEC - OVERLAP_SEC) + OVERLAP_SEC:.0f}s covered)")
-
-    summary = pd.DataFrame(rows)
-    out_path = OUT_DIR / "preprocess_summary.csv"
-    summary.to_csv(out_path, index=False)
-
-    n_ok = int((summary.n_epochs > 0).sum())
-    print(f"\npreprocessed {n_ok}/{len(summary)} recordings, "
-          f"{int(summary.n_epochs.sum())} epochs total")
-    print(f"epoch arrays -> {EPOCH_DIR}/  (one .npz per recording)")
-    print(f"wrote {out_path}")
-
-
-if __name__ == "__main__":
-    main()
+    return data_uv, present, float(raw.info["sfreq"])

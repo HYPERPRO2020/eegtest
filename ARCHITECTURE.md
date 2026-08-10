@@ -81,12 +81,56 @@ Confirmed from the same docs fetch:
   One small Node function (`api/blob-upload-token.js`) implements just that
   handshake using the real SDK; everything else stays Python.
 
-## 3. What's still unverified
+## 3. What got built, and what's still unverified
 
-There is no Vercel account/CLI in this environment (same limitation the
-previous session hit). Every number above is either a real local
-measurement (`pip install -t`) or Vercel's own current published docs
-(fetched live during this session), not a guess — but the actual deploy,
-cold-start behavior, and Blob/upload wiring have not been exercised against
-a live Vercel project. Flagged the same way the previous session flagged
-its own Flask deploy: follows documented patterns, not yet deploy-verified.
+Implemented per the plan above:
+- `neuroqa/manifest.py` — upload validation (labeled, has severity, F3/F4
+  present, heuristic "still looks raw" checks), replacing the old
+  filename-parsed fixed-dataset `ingest.py` (deleted).
+- `neuroqa/preprocess.py`, `score.py`, `faa.py`, `study_a.py`, `study_b.py`,
+  `pipeline.py` — generalized to run on an arbitrary uploaded batch's
+  channel subsets instead of one fixed 19-channel dataset montage, and
+  restructured as importable functions rather than scripts that assume a
+  local `outputs/ingest_manifest.csv`.
+- `neuroqa/run_local.py` — runs the same functions the API routes call,
+  against a local folder + manifest.csv, no Vercel needed. This is how the
+  pipeline (including a real Study A pipeline sweep with actual ICA +
+  AutoReject, and Study B's regressions/classifier) was hand-checked end to
+  end in this environment, on synthetic multi-recording data
+  (`neuroqa/tests/test_pipeline.py` plus an ad hoc synthetic-batch run) —
+  the exact API route logic itself was additionally exercised against a
+  fake in-memory Blob store standing in for `vercel_blob`.
+- `api/create_job.py`, `process_recording.py`, `job_status.py`,
+  `aggregate.py` — the fan-out job model described above, using
+  `vercel_blob` (an unofficial but real, working PyPI package implementing
+  Blob's REST protocol — there's no official Python SDK) instead of
+  hand-rolling that protocol from memory.
+- `api/blob-upload-token.js` — the one Node function, using the real
+  `@vercel/blob/client` SDK for the client-upload token handshake.
+- `neuroqa/templates/study.html` — the upload/manifest/progress/results UI,
+  importing `@vercel/blob/client` from an ESM CDN (`esm.sh`) in the browser
+  since there's no bundler in this project — also unverified, same caveat.
+- All Study A/B randomness (ICA, AutoReject, cross-validation splits) is
+  seeded from one constant (`pipeline.SEED = 0`); `run_local.py`'s "same
+  upload -> same result" was hand-checked, plus two automated determinism
+  tests in `test_pipeline.py`.
+
+Still unverified (no Vercel account/CLI in this environment, same
+limitation the previous session hit): the actual deploy, `vercel.json`'s
+legacy `builds`/`routes` wiring for the new `api/*.py` + `.js` functions,
+cold-start behavior, and the real Blob client-upload handshake end to end
+(the mocked test above stands in for it, but a fake store can't catch a
+wrong header name or a real auth failure). Every dependency-size and
+job-model number is a real local measurement or Vercel's current published
+docs, not a guess — the wiring on top of those numbers is not deploy-tested.
+
+**Privacy note, not addressed by this build**: Vercel Blob objects are
+public URLs by default, and this app uses that default (`access: 'public'`
+in `blob-upload-token.js`) to keep the client-upload flow simple. Uploaded
+recordings are paired with a diagnosis label — that's sensitive health
+data sitting behind an unguessable-but-unauthenticated URL, not access
+control. A real deployment handling real patient data would need Blob's
+private-access mode plus signed download URLs (`vercel_blob`'s `head`/
+`get` with a token, or the JS SDK's private-store equivalent) before going
+anywhere near real recordings. Flagging this now rather than silently
+shipping it, since it's a correctness-of-scope issue, not a nice-to-have.

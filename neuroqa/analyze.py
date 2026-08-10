@@ -1,12 +1,17 @@
 """NeuroQA — single-file analysis for the upload-and-grade UI.
 
-Wraps the same ingest -> preprocess -> detect -> score pipeline the batch
-scripts (ingest.py/preprocess.py/score.py) run over the whole dataset, but
-for exactly one uploaded .edf, synchronously, and returns one JSON-ready
-dict with everything webapp.py needs to render "where it lost points":
-overall grade per band, per-channel quality, a per-epoch quality timeline,
-a penalty breakdown by artifact type, and a ranked list of the worst
-epoch-channel cells with the detector responsible for each.
+Wraps the same preprocess -> detect -> score pipeline the batch pipeline
+(pipeline.py) runs over an uploaded set, but for exactly one uploaded
+recording, synchronously, and returns one JSON-ready dict with everything
+webapp.py needs to render "where it lost points": overall grade per band,
+per-channel quality, a per-epoch quality timeline, a penalty breakdown by
+artifact type, and a ranked list of the worst epoch-channel cells with the
+detector responsible for each.
+
+Accepts any format manifest.READERS supports (.edf/.bdf/.cnt/.set/.fif/
+.vhdr), not just .edf, and whatever 10-20 channel subset the file has (only
+F3/F4 is a hard requirement) -- generalized from the previous single-dataset
+version, which required the full fixed 19-channel HUSM montage.
 
 Computed once for all 5 canonical EEG_BANDS so the UI's band selector is a
 pure client-side re-render, no repeat upload/recompute per band switch.
@@ -21,8 +26,7 @@ import numpy as np
 
 from artifact_detectors import run_all
 from bands import EEG_BANDS
-from ingest import EXPECTED_CHANNELS, clean_channel_name
-from preprocess import CHANNEL_ORDER, EPOCH_SEC, H_FREQ, L_FREQ, LINE_FREQ, OVERLAP_SEC
+from preprocess import EPOCH_SEC, OVERLAP_SEC, load_and_filter
 from quality_index import compute_quality
 from score import grade_from_pct
 
@@ -49,23 +53,13 @@ class AnalysisError(ValueError):
     show a clean message instead of a stack trace."""
 
 
-def _load_epochs(path: str | Path) -> tuple[np.ndarray, np.ndarray, float]:
+def _load_epochs(path: str | Path) -> tuple[np.ndarray, np.ndarray, list[str], float]:
     try:
-        raw = mne.io.read_raw_edf(str(path), preload=True, verbose=False)
+        raw, ch_names = load_and_filter(path)
+    except ValueError as e:
+        raise AnalysisError(str(e)) from e
     except Exception as e:
-        raise AnalysisError(f"couldn't read this as an EDF file: {e}") from e
-
-    raw.rename_channels({ch: clean_channel_name(ch) for ch in raw.ch_names})
-    missing = EXPECTED_CHANNELS - set(raw.ch_names)
-    if missing:
-        raise AnalysisError(
-            "missing required 10-20 channels: " + ", ".join(sorted(missing)) +
-            f" (found: {', '.join(sorted(raw.ch_names))})"
-        )
-    raw.pick(CHANNEL_ORDER)
-    raw.reorder_channels(CHANNEL_ORDER)
-    raw.notch_filter(LINE_FREQ, verbose=False)
-    raw.filter(L_FREQ, H_FREQ, verbose=False)
+        raise AnalysisError(f"couldn't read this file: {e}") from e
 
     # Continuous filtered signal, for the waveform viewer -- captured before
     # epoching so it isn't duplicated across the 50%-overlapping epoch windows.
@@ -79,12 +73,12 @@ def _load_epochs(path: str | Path) -> tuple[np.ndarray, np.ndarray, float]:
             f"recording is too short to produce a single {EPOCH_SEC:.0f}s epoch"
         )
     data_uv = epochs.get_data() * 1e6
-    return data_uv, continuous_uv, float(raw.info["sfreq"])
+    return data_uv, continuous_uv, ch_names, float(raw.info["sfreq"])
 
 
-def _score_band(data_uv: np.ndarray, sfreq: float, band_name: str,
+def _score_band(data_uv: np.ndarray, ch_names: list[str], sfreq: float, band_name: str,
                  detector_scores: dict[str, np.ndarray], step_sec: float) -> dict:
-    result = compute_quality(data_uv, CHANNEL_ORDER, sfreq, EEG_BANDS[band_name],
+    result = compute_quality(data_uv, ch_names, sfreq, EEG_BANDS[band_name],
                               detector_scores=detector_scores)
     quality = result["quality"]  # (n_epochs, n_channels)
     contribs = result["contributions"]  # {name: (n_epochs, n_channels)}
@@ -95,14 +89,14 @@ def _score_band(data_uv: np.ndarray, sfreq: float, band_name: str,
 
     overall_pct = float(quality.mean())
     channel_quality_pct = {
-        ch: round(float(quality[:, i].mean()), 2) for i, ch in enumerate(CHANNEL_ORDER)
+        ch: round(float(quality[:, i].mean()), 2) for i, ch in enumerate(ch_names)
     }
     epoch_quality_pct = [round(float(v), 2) for v in quality.mean(axis=1)]
     # Per-channel, per-epoch (not averaged across channels) -- lets the
     # waveform viewer highlight exactly which channel is bad at which moment,
     # instead of tinting every channel the same shared, averaged color.
     channel_epoch_quality_pct = {
-        ch: [round(float(v), 1) for v in quality[:, i]] for i, ch in enumerate(CHANNEL_ORDER)
+        ch: [round(float(v), 1) for v in quality[:, i]] for i, ch in enumerate(ch_names)
     }
 
     penalty_by_detector = {name: float(arr.sum()) for name, arr in contribs.items()}
@@ -123,7 +117,7 @@ def _score_band(data_uv: np.ndarray, sfreq: float, band_name: str,
         top_offenders.append({
             "epoch": int(e),
             "time_sec": round(float(e) * step_sec, 1),
-            "channel": CHANNEL_ORDER[ch_i],
+            "channel": ch_names[ch_i],
             "quality_pct": round(float(quality[e, ch_i]), 1),
             "penalty": round(penalty, 3),
             "dominant_detector": dominant_name,
@@ -141,7 +135,7 @@ def _score_band(data_uv: np.ndarray, sfreq: float, band_name: str,
     }
 
 
-def _build_waveform_payload(continuous_uv: np.ndarray, sfreq: float) -> dict:
+def _build_waveform_payload(continuous_uv: np.ndarray, ch_names: list[str], sfreq: float) -> dict:
     """JSON-ready waveform block: {sfreq, channels, duration_sec, samples}.
 
     samples is channel-major: [[ch0_sample0, ch0_sample1, ...], [ch1...], ...].
@@ -163,30 +157,32 @@ def _build_waveform_payload(continuous_uv: np.ndarray, sfreq: float) -> dict:
     decimated = continuous_uv[:, ::stride]
     return {
         "sfreq": sfreq / stride,
-        "channels": CHANNEL_ORDER,
+        "channels": ch_names,
         "duration_sec": n_samples / sfreq,
         "samples": np.round(decimated, 1).tolist(),
     }
 
 
 def analyze_edf(path: str | Path, filename: str | None = None) -> dict:
-    """Run the full endpoint-aware pipeline on one uploaded .edf.
+    """Run the full endpoint-aware pipeline on one uploaded recording.
 
-    Returns one JSON-ready dict: {filename, n_epochs, n_channels, sfreq,
-    epoch_sec, step_sec, channels, primary_band, bands: {...}, waveform: {...}}.
+    Accepts any format manifest.READERS supports, not just .edf (kept the
+    name for backward compatibility with webapp.py's route). Returns one
+    JSON-ready dict: {filename, n_epochs, n_channels, sfreq, epoch_sec,
+    step_sec, channels, primary_band, bands: {...}, waveform: {...}}.
     Everything the UI needs -- including the (possibly decimated) waveform
     for panning/zooming -- comes back in this single response; nothing is
     held server-side between requests. Raises AnalysisError for problems
     with the file itself.
     """
-    data_uv, continuous_uv, sfreq = _load_epochs(path)
+    data_uv, continuous_uv, ch_names, sfreq = _load_epochs(path)
     n_epochs, n_channels, _ = data_uv.shape
     step_sec = EPOCH_SEC - OVERLAP_SEC
 
-    detector_scores = run_all(data_uv, CHANNEL_ORDER, sfreq)
+    detector_scores = run_all(data_uv, ch_names, sfreq)
 
     bands_out = {
-        band_name: _score_band(data_uv, sfreq, band_name, detector_scores, step_sec)
+        band_name: _score_band(data_uv, ch_names, sfreq, band_name, detector_scores, step_sec)
         for band_name in EEG_BANDS
     }
 
@@ -197,8 +193,8 @@ def analyze_edf(path: str | Path, filename: str | None = None) -> dict:
         "sfreq": sfreq,
         "epoch_sec": EPOCH_SEC,
         "step_sec": step_sec,
-        "channels": CHANNEL_ORDER,
+        "channels": ch_names,
         "primary_band": "alpha",
         "bands": bands_out,
-        "waveform": _build_waveform_payload(continuous_uv, sfreq),
+        "waveform": _build_waveform_payload(continuous_uv, ch_names, sfreq),
     }

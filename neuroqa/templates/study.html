@@ -1,0 +1,477 @@
+<title>NeuroQA — Study Runner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page-plane:     #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --good:    #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical:#d03b3b;
+    --series-h:   #2a78d6;
+    --series-mdd: #eb6834;
+    --series-primary: #2a78d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1: #1a1a19; --page-plane: #0d0d0d; --text-primary: #ffffff;
+      --text-secondary: #c3c2b7; --text-muted: #898781; --gridline: #2c2c2a;
+      --baseline: #383835; --border: rgba(255,255,255,0.10);
+      --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #e66767;
+      --series-h: #3987e5; --series-mdd: #d95926; --series-primary: #3987e5;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1: #1a1a19; --page-plane: #0d0d0d; --text-primary: #ffffff;
+    --text-secondary: #c3c2b7; --text-muted: #898781; --gridline: #2c2c2a;
+    --baseline: #383835; --border: rgba(255,255,255,0.10);
+    --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical: #e66767;
+    --series-h: #3987e5; --series-mdd: #d95926; --series-primary: #3987e5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page-plane); color: var(--text-primary); line-height: 1.55;
+  }
+  .page { max-width: 980px; margin: 0 auto; padding: 40px 20px 90px; }
+  header p.kicker { text-transform: uppercase; letter-spacing: .06em; font-size: .75rem; color: var(--text-muted); margin: 0 0 8px; }
+  header h1 { font-size: 1.9rem; margin: 0 0 10px; }
+  header p.lede { color: var(--text-secondary); max-width: 680px; }
+  a.nav-link { color: var(--series-primary); text-decoration: none; font-size: .85rem; }
+
+  section { margin-top: 40px; }
+  h2 { font-size: 1.2rem; margin: 0 0 6px; }
+  section > p.dek { color: var(--text-secondary); margin: 0 0 16px; max-width: 680px; }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+
+  .dropzone {
+    border: 2px dashed var(--border); border-radius: 12px; padding: 32px;
+    text-align: center; color: var(--text-secondary); cursor: pointer;
+  }
+  .dropzone.drag { border-color: var(--series-primary); color: var(--text-primary); }
+  .dropzone input { display: none; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--text-muted); font-weight: 500; font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; }
+  td select, td input { width: 100%; padding: 4px 6px; background: var(--page-plane); color: var(--text-primary); border: 1px solid var(--border); border-radius: 6px; }
+  .row-status { font-size: .8rem; }
+  .row-status.ok { color: var(--good); }
+  .row-status.err { color: var(--critical); }
+  .row-status.warn { color: var(--warning); }
+
+  button.primary {
+    background: var(--series-primary); color: #fff; border: none; border-radius: 8px;
+    padding: 10px 18px; font-size: .95rem; cursor: pointer; font-weight: 600;
+  }
+  button.primary:disabled { opacity: .5; cursor: not-allowed; }
+  button.secondary {
+    background: transparent; color: var(--text-primary); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; font-size: .85rem; cursor: pointer;
+  }
+
+  .progress-bar { height: 8px; border-radius: 4px; background: var(--gridline); overflow: hidden; margin: 10px 0; }
+  .progress-bar > div { height: 100%; background: var(--series-primary); transition: width .3s; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin: 16px 0; }
+  .stat-tile { background: var(--page-plane); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .stat-tile .label { font-size: .75rem; color: var(--text-muted); margin-bottom: 4px; }
+  .stat-tile .value { font-size: 1.4rem; font-weight: 600; }
+
+  .finding {
+    border-left: 3px solid var(--series-primary); background: var(--page-plane);
+    border-radius: 8px; padding: 14px 16px; font-size: .95rem; margin: 14px 0;
+  }
+  .finding.leak { border-left-color: var(--critical); }
+
+  .legend { display: flex; gap: 16px; font-size: .8rem; color: var(--text-secondary); margin: 8px 0; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  #log { font-family: ui-monospace, monospace; font-size: .78rem; color: var(--text-secondary);
+         max-height: 220px; overflow-y: auto; white-space: pre-wrap; }
+  .hidden { display: none !important; }
+  .error-box { color: var(--critical); font-size: .88rem; margin-top: 10px; }
+  svg text { fill: var(--text-secondary); font-size: 10px; }
+</style>
+
+<div class="page">
+  <header>
+    <p class="kicker">NeuroQA</p>
+    <h1>Upload a labeled batch, run both studies</h1>
+    <p class="lede">
+      Upload a group of raw EEG recordings plus a diagnosis + severity manifest.
+      Every file is validated (F3/F4 present, real raw montage, a recognized
+      label) before anything runs. Accepted recordings feed Study A (how much
+      the depressed-vs-healthy FAA difference moves across 5 preprocessing
+      pipelines x 2 reference schemes) and Study B (is contamination itself
+      tied to diagnosis, and does it confound FAA).
+    </p>
+    <p><a class="nav-link" href="/">&larr; single-file quick grader</a></p>
+  </header>
+
+  <section id="upload-section">
+    <h2>1. Upload recordings</h2>
+    <p class="dek">
+      Common MNE-readable formats: .edf, .bdf, .cnt, .set, .fif, or a
+      .vhdr/.eeg/.vmrk BrainVision triplet (upload all three together).
+    </p>
+    <div class="card">
+      <div class="dropzone" id="dropzone">
+        <div>Drop recordings here, or click to choose files</div>
+        <input type="file" id="file-input" multiple>
+      </div>
+      <table id="file-table" style="margin-top:16px;">
+        <thead><tr><th>File</th><th>Diagnosis</th><th>Severity</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div style="margin-top:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <label class="secondary" style="border:1px solid var(--border); border-radius:8px; padding:8px 14px; font-size:.85rem; cursor:pointer;">
+          import manifest CSV <input type="file" id="manifest-input" accept=".csv" style="display:none;">
+        </label>
+        <span style="font-size:.8rem; color:var(--text-muted);">columns: filename, diagnosis (healthy/depressed), severity</span>
+      </div>
+      <div style="margin-top:16px;">
+        <button class="primary" id="start-btn" disabled>Upload &amp; validate</button>
+      </div>
+      <div class="error-box hidden" id="upload-error"></div>
+    </div>
+  </section>
+
+  <section id="validation-section" class="hidden">
+    <h2>2. Validation</h2>
+    <div class="card">
+      <div class="stat-row" id="validation-stats"></div>
+      <div id="rejected-list"></div>
+      <div id="group-error" class="error-box hidden"></div>
+      <button class="primary hidden" id="run-btn">Run pipeline &amp; both studies</button>
+    </div>
+  </section>
+
+  <section id="progress-section" class="hidden">
+    <h2>3. Scoring</h2>
+    <div class="card">
+      <div class="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+      <div id="progress-label" style="font-size:.85rem; color:var(--text-secondary);"></div>
+      <div id="log"></div>
+    </div>
+  </section>
+
+  <section id="results-section" class="hidden">
+    <h2>4. Results</h2>
+    <div class="card">
+      <div id="finding-box"></div>
+      <div class="stat-row" id="results-stats"></div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2 style="margin-top:0;">Study A — FAA spread across preprocessing choices</h2>
+      <p class="dek">One line per subject, across 5 pipelines x 2 reference schemes. A big swing means the analysis conclusion depends on an arbitrary-looking processing choice, not just the signal.</p>
+      <div class="legend">
+        <span><span class="swatch" style="background:var(--series-h)"></span>healthy</span>
+        <span><span class="swatch" style="background:var(--series-mdd)"></span>depressed</span>
+      </div>
+      <div id="study-a-chart" style="overflow-x:auto;"></div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2 style="margin-top:0;">Study B — quality, severity, group, FAA</h2>
+      <div id="study-b-tables"></div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <h2 style="margin-top:0;">Per-recording results</h2>
+      <div style="overflow-x:auto;"><table id="results-table"><thead></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+import { upload } from "https://esm.sh/@vercel/blob@0.27.0/client";
+
+const state = { files: new Map(), jobId: null, filesMapUrl: null, subsample: new Set(), accepted: [] };
+
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("file-input");
+const manifestInput = document.getElementById("manifest-input");
+const fileTableBody = document.querySelector("#file-table tbody");
+const startBtn = document.getElementById("start-btn");
+const uploadError = document.getElementById("upload-error");
+
+dropzone.addEventListener("click", () => fileInput.click());
+dropzone.addEventListener("dragover", e => { e.preventDefault(); dropzone.classList.add("drag"); });
+dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag"));
+dropzone.addEventListener("drop", e => {
+  e.preventDefault(); dropzone.classList.remove("drag");
+  addFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener("change", () => addFiles(fileInput.files));
+
+function addFiles(fileList) {
+  for (const f of fileList) {
+    if (!state.files.has(f.name)) state.files.set(f.name, { file: f, diagnosis: "", severity: "" });
+  }
+  renderFileTable();
+}
+
+function renderFileTable() {
+  fileTableBody.innerHTML = "";
+  for (const [name, row] of state.files) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${name}</td>
+      <td><select data-field="diagnosis" data-name="${name}">
+        <option value="">-- select --</option>
+        <option value="healthy" ${row.diagnosis === "healthy" ? "selected" : ""}>healthy</option>
+        <option value="depressed" ${row.diagnosis === "depressed" ? "selected" : ""}>depressed</option>
+      </select></td>
+      <td><input type="number" step="any" data-field="severity" data-name="${name}" value="${row.severity}"></td>
+      <td><button class="secondary" data-remove="${name}">remove</button></td>`;
+    fileTableBody.appendChild(tr);
+  }
+  fileTableBody.querySelectorAll("select,input").forEach(el => {
+    el.addEventListener("input", () => {
+      const row = state.files.get(el.dataset.name);
+      row[el.dataset.field] = el.value;
+    });
+  });
+  fileTableBody.querySelectorAll("[data-remove]").forEach(btn => {
+    btn.addEventListener("click", () => { state.files.delete(btn.dataset.remove); renderFileTable(); });
+  });
+  startBtn.disabled = state.files.size === 0;
+}
+
+manifestInput.addEventListener("change", async () => {
+  const f = manifestInput.files[0];
+  if (!f) return;
+  const text = await f.text();
+  const [headerLine, ...lines] = text.trim().split(/\r?\n/);
+  const headers = headerLine.split(",").map(h => h.trim().toLowerCase());
+  const fileIdx = headers.findIndex(h => ["filename", "file", "recording", "name"].includes(h));
+  const diagIdx = headers.findIndex(h => ["diagnosis", "label", "group", "dx", "class"].includes(h));
+  const sevIdx = headers.findIndex(h => ["severity", "score", "severity_score", "bdi", "hamd", "hdrs"].includes(h));
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cols = line.split(",");
+    const name = (cols[fileIdx] || "").trim();
+    if (state.files.has(name)) {
+      state.files.get(name).diagnosis = (cols[diagIdx] || "").trim().toLowerCase();
+      state.files.get(name).severity = (cols[sevIdx] || "").trim();
+    }
+  }
+  renderFileTable();
+});
+
+function toManifestCsv() {
+  const lines = ["filename,diagnosis,severity"];
+  for (const [name, row] of state.files) lines.push(`${name},${row.diagnosis},${row.severity}`);
+  return lines.join("\n");
+}
+
+function showSection(id) { document.getElementById(id).classList.remove("hidden"); }
+function log(msg) {
+  const el = document.getElementById("log");
+  el.textContent += msg + "\n";
+  el.scrollTop = el.scrollHeight;
+}
+
+startBtn.addEventListener("click", async () => {
+  uploadError.classList.add("hidden");
+  startBtn.disabled = true;
+  startBtn.textContent = "uploading...";
+  try {
+    const files = {};
+    for (const [name, row] of state.files) {
+      const blob = await upload(name, row.file, { access: "public", handleUploadUrl: "/api/blob-upload-token" });
+      files[name] = blob.url;
+    }
+    const resp = await fetch("/api/create_job", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ manifest_csv: toManifestCsv(), files }),
+    });
+    const result = await resp.json();
+    if (!resp.ok) throw new Error(result.error || "create_job failed");
+    renderValidation(result);
+  } catch (e) {
+    uploadError.textContent = "Upload/validation failed: " + e.message;
+    uploadError.classList.remove("hidden");
+  } finally {
+    startBtn.disabled = false;
+    startBtn.textContent = "Upload & validate";
+  }
+});
+
+function renderValidation(result) {
+  state.jobId = result.job_id;
+  state.filesMapUrl = result.files_map_url;
+  state.subsample = new Set(result.study_a_subsample);
+  state.accepted = result.accepted;
+
+  showSection("validation-section");
+  document.getElementById("validation-stats").innerHTML = `
+    <div class="stat-tile"><div class="label">accepted</div><div class="value">${result.accepted.length}</div></div>
+    <div class="stat-tile"><div class="label">rejected</div><div class="value">${result.rejected.length}</div></div>
+    <div class="stat-tile"><div class="label">Study A subsample</div><div class="value">${result.study_a_subsample.length}</div></div>`;
+
+  const rejectedList = document.getElementById("rejected-list");
+  rejectedList.innerHTML = "";
+  for (const r of result.rejected) {
+    const div = document.createElement("div");
+    div.className = "row-status err";
+    div.textContent = `${r.filename}: ${r.reasons.join("; ")}`;
+    rejectedList.appendChild(div);
+  }
+  for (const r of result.accepted) {
+    if (r.warnings && r.warnings.length) {
+      const div = document.createElement("div");
+      div.className = "row-status warn";
+      div.textContent = `${r.filename}: ${r.warnings.join("; ")}`;
+      rejectedList.appendChild(div);
+    }
+  }
+
+  const groupError = document.getElementById("group-error");
+  const runBtn = document.getElementById("run-btn");
+  if (!result.group_ok) {
+    groupError.textContent = result.group_reasons.join(" ");
+    groupError.classList.remove("hidden");
+    runBtn.classList.add("hidden");
+  } else {
+    groupError.classList.add("hidden");
+    runBtn.classList.remove("hidden");
+    runBtn.onclick = runPipeline;
+  }
+}
+
+async function runPipeline() {
+  showSection("progress-section");
+  document.getElementById("run-btn").disabled = true;
+  const total = state.accepted.length;
+  let done = 0;
+  const results = [];
+
+  const CONCURRENCY = 3;
+  const queue = [...state.accepted];
+  async function worker() {
+    while (queue.length) {
+      const r = queue.shift();
+      const body = {
+        job_id: state.jobId, filename: r.filename, diagnosis: r.diagnosis,
+        severity: r.severity, run_study_a: state.subsample.has(r.filename),
+        files_map_url: state.filesMapUrl,
+      };
+      log(`scoring ${r.filename}${body.run_study_a ? " (+ Study A sweep)" : ""} ...`);
+      try {
+        const resp = await fetch("/api/process_recording", {
+          method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+        });
+        const result = await resp.json();
+        results.push(result);
+        log(result.ok ? `  done: grade=${result.base.grade} FAA=${result.base.faa}` : `  FAILED: ${result.error}`);
+      } catch (e) {
+        log(`  FAILED: ${e.message}`);
+      }
+      done++;
+      const pct = Math.round((100 * done) / total);
+      document.getElementById("progress-fill").style.width = pct + "%";
+      document.getElementById("progress-label").textContent = `${done} / ${total} recordings scored`;
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, total) }, worker));
+
+  log("aggregating Study A + Study B ...");
+  const aggResp = await fetch("/api/aggregate", {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ job_id: state.jobId }),
+  });
+  const agg = await aggResp.json();
+  if (!aggResp.ok) { log("aggregation FAILED: " + (agg.error || "unknown error")); return; }
+  log("done.");
+  renderResults(agg, results);
+}
+
+function renderResults(agg, perRecording) {
+  showSection("results-section");
+  const b = agg.study_b;
+  const findingBox = document.getElementById("finding-box");
+  findingBox.innerHTML = `<div class="finding ${b.regression_3_quality_classifies_group?.leakage_flag ? "leak" : ""}">${b.finding}</div>`;
+
+  document.getElementById("results-stats").innerHTML = `
+    <div class="stat-tile"><div class="label">recordings scored</div><div class="value">${agg.n_recordings}</div></div>
+    <div class="stat-tile"><div class="label">Study A subsample</div><div class="value">${agg.n_study_a_recordings}</div></div>
+    <div class="stat-tile"><div class="label">quality-alone AUC</div><div class="value">${(b.regression_3_quality_classifies_group?.auc ?? NaN).toFixed(2)}</div></div>
+    <div class="stat-tile"><div class="label">majority baseline</div><div class="value">${(b.regression_3_quality_classifies_group?.majority_class_baseline ?? NaN).toFixed(2)}</div></div>`;
+
+  renderStudyAChart(agg.study_a);
+  renderStudyBTables(b);
+  renderResultsTable(perRecording);
+}
+
+function renderStudyAChart(studyA) {
+  const container = document.getElementById("study-a-chart");
+  const cols = studyA.combo_cols;
+  const rows = studyA.wide.filter(r => cols.every(c => c in r));
+  if (!rows.length) { container.innerHTML = "<p style='color:var(--text-muted)'>No Study A rows (subsample too small or every recording failed).</p>"; return; }
+
+  const width = Math.max(600, cols.length * 90), height = 320, padL = 50, padR = 20, padT = 10, padB = 60;
+  const allVals = rows.flatMap(r => cols.map(c => r[c]));
+  const yMin = Math.min(...allVals), yMax = Math.max(...allVals);
+  const yPad = (yMax - yMin) * 0.1 || 1;
+  const y = v => height - padB - ((v - (yMin - yPad)) / ((yMax + yPad) - (yMin - yPad))) * (height - padT - padB);
+  const x = i => padL + (i / (cols.length - 1 || 1)) * (width - padL - padR);
+
+  let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`;
+  for (let i = 0; i < cols.length; i++) {
+    svg += `<text x="${x(i)}" y="${height - padB + 16}" text-anchor="middle" transform="rotate(30 ${x(i)} ${height - padB + 16})">${cols[i]}</text>`;
+  }
+  const yTicks = 4;
+  for (let t = 0; t <= yTicks; t++) {
+    const v = (yMin - yPad) + (t / yTicks) * ((yMax + yPad) - (yMin - yPad));
+    svg += `<line x1="${padL}" x2="${width - padR}" y1="${y(v)}" y2="${y(v)}" stroke="var(--gridline)" stroke-width="1"/>`;
+    svg += `<text x="${padL - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(2)}</text>`;
+  }
+  for (const row of rows) {
+    const color = row.group === "healthy" ? "var(--series-h)" : "var(--series-mdd)";
+    const pts = cols.map((c, i) => `${x(i)},${y(row[c])}`).join(" ");
+    svg += `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.7"/>`;
+    cols.forEach((c, i) => { svg += `<circle cx="${x(i)}" cy="${y(row[c])}" r="2.5" fill="${color}"/>`; });
+  }
+  svg += `</svg>`;
+  container.innerHTML = svg;
+}
+
+function paramRow(label, params, pvalues) {
+  return Object.keys(params).map(k =>
+    `<tr><td>${label}: ${k}</td><td>${params[k].toFixed(4)}</td><td>${pvalues[k].toFixed(4)}</td></tr>`).join("");
+}
+
+function renderStudyBTables(b) {
+  const r1 = b.regression_1_quality_on_group_severity, r2 = b.regression_2_faa_on_group_quality, r3 = b.regression_3_quality_classifies_group;
+  document.getElementById("study-b-tables").innerHTML = `
+    <h3 style="font-size:1rem;">1. quality ~ group + severity</h3>
+    <table><thead><tr><th>term</th><th>coef</th><th>p</th></tr></thead><tbody>${paramRow("", r1.params, r1.pvalues)}</tbody></table>
+    <h3 style="font-size:1rem; margin-top:20px;">2. FAA ~ group + quality</h3>
+    <table><thead><tr><th>term</th><th>coef</th><th>p</th></tr></thead><tbody>${paramRow("", r2.params, r2.pvalues)}</tbody></table>
+    <h3 style="font-size:1rem; margin-top:20px;">3. quality alone &rarr; group (cross-validated classifier)</h3>
+    <table><thead><tr><th>accuracy</th><th>AUC</th><th>majority baseline</th><th>n</th></tr></thead>
+      <tbody><tr><td>${r3.accuracy.toFixed(3)}</td><td>${r3.auc.toFixed(3)}</td><td>${r3.majority_class_baseline.toFixed(3)}</td><td>${r3.n}</td></tr></tbody></table>`;
+}
+
+function renderResultsTable(perRecording) {
+  const thead = document.querySelector("#results-table thead");
+  const tbody = document.querySelector("#results-table tbody");
+  thead.innerHTML = "<tr><th>file</th><th>group</th><th>grade</th><th>quality[alpha]</th><th>FAA</th><th>worst channel</th></tr>";
+  tbody.innerHTML = perRecording.filter(r => r.ok).map(r => `
+    <tr><td>${r.filename}</td><td>${r.group}</td><td>${r.base.grade}</td>
+      <td>${r.base.quality_alpha_pct}%</td><td>${r.base.faa}</td>
+      <td>${r.base.worst_channel} (${r.base.worst_channel_quality_pct}%)</td></tr>`).join("");
+}
+</script>

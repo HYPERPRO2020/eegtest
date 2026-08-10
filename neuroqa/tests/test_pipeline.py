@@ -165,6 +165,40 @@ def test_faa_quality_weighting_pulls_toward_the_cleaner_epochs():
     assert not np.isclose(flat["faa"], weighted["faa"]) or n_epochs == 1
 
 
+def test_score_and_faa_is_deterministic(tmp_path):
+    """Reproducibility: the same uploaded recording must score identically
+    on repeat runs (no unseeded randomness in the default scoring path)."""
+    from pipeline import score_and_faa
+
+    raw = make_synthetic_raw()
+    path = tmp_path / "sub_repro.fif"
+    raw.save(str(path), verbose=False)
+
+    first = score_and_faa(path)
+    second = score_and_faa(path)
+    assert first == second
+
+
+def test_study_b_regression_3_is_deterministic():
+    """AutoReject/ICA/CV-split randomness is all seeded (see pipeline.SEED
+    and study_b.CV_SEED) -- the classifier's CV predictions, and therefore
+    its accuracy/AUC, must be bit-identical across repeat runs on the same
+    rows, not just close."""
+    from study_b import regression_3, rows_to_frame
+
+    rng = np.random.default_rng(7)
+    rows = [
+        {"file": f"s{i}", "group": "healthy" if i % 2 == 0 else "depressed",
+         "quality_alpha_pct": float(rng.uniform(60, 100)),
+         "raw_severity_mean": float(rng.uniform(0, 1)), "faa": float(rng.normal())}
+        for i in range(12)
+    ]
+    df = rows_to_frame(rows)
+    first = regression_3(df)
+    second = regression_3(df)
+    assert first == second
+
+
 if __name__ == "__main__":
     import pytest
     raise SystemExit(pytest.main([__file__, "-v"]))
