@@ -115,6 +115,19 @@ Implemented per the plan above:
   upload -> same result" was hand-checked, plus two automated determinism
   tests in `test_pipeline.py`.
 
+**Post-deploy fix**: the first real deploy attempt failed. `vercel.json` had
+combined the legacy `builds` array with a top-level `functions` key — Vercel
+rejects that combination outright ("The `functions` property cannot be used
+in conjunction with the `builds` property"). Fixed by moving each function's
+`maxDuration` into its own `builds` entry's `config` object instead, which
+legacy mode does support. Also brought `process_recording.py`'s
+`maxDuration` down from 800s to 300s: the 800s/1800s extended durations
+need Pro/Enterprise ([confirmed in Vercel's docs](https://vercel.com/docs/functions/limitations#max-duration)
+— Hobby is capped at 300s default *and* maximum), and this deploy's plan
+tier isn't known from this environment. If you're on Pro+ and batches are
+timing out on a slow Study A sweep (ICA + AutoReject per recording), raise
+`api/process_recording.py`'s `maxDuration` back up in `vercel.json`.
+
 Still unverified (no Vercel account/CLI in this environment, same
 limitation the previous session hit): the actual deploy, `vercel.json`'s
 legacy `builds`/`routes` wiring for the new `api/*.py` + `.js` functions,
