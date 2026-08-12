@@ -73,7 +73,7 @@ output).
 - `study_a.py` — the 5-pipeline x 2-reference FAA sweep, per recording.
 - `study_b.py` — the three group/quality/severity/FAA regressions.
 - `pipeline.py` — ties the above together; imported by both `run_local.py`
-  and every `../api/*.py` route, so there's exactly one implementation of
+  and `../api/index.py`'s routes, so there's exactly one implementation of
   "how a recording gets scored," not one per entry point.
 - `blob_client.py` — thin Vercel Blob wrapper for the job/state model.
 - `analyze.py` / `webapp.py` — the single-file quick grader.

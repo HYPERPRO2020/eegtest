@@ -2,17 +2,14 @@
   "version": 2,
   "builds": [
     { "src": "neuroqa/webapp.py", "use": "@vercel/python", "config": { "maxDuration": 60 } },
-    { "src": "api/create_job.py", "use": "@vercel/python", "config": { "maxDuration": 300 } },
-    { "src": "api/process_recording.py", "use": "@vercel/python", "config": { "maxDuration": 300 } },
-    { "src": "api/job_status.py", "use": "@vercel/python", "config": { "maxDuration": 30 } },
-    { "src": "api/aggregate.py", "use": "@vercel/python", "config": { "maxDuration": 300 } },
+    { "src": "api/index.py", "use": "@vercel/python", "config": { "maxDuration": 300 } },
     { "src": "api/blob-upload-token.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/create_job", "dest": "api/create_job.py" },
-    { "src": "/api/process_recording", "dest": "api/process_recording.py" },
-    { "src": "/api/job_status", "dest": "api/job_status.py" },
-    { "src": "/api/aggregate", "dest": "api/aggregate.py" },
+    { "src": "/api/create_job", "dest": "api/index.py" },
+    { "src": "/api/process_recording", "dest": "api/index.py" },
+    { "src": "/api/job_status", "dest": "api/index.py" },
+    { "src": "/api/aggregate", "dest": "api/index.py" },
     { "src": "/api/blob-upload-token", "dest": "api/blob-upload-token.js" },
     { "src": "/(.*)", "dest": "neuroqa/webapp.py" }
   ]

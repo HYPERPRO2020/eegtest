@@ -100,11 +100,12 @@ Implemented per the plan above:
   (`neuroqa/tests/test_pipeline.py` plus an ad hoc synthetic-batch run) —
   the exact API route logic itself was additionally exercised against a
   fake in-memory Blob store standing in for `vercel_blob`.
-- `api/create_job.py`, `process_recording.py`, `job_status.py`,
-  `aggregate.py` — the fan-out job model described above, using
-  `vercel_blob` (an unofficial but real, working PyPI package implementing
-  Blob's REST protocol — there's no official Python SDK) instead of
-  hand-rolling that protocol from memory.
+- `api/index.py` — the fan-out job model described above (create_job,
+  process_recording, job_status, aggregate — four routes, one Flask app,
+  one Vercel function; see the second post-deploy fix below for why it's
+  one file instead of four), using `vercel_blob` (an unofficial but real,
+  working PyPI package implementing Blob's REST protocol — there's no
+  official Python SDK) instead of hand-rolling that protocol from memory.
 - `api/blob-upload-token.js` — the one Node function, using the real
   `@vercel/blob/client` SDK for the client-upload token handshake.
 - `neuroqa/templates/study.html` — the upload/manifest/progress/results UI,
@@ -126,12 +127,29 @@ need Pro/Enterprise ([confirmed in Vercel's docs](https://vercel.com/docs/functi
 — Hobby is capped at 300s default *and* maximum), and this deploy's plan
 tier isn't known from this environment. If you're on Pro+ and batches are
 timing out on a slow Study A sweep (ICA + AutoReject per recording), raise
-`api/process_recording.py`'s `maxDuration` back up in `vercel.json`.
+`api/index.py`'s `maxDuration` back up in `vercel.json`.
+
+**Second post-deploy fix**: the next deploy attempt failed differently —
+`ENOENT: no such file or directory, lstat '.../pycache/vercel/path0/.vercel/
+python/.venv/lib/python3.12/site-packages/requests/_types.cpython-312.pyc'`
+(the path is self-referential/duplicated, not a real path). This isn't
+something in the app's code; it matches a reported class of Vercel Python
+build-infra bug where the builder's own bytecode-cache path computation
+breaks when several `@vercel/python` builds in one project independently
+pip-install overlapping heavy dependencies (mne/scipy/numpy/... here) —
+this project had five (`webapp.py` + 4 separate api/*.py routes). Fixed by
+consolidating the four API routes into one Flask app (`api/index.py`, one
+Vercel function, same four URL paths so the frontend didn't need to
+change), cutting Python builds from five to two. This can't be proven as
+*the* root cause without a live account to bisect against, but it's a
+reasoned mitigation (halves the number of concurrent heavy pip installs,
+which is exactly the shared condition across the community reports of this
+error) and a legitimate simplification on its own regardless.
 
 Still unverified (no Vercel account/CLI in this environment, same
 limitation the previous session hit): the actual deploy, `vercel.json`'s
-legacy `builds`/`routes` wiring for the new `api/*.py` + `.js` functions,
-cold-start behavior, and the real Blob client-upload handshake end to end
+legacy `builds`/`routes` wiring, cold-start behavior, and the real Blob
+client-upload handshake end to end
 (the mocked test above stands in for it, but a fake store can't catch a
 wrong header name or a real auth failure). Every dependency-size and
 job-model number is a real local measurement or Vercel's current published
