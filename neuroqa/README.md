@@ -31,8 +31,7 @@ Both accept any format MNE reads well: .edf, .bdf, .cnt, .set, .fif, or a
 ## Run locally
 
 ```
-pip install -r requirements.txt        # single-file grader only
-pip install -r ../api/requirements.txt # + Study A/B (pandas/sklearn/statsmodels/autoreject)
+pip install -r requirements.txt
 python webapp.py
 ```
 Then open http://127.0.0.1:5000.
@@ -49,7 +48,7 @@ synonyms — see `manifest.parse_manifest_csv`).
 ## Tests
 
 ```
-pip install -r ../api/requirements.txt pytest
+pip install -r requirements.txt pytest
 python -m pytest tests/ -v
 ```
 Hand-checks the scorer against synthetic clean vs. artifact-injected
@@ -73,10 +72,14 @@ output).
 - `study_a.py` — the 5-pipeline x 2-reference FAA sweep, per recording.
 - `study_b.py` — the three group/quality/severity/FAA regressions.
 - `pipeline.py` — ties the above together; imported by both `run_local.py`
-  and `../api/index.py`'s routes, so there's exactly one implementation of
-  "how a recording gets scored," not one per entry point.
+  and `webapp.py`'s `/api/*` routes, so there's exactly one implementation
+  of "how a recording gets scored," not one per entry point.
 - `blob_client.py` — thin Vercel Blob wrapper for the job/state model.
-- `analyze.py` / `webapp.py` — the single-file quick grader.
+- `analyze.py` — single-file quick-grader analysis logic.
+- `webapp.py` — the whole app: quick grader (`/`, `/analyze`), study runner
+  page (`/study`), and the upload-batch job model (`/api/*`) — one Flask
+  app, one Vercel function (see `../ARCHITECTURE.md`'s post-deploy notes
+  for why it's not split up).
 - `run_local.py` — batch CLI, no Vercel needed.
 - `tests/test_pipeline.py` — synthetic-data hand-checks.
 

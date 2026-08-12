@@ -100,12 +100,13 @@ Implemented per the plan above:
   (`neuroqa/tests/test_pipeline.py` plus an ad hoc synthetic-batch run) —
   the exact API route logic itself was additionally exercised against a
   fake in-memory Blob store standing in for `vercel_blob`.
-- `api/index.py` — the fan-out job model described above (create_job,
-  process_recording, job_status, aggregate — four routes, one Flask app,
-  one Vercel function; see the second post-deploy fix below for why it's
-  one file instead of four), using `vercel_blob` (an unofficial but real,
-  working PyPI package implementing Blob's REST protocol — there's no
-  official Python SDK) instead of hand-rolling that protocol from memory.
+- `neuroqa/webapp.py` — as of the third post-deploy fix below, this one
+  Flask app is the entire backend: the quick grader, the study-runner page,
+  *and* the fan-out job model (create_job/process_recording/job_status/
+  aggregate), all as routes on one Vercel Python function. Uses
+  `vercel_blob` (an unofficial but real, working PyPI package implementing
+  Blob's REST protocol — there's no official Python SDK) instead of
+  hand-rolling that protocol from memory.
 - `api/blob-upload-token.js` — the one Node function, using the real
   `@vercel/blob/client` SDK for the client-upload token handshake.
 - `neuroqa/templates/study.html` — the upload/manifest/progress/results UI,
@@ -127,7 +128,7 @@ need Pro/Enterprise ([confirmed in Vercel's docs](https://vercel.com/docs/functi
 — Hobby is capped at 300s default *and* maximum), and this deploy's plan
 tier isn't known from this environment. If you're on Pro+ and batches are
 timing out on a slow Study A sweep (ICA + AutoReject per recording), raise
-`api/index.py`'s `maxDuration` back up in `vercel.json`.
+`neuroqa/webapp.py`'s `maxDuration` back up in `vercel.json`.
 
 **Second post-deploy fix**: the next deploy attempt failed differently —
 `ENOENT: no such file or directory, lstat '.../pycache/vercel/path0/.vercel/
@@ -137,14 +138,26 @@ something in the app's code; it matches a reported class of Vercel Python
 build-infra bug where the builder's own bytecode-cache path computation
 breaks when several `@vercel/python` builds in one project independently
 pip-install overlapping heavy dependencies (mne/scipy/numpy/... here) —
-this project had five (`webapp.py` + 4 separate api/*.py routes). Fixed by
-consolidating the four API routes into one Flask app (`api/index.py`, one
-Vercel function, same four URL paths so the frontend didn't need to
-change), cutting Python builds from five to two. This can't be proven as
-*the* root cause without a live account to bisect against, but it's a
-reasoned mitigation (halves the number of concurrent heavy pip installs,
-which is exactly the shared condition across the community reports of this
-error) and a legitimate simplification on its own regardless.
+this project had five (`webapp.py` + 4 separate api/*.py routes). First
+attempt: consolidated the four API routes into one Flask app (`api/
+index.py`, one Vercel function), cutting Python builds from five to two.
+
+**Third post-deploy fix**: the *same* ENOENT error recurred with just two
+Python builds, which rules out "many builds" as the trigger and points more
+specifically at two *concurrent* Python builds racing on Vercel's shared
+bytecode-cache directory — a classic TOCTOU (two builds precompiling the
+same package's `.pyc` into the same cache path at the same time, one
+finishing and invalidating the path the other mid-flight `lstat`s). The
+conclusive fix: merged `api/index.py` into `neuroqa/webapp.py` (same four
+`/api/*` URL paths, so `study.html`'s `fetch()` calls didn't change) so
+there is exactly **one** Python build in the whole project — removing the
+concurrency removes the race by construction, not just by probability.
+`api/blob-upload-token.js` stays separate since it has to be Node, and a
+Node build can't race a Python build on a Python-specific bytecode cache.
+If this project ever needs to split back into multiple Python functions
+(e.g. it outgrows one function's 500MB/one-region budget), watch for this
+error returning and treat it as a Vercel platform issue to raise with
+their support, not a config mistake to keep re-guessing at.
 
 Still unverified (no Vercel account/CLI in this environment, same
 limitation the previous session hit): the actual deploy, `vercel.json`'s
