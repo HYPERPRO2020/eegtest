@@ -72,7 +72,13 @@ def load_referenced_raw(path: str, reference: str) -> mne.io.BaseRaw:
         raise ValueError(f"F3/F4 not found in {path} after canonicalization")
     raw.pick(present)
     raw.reorder_channels(present)
-    raw.rename_channels(RENAME_1020)
+    # Only rename the keys actually present -- a recording that already uses
+    # the modern labels (T7/T8/P7/P8, e.g. ds003478) has none of RENAME_1020's
+    # old-style keys (T3/T4/T5/T6) in raw.ch_names at this point, and MNE's
+    # rename_channels hard-fails on any mapping key it can't find rather than
+    # skipping it (confirmed by a real crash on ds003478's sub-052: "Invalid
+    # channel name(s) {'T3','T4','T5','T6'} are not present in info").
+    raw.rename_channels({old: new for old, new in RENAME_1020.items() if old in raw.ch_names})
     raw.set_montage(mne.channels.make_standard_montage("standard_1020"),
                      match_case=False, on_missing="warn", verbose=False)
     if reference == "average":

@@ -19,6 +19,7 @@ see manifest.parse_manifest_csv) -- filename values must match files in
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 from pathlib import Path
 
@@ -92,8 +93,20 @@ def main():
     results = aggregate(base_rows, study_a_rows)
     (args.out / "results.json").write_text(json.dumps(results, indent=2))
 
+    # Per-recording quality/FAA table -- the brief's "results table" deliverable
+    # and what notebooks/phase1_findings.ipynb loads instead of recomputing
+    # (same cache convention its own intro cell documents: reuse outputs/*.csv
+    # when present, delete to force a from-scratch recompute).
+    summary_cols = ["file", "group", "clinical_severity", "grade", "quality_alpha_pct",
+                     "raw_severity_mean", "faa", "n_epochs", "n_channels"]
+    with open(args.out / "quality_faa_summary.csv", "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=summary_cols, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(base_rows)
+
     print(f"\nwrote {args.out / 'validation.json'}")
     print(f"wrote {args.out / 'results.json'}")
+    print(f"wrote {args.out / 'quality_faa_summary.csv'}")
     print(f"\nfinding: {results['study_b'].get('finding', '(no Study B result)')}")
 
 
