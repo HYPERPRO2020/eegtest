@@ -65,9 +65,12 @@ def score_recording(data: np.ndarray, ch_names: list[str], sfreq: float) -> tupl
 
     # Endpoint-independent "how much raw artifact content is in this
     # recording" -- mean detector severity across all 6 detectors, with no
-    # WEIGHT or spectral_overlap applied. Used as the `severity` covariate in
-    # study_b.py's quality~group+severity regression, kept separate from the
-    # (endpoint-dependent) quality_*_pct columns above.
+    # WEIGHT or spectral_overlap applied. A data-quality diagnostic, kept
+    # separate from the (endpoint-dependent) quality_*_pct columns above --
+    # NOT the same thing as clinical severity (BDI/HAM-D, from the upload
+    # manifest), which is what study_b.py's quality~group+severity
+    # regression actually uses. Conflating the two would make that
+    # regression circular, since quality is itself derived from this value.
     row["raw_severity_mean"] = round(float(np.mean([s.mean() for s in detector_scores.values()])), 4)
 
     # Artifact-type penalty breakdown, alpha endpoint: how much of the

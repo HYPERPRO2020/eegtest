@@ -96,6 +96,30 @@ def test_manifest_validation_rejects_missing_f3_f4(tmp_path):
     assert any("F3" in r or "F4" in r for r in result.reasons)
 
 
+def test_manifest_validation_accepts_missing_severity_with_warning(tmp_path):
+    """A dataset that genuinely ships no clinical severity (e.g. Mumtaz/HUSM's
+    public deposit -- diagnosis label only) must still be usable for Study A
+    and Study B's non-severity analyses, just flagged, not hard-rejected."""
+    raw = make_synthetic_raw()
+    path = tmp_path / "sub_no_severity.fif"
+    raw.save(str(path), verbose=False)
+    result = validate_recording(path, {"diagnosis_raw": "healthy", "severity_raw": ""})
+    assert result.ok, result.reasons
+    assert result.severity is None
+    assert any("severity" in w for w in result.warnings)
+
+
+def test_manifest_validation_rejects_garbage_severity(tmp_path):
+    """Missing severity is fine (see above); a present-but-unparseable value
+    (typo, wrong column) is still a real data problem and a hard rejection."""
+    raw = make_synthetic_raw()
+    path = tmp_path / "sub_bad_severity.fif"
+    raw.save(str(path), verbose=False)
+    result = validate_recording(path, {"diagnosis_raw": "healthy", "severity_raw": "not-a-number"})
+    assert not result.ok
+    assert any("not a number" in r for r in result.reasons)
+
+
 def test_manifest_validation_rejects_bad_label():
     result = validate_recording(Path("nonexistent.edf"), {"diagnosis_raw": "maybe", "severity_raw": "1"})
     assert not result.ok
@@ -190,13 +214,58 @@ def test_study_b_regression_3_is_deterministic():
     rows = [
         {"file": f"s{i}", "group": "healthy" if i % 2 == 0 else "depressed",
          "quality_alpha_pct": float(rng.uniform(60, 100)),
-         "raw_severity_mean": float(rng.uniform(0, 1)), "faa": float(rng.normal())}
+         "clinical_severity": float(rng.uniform(0, 63)), "faa": float(rng.normal())}
         for i in range(12)
     ]
     df = rows_to_frame(rows)
     first = regression_3(df)
     second = regression_3(df)
     assert first == second
+
+
+def _severity_rows(rng, n=12, with_severity=True):
+    return [
+        {"file": f"s{i}", "group": "healthy" if i % 2 == 0 else "depressed",
+         "quality_alpha_pct": float(rng.uniform(60, 100)),
+         "clinical_severity": float(rng.uniform(0, 63)) if with_severity else None,
+         "faa": float(rng.normal())}
+        for i in range(n)
+    ]
+
+
+def test_study_b_regression_1_uses_clinical_severity_not_artifact_severity():
+    """Regression 1 must regress on the manifest's clinical severity (BDI/
+    HAM-D-like, external to the recording), not an EEG-derived quantity --
+    using the latter would make quality~severity circular, since quality is
+    itself computed from artifact severity (see study_b.py docstring)."""
+    from study_b import run_study_b
+
+    rng = np.random.default_rng(3)
+    rows = _severity_rows(rng)
+    result = run_study_b(rows)
+    assert result["regression_1_quality_on_group_severity"] is not None
+    assert result["regression_1_skipped_reason"] is None
+    assert "clinical_severity" in result["regression_1_quality_on_group_severity"]["params"]
+    assert result["n_with_severity"] == len(rows)
+
+
+def test_study_b_regression_1_skips_gracefully_without_severity():
+    """A batch with no severity data at all (e.g. Mumtaz/HUSM) must still
+    produce regressions 2/3, with regression 1 explicitly None + a reason --
+    not a crash, and not silently dropped rows."""
+    from study_b import run_study_b
+
+    rng = np.random.default_rng(4)
+    rows = _severity_rows(rng, with_severity=False)
+    result = run_study_b(rows)
+    assert result["regression_1_quality_on_group_severity"] is None
+    assert result["regression_1_skipped_reason"] is not None
+    assert result["n_with_severity"] == 0
+    # regressions 2/3 still ran over every row -- severity's absence didn't
+    # drop them from the rest of Study B.
+    assert result["n"] == len(rows)
+    assert result["regression_2_faa_on_group_quality"]["nobs"] == len(rows)
+    assert result["regression_3_quality_classifies_group"]["n"] == len(rows)
 
 
 if __name__ == "__main__":

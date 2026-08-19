@@ -70,7 +70,7 @@ def main():
         except Exception as e:
             print(f"  [ERROR] {r.filename}: {e}")
             continue
-        row.update(file=r.filename, group=r.diagnosis, severity=r.severity)
+        row.update(file=r.filename, group=r.diagnosis, clinical_severity=r.severity)
         base_rows.append(row)
         print(f"  {r.filename:28s} grade={row['grade']}  quality[alpha]={row['quality_alpha_pct']:5.1f}%  FAA={row['faa']:+.4f}")
 

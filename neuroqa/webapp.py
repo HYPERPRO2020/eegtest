@@ -283,6 +283,7 @@ def aggregate():
         base = dict(s["base"])
         base["file"] = s["filename"]
         base["group"] = s["group"]
+        base["clinical_severity"] = s.get("severity")
         base_rows.append(base)
 
         study_a = s.get("study_a")

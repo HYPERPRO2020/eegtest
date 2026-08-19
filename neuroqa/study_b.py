@@ -1,10 +1,15 @@
 """NeuroQA Study B — three regressions relating quality, severity, FAA, and group.
 
     1. quality ~ group + severity
-       Does the endpoint-aware (alpha) quality index track raw artifact
-       severity once group is accounted for, or does group leak into
-       quality on its own (which would be a red flag -- quality is supposed
-       to measure signal cleanliness, not depression status)?
+       Is contamination itself different between groups, once each
+       recording's own *clinical* severity (BDI/HAM-D or similar, from the
+       upload manifest -- see manifest.py) is controlled for? This is the
+       brief's Test B.1 and needs the diagnosis-side severity score, not a
+       property of the recording itself -- using an EEG-derived quantity
+       here (e.g. mean raw artifact severity) would make this regression
+       circular, since quality is itself computed from artifact severity.
+       Skipped (not silently substituted) when a batch has no severity data
+       at all -- see run_study_b.
     2. FAA ~ group + quality
        Does data quality confound the FAA-group relationship that's the
        whole reason FAA gets computed in the first place?
@@ -16,8 +21,8 @@
 Operates on an in-memory list of per-recording rows (one dict per accepted,
 successfully-scored upload) rather than reading fixed local CSVs -- the
 caller (pipeline.py) assembles that list from whatever the user uploaded.
-Each row needs: file, group ("healthy"/"depressed"), quality_alpha_pct,
-raw_severity_mean, faa.
+Each row needs: file, group ("healthy"/"depressed"), quality_alpha_pct, faa,
+and clinical_severity (may be None/NaN -- see run_study_b).
 """
 
 from __future__ import annotations
@@ -30,18 +35,38 @@ from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
 CV_SEED = 0
+MIN_PER_GROUP_FOR_SEVERITY = 2  # mirrors manifest.MIN_PER_GROUP -- below this,
+# a group's severity slice is too thin to regress on, not just "missing".
 
 
 def rows_to_frame(rows: list[dict]) -> pd.DataFrame:
+    """Base frame for regressions 2 and 3, which don't need severity."""
     df = pd.DataFrame(rows)
-    df = df.dropna(subset=["quality_alpha_pct", "raw_severity_mean", "faa", "group"])
+    if "clinical_severity" not in df.columns:
+        df["clinical_severity"] = np.nan
+    # Callers disagree on type (run_local.py passes a parsed float or None
+    # straight from manifest.py; webapp.py passes whatever raw JSON value the
+    # browser sent, which may be a numeric string or "") -- coerce once here
+    # rather than trusting every caller to normalize it themselves.
+    df["clinical_severity"] = pd.to_numeric(df["clinical_severity"], errors="coerce")
+    df = df.dropna(subset=["quality_alpha_pct", "faa", "group"])
     df["group_mdd"] = (df.group == "depressed").astype(int)
     return df.reset_index(drop=True)
 
 
+def severity_frame(df: pd.DataFrame) -> pd.DataFrame:
+    """Subset of `df` with a usable clinical_severity value, for regression 1
+    only. Separate from rows_to_frame's base frame so a batch with no
+    severity data (e.g. Mumtaz/HUSM's public deposit) doesn't lose every
+    recording from regressions 2/3 just because regression 1 can't run."""
+    return df.dropna(subset=["clinical_severity"]).reset_index(drop=True)
+
+
 def regression_1(df: pd.DataFrame):
-    """quality ~ group + severity"""
-    X = sm.add_constant(df[["group_mdd", "raw_severity_mean"]])
+    """quality ~ group + severity (clinical severity, not an EEG-derived
+    quantity -- see module docstring). Caller must pass severity_frame(df),
+    already filtered to rows with a real value."""
+    X = sm.add_constant(df[["group_mdd", "clinical_severity"]])
     y = df["quality_alpha_pct"]
     return sm.OLS(y, X).fit()
 
@@ -91,13 +116,26 @@ def run_study_b(rows: list[dict]) -> dict:
     """Run all three analyses over an uploaded batch's per-recording rows.
 
     Returns a JSON-safe dict: {n, regression_1, regression_2, regression_3,
-    finding}. `finding` is a short, honest, direction-agnostic statement --
-    see module docstring; this does not get tuned toward a dramatic result.
+    finding}. Regression 1 is None (with a `regression_1_skipped_reason`)
+    when too few recordings in this batch carry a clinical severity score --
+    reported honestly rather than silently dropped or faked. `finding` is a
+    short, honest, direction-agnostic statement -- see module docstring;
+    this does not get tuned toward a dramatic result.
     """
     df = rows_to_frame(rows)
-    m1 = regression_1(df)
     m2 = regression_2(df)
     r3 = regression_3(df)
+
+    sev_df = severity_frame(df)
+    sev_counts = sev_df.groupby("group_mdd").size() if len(sev_df) else pd.Series(dtype=int)
+    enough_for_severity = (sev_counts >= MIN_PER_GROUP_FOR_SEVERITY).sum() >= 2 if len(sev_counts) else False
+    m1 = regression_1(sev_df) if enough_for_severity else None
+    skip_reason = None if enough_for_severity else (
+        "no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs "
+        f"at least {MIN_PER_GROUP_FOR_SEVERITY} recordings per group with a severity value"
+        if len(sev_df) == 0 else
+        f"only {len(sev_df)} recording(s) in this batch carry a severity score -- too few to regress on"
+    )
 
     group_coef_p = m2.pvalues.get("group_mdd", 1.0)
     quality_coef_p = m2.pvalues.get("quality_alpha_pct", 1.0)
@@ -123,7 +161,9 @@ def run_study_b(rows: list[dict]) -> dict:
 
     return {
         "n": int(len(df)),
-        "regression_1_quality_on_group_severity": _ols_summary(m1),
+        "n_with_severity": int(len(sev_df)),
+        "regression_1_quality_on_group_severity": _ols_summary(m1) if m1 is not None else None,
+        "regression_1_skipped_reason": skip_reason,
         "regression_2_faa_on_group_quality": _ols_summary(m2),
         "regression_3_quality_classifies_group": r3,
         "finding": finding,

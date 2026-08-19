@@ -10,7 +10,13 @@ local dataset directory.
 
 Requirements enforced (see project brief, "Upload requirements"):
   - labeled          -- a manifest row with a recognized diagnosis value
-  - has severity      -- a numeric severity score in the manifest row
+  - severity          -- soft-required: a numeric severity score if the
+                         manifest row provides one; a missing value is a
+                         WARNING (accepted, Test B.1 skipped for it in
+                         study_b.py -- some real public datasets, e.g.
+                         Mumtaz/HUSM's deposit, ship only a diagnosis label),
+                         but a present, unparseable value is still a hard
+                         rejection -- see validate_recording.
   - includes F3/F4    -- required for FAA; hard-checked after channel-name
                          canonicalization (raw files spell channels very
                          differently: "EEG F3-Ref", "F3.", "F3-LE", ...)
@@ -272,10 +278,23 @@ def validate_recording(path: Path, manifest_row: dict | None) -> ValidationResul
             result.diagnosis = diagnosis
 
         severity_raw = manifest_row.get("severity_raw", "")
-        try:
-            result.severity = float(severity_raw)
-        except (TypeError, ValueError):
-            result.reasons.append(f"severity score '{severity_raw}' is not a number")
+        if not severity_raw:
+            # Missing is different from garbage: a dataset that genuinely has
+            # no clinical severity (e.g. Mumtaz/HUSM's public deposit, which
+            # ships only a diagnosis label) is still usable for Study A and
+            # Study B's non-severity analyses -- only Test B.1
+            # (quality~group+severity) needs this value, and study_b.py skips
+            # that one test gracefully when it's absent. A present-but-bogus
+            # value (a typo, wrong column) is still a hard rejection below.
+            result.warnings.append(
+                "no severity score provided -- accepted, but Test B.1 "
+                "(quality ~ group + severity) will be skipped for this recording"
+            )
+        else:
+            try:
+                result.severity = float(severity_raw)
+            except (TypeError, ValueError):
+                result.reasons.append(f"severity score '{severity_raw}' is not a number")
 
     if path.suffix.lower() not in SUPPORTED_SUFFIXES:
         result.reasons.append(

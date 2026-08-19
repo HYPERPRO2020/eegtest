@@ -65,12 +65,17 @@ output).
 - `artifact_detectors.py` — the six Step 3 detectors (severity in [0, 1]).
 - `quality_index.py` — the endpoint-aware penalty/quality computation.
 - `faa.py` — frontal alpha asymmetry, optionally quality-weighted.
-- `manifest.py` — upload validation: labeled, has severity, F3/F4 present,
-  heuristic "still looks raw, not already cleaned/re-referenced" checks.
+- `manifest.py` — upload validation: labeled, F3/F4 present, heuristic
+  "still looks raw, not already cleaned/re-referenced" checks. Severity is
+  soft-required (a present-but-bad value hard-fails; a genuinely absent one
+  just warns and disables Test B.1 for that batch, see study_b.py).
 - `preprocess.py` — channel-name canonicalization, filtering, epoching.
 - `score.py` — runs the detectors + quality index across every band.
 - `study_a.py` — the 5-pipeline x 2-reference FAA sweep, per recording.
 - `study_b.py` — the three group/quality/severity/FAA regressions.
+  Regression 1 (quality~group+severity) uses each recording's *clinical*
+  severity from the manifest, not an EEG-derived quantity, and is skipped
+  (not faked) for batches that have none.
 - `pipeline.py` — ties the above together; imported by both `run_local.py`
   and `webapp.py`'s `/api/*` routes, so there's exactly one implementation
   of "how a recording gets scored," not one per entry point.
