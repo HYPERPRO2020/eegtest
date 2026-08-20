@@ -19,6 +19,8 @@ deliverable") plus the secondary-check scope agreed with the user:
 Run: python scripts/build_notebook.py   (writes the .ipynb, unexecuted)
 Then execute with nbclient (see scripts/execute_notebook.py).
 """
+from pathlib import Path
+
 import nbformat as nbf
 
 nb = nbf.v4.new_notebook()
