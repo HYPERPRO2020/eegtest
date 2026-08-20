@@ -18,6 +18,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from pathlib import Path
 
+from faa_classifiers import classify_by_pipeline
 from manifest import BatchValidationResult, ValidationResult
 from score import score_recording
 from study_a import PIPELINES, REFERENCES, run_all_pipelines, spread_stats
@@ -101,12 +102,17 @@ def aggregate(base_rows: list[dict], study_a_rows: list[dict]) -> dict:
     """
     study_a_result = spread_stats(study_a_rows) if study_a_rows else {"long": [], "wide": [], "combo_cols": []}
     study_b_result = run_study_b(base_rows) if base_rows else {"n": 0}
+    # Peter's ask: 4-5 independent FAA-only classifiers, one per Study A
+    # pipeline, that don't share data with each other -- see
+    # faa_classifiers.py's module docstring.
+    faa_classifiers_result = classify_by_pipeline(study_a_rows) if study_a_rows else {}
     return {
         "seed": SEED,
         "n_recordings": len(base_rows),
         "n_study_a_recordings": len({r["file"] for r in study_a_rows}) if study_a_rows else 0,
         "study_a": study_a_result,
         "study_b": study_b_result,
+        "faa_classifiers_by_pipeline": faa_classifiers_result,
     }
 
 

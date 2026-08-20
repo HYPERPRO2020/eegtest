@@ -180,8 +180,10 @@ power, see `pipeline.py`). **Red flag:** a big swing across pipelines means the 
 conclusion is substantially a preprocessing artifact, not a robust finding.""")
 
 code(r"""study_a_wide = {}
+all_results = {}
 for name in DATASETS:
     results = json.loads((DATASETS[name]["out_dir"] / "results.json").read_text())
+    all_results[name] = results
     wide = pd.DataFrame(results["study_a"]["wide"])
     study_a_wide[name] = wide
     print(f"--- {DATASETS[name]['label']}: {len(wide)} recordings x "
@@ -198,6 +200,47 @@ ax.set_title("Test A: pipeline-sensitivity spread")
 plt.xticks(rotation=10, ha="right", fontsize=8)
 fig.tight_layout()
 fig.savefig(FIG_DIR / "study_a_faa_spread.png", dpi=120)
+plt.show()""")
+
+md(r"""## 4b. Five independent FAA-only classifiers, one per pipeline
+
+A request from Peter (domain): not just "how much does FAA move across pipelines" (Test A above),
+but 4-5 *independent* classifiers — one per preprocessing pipeline, each one only using that
+pipeline's own FAA number to guess depressed/healthy, none sharing data or influencing each
+other — with a result reported for each (`faa_classifiers.classify_by_pipeline`, wired into
+`pipeline.aggregate()` so it's part of every run's `results.json` going forward, not a one-off
+script). Runs on the same bounded Study A subsample (12 recordings) as Test A, so treat n=12
+results as indicative, not conclusive — same statistical-power caveat as Test A.""")
+
+code(r"""clf_rows = []
+for name in DATASETS:
+    clf = all_results[name]["faa_classifiers_by_pipeline"]
+    print(f"--- {DATASETS[name]['label']} ---")
+    for pipeline_name, r in clf.items():
+        if "error" in r:
+            print(f"  {pipeline_name:12s} SKIPPED -- {r['error']}")
+            continue
+        print(f"  {pipeline_name:12s} accuracy={r['accuracy']:.2f}  AUC={r['auc']:.2f}  "
+              f"(baseline {r['baseline']:.2f}, n={r['n']})")
+        clf_rows.append({"dataset": name, "pipeline": pipeline_name, **r})
+    print()
+clf_df = pd.DataFrame(clf_rows)
+display(clf_df)""")
+
+code(r"""fig, ax = plt.subplots(figsize=(8, 4))
+width = 0.35
+x = np.arange(len(PIPELINES := ["raw", "ica", "generic", "autoreject", "ours"]))
+for i, name in enumerate(DATASETS):
+    sub = clf_df[clf_df.dataset == name].set_index("pipeline").reindex(PIPELINES)
+    ax.bar(x + i * width, sub["auc"], width, label=DATASETS[name]["label"])
+ax.axhline(0.5, color="gray", linestyle="--", linewidth=1, label="chance")
+ax.set_xticks(x + width / 2)
+ax.set_xticklabels(PIPELINES)
+ax.set_ylabel("AUC (5-fold CV)")
+ax.set_title("Per-pipeline FAA-only classifier: does any single pipeline's FAA predict group?")
+ax.legend(fontsize=8)
+fig.tight_layout()
+fig.savefig(FIG_DIR / "faa_classifiers_by_pipeline.png", dpi=120)
 plt.show()""")
 
 md(r"""## 5. Test B — is contamination itself tied to diagnosis?
@@ -282,6 +325,10 @@ md(r"""## 7. Caveats — read before citing any of the above
 - **Statistical power**: FAA effects are known to be small in the literature; a null result on
   B.1/B confound/B.2 is informative but not proof of absence, and is reported here rather than
   hidden either way, per the brief's own instruction.
+- **The 5 per-pipeline classifiers (Part 4b) run on n=12** (Test A's bounded subsample) — every
+  AUC came back at or below chance in both datasets, consistent with the rest of this notebook's
+  null finding, but n=12 is too small to rule out a real small effect. Raise
+  `pipeline.STUDY_A_N_PER_GROUP` and re-run if this needs to be more than indicative.
 - **Causal/streaming version** (feeding the quality index a recording sample-by-sample, no
   look-ahead) is explicitly a later, optional stretch per the brief — not required for this
   notebook's finding, and not implemented here.""")

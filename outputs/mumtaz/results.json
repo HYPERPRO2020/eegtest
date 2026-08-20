@@ -1094,5 +1094,42 @@
       "leakage_flag": false
     },
     "finding": "no strong evidence either way in this sample (group and/or quality effects on FAA are not significant at p<0.05) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
+  },
+  "faa_classifiers_by_pipeline": {
+    "raw": {
+      "accuracy": 0.3333333333333333,
+      "auc": 0.3055555555555556,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    },
+    "ica": {
+      "accuracy": 0.3333333333333333,
+      "auc": 0.3055555555555556,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    },
+    "generic": {
+      "accuracy": 0.3333333333333333,
+      "auc": 0.3888888888888889,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    },
+    "autoreject": {
+      "accuracy": 0.4166666666666667,
+      "auc": 0.3888888888888889,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    },
+    "ours": {
+      "accuracy": 0.3333333333333333,
+      "auc": 0.3888888888888889,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    }
   }
 }

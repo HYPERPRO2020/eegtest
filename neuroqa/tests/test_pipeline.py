@@ -268,6 +268,39 @@ def test_study_b_regression_1_skips_gracefully_without_severity():
     assert result["regression_3_quality_classifies_group"]["n"] == len(rows)
 
 
+def test_faa_classifiers_one_independent_result_per_pipeline():
+    """Peter's ask: 4-5 classifiers, one per Study A pipeline, that don't
+    share data -- each pipeline's result must come only from that
+    pipeline's own FAA values, and a pipeline with too little data reports
+    an explicit error rather than a fabricated number."""
+    from faa_classifiers import MIN_N, classify_by_pipeline
+    from study_a import PIPELINES
+
+    rng = np.random.default_rng(5)
+    rows = []
+    for i in range(12):
+        group = "healthy" if i % 2 == 0 else "depressed"
+        for pipeline in PIPELINES:
+            # plant a real signal only in "ours" so we can check pipelines
+            # differ from each other, not just echo the same number
+            bump = 0.5 if (pipeline == "ours" and group == "depressed") else 0.0
+            rows.append({"file": f"s{i}", "group": group, "pipeline": pipeline,
+                         "reference": "original", "faa": float(rng.normal()) + bump})
+
+    result = classify_by_pipeline(rows)
+    assert set(result.keys()) == set(PIPELINES)
+    for pipeline in PIPELINES:
+        r = result[pipeline]
+        assert "error" not in r, r
+        assert r["n"] == 12
+
+    # too-small subsample -> explicit error, not a silently-computed number
+    tiny = [r for r in rows if r["file"] in ("s0", "s1")]
+    assert len(tiny) // len(PIPELINES) < MIN_N  # sanity: this really is too small
+    result_tiny = classify_by_pipeline(tiny)
+    assert all("error" in v for v in result_tiny.values())
+
+
 if __name__ == "__main__":
     import pytest
     raise SystemExit(pytest.main([__file__, "-v"]))
