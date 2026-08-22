@@ -138,7 +138,6 @@ def run_study_b(rows: list[dict]) -> dict:
     )
 
     group_coef_p = m2.pvalues.get("group_mdd", 1.0)
-    quality_coef_p = m2.pvalues.get("quality_alpha_pct", 1.0)
     if r3["leakage_flag"]:
         finding = (
             "quality alone predicts group meaningfully above chance "
@@ -146,7 +145,7 @@ def run_study_b(rows: list[dict]) -> dict:
             "that's a leakage warning: the group difference in FAA may be substantially "
             "a contamination artifact rather than a brain-signal difference."
         )
-    elif group_coef_p < 0.05 and quality_coef_p < 0.05:
+    elif group_coef_p < 0.05:
         finding = (
             "group predicts FAA independent of quality, and quality alone doesn't predict "
             "group above chance -- consistent with FAA carrying real signal in this sample, "
@@ -154,9 +153,9 @@ def run_study_b(rows: list[dict]) -> dict:
         )
     else:
         finding = (
-            "no strong evidence either way in this sample (group and/or quality effects on "
-            "FAA are not significant at p<0.05) -- treat this as inconclusive, not as support "
-            "for either an artifact or a real-signal reading of FAA."
+            "no strong evidence either way in this sample (group's effect on FAA is not "
+            "significant at p<0.05, controlling for quality) -- treat this as inconclusive, "
+            "not as support for either an artifact or a real-signal reading of FAA."
         )
 
     return {

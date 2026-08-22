@@ -278,6 +278,35 @@ def test_study_b_regression_1_uses_clinical_severity_not_artifact_severity():
     assert result["n_with_severity"] == len(rows)
 
 
+def test_study_b_finding_reports_real_signal_when_group_significant_and_no_leakage():
+    """A batch where group significantly predicts FAA (controlling for
+    quality) and quality-alone doesn't leak group must report the
+    real-signal finding -- regardless of whether quality's OWN coefficient
+    in that same regression happens to be significant. A prior version
+    required both group AND quality coefficients to be significant, which
+    contradicted the finding text it printed ("quality alone doesn't
+    predict group above chance" describes the B.2 leakage check, already
+    handled by the branch above -- not regression 2's quality coefficient)
+    and meant a real, non-confounded group-FAA relationship (confirmed on
+    real data, ds007615) was reported as "inconclusive"."""
+    from study_b import run_study_b
+
+    rng = np.random.default_rng(11)
+    n = 40
+    group = ["healthy" if i % 2 == 0 else "depressed" for i in range(n)]
+    quality = rng.uniform(85, 100, size=n)  # unrelated to group by construction
+    # FAA carries a real, large group effect and is NOT related to quality
+    faa = [(-1.0 if g == "healthy" else 1.0) + rng.normal(0, 0.05) for g in group]
+    rows = [{"file": f"s{i}", "group": group[i], "quality_alpha_pct": float(quality[i]),
+             "clinical_severity": float(rng.uniform(0, 40)), "faa": float(faa[i])}
+            for i in range(n)]
+
+    result = run_study_b(rows)
+    assert not result["regression_3_quality_classifies_group"]["leakage_flag"]
+    assert result["regression_2_faa_on_group_quality"]["pvalues"]["group_mdd"] < 0.05
+    assert "real signal" in result["finding"], result["finding"]
+
+
 def test_study_b_regression_1_skips_gracefully_without_severity():
     """A batch with no severity data at all (e.g. Mumtaz/HUSM) must still
     produce regressions 2/3, with regression 1 explicitly None + a reason --
