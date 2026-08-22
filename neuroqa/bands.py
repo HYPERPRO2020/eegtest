@@ -77,3 +77,33 @@ def spectral_overlap(artifact_band: Band, endpoint_band: Band) -> float:
         return 0.0
     intersection = min(a_hi, e_hi) - max(a_lo, e_lo)
     return max(0.0, min(1.0, intersection / width))
+
+
+MIN_WELCH_RESOLUTION_HZ = 0.5  # see welch_nperseg
+
+
+def welch_nperseg(sfreq: float, n_samples: int, target_resolution_hz: float = MIN_WELCH_RESOLUTION_HZ) -> int:
+    """Pick a Welch nperseg that won't silently zero out a narrow band.
+
+    A fixed nperseg=512 (this pipeline's original default, still fine at the
+    256/500 Hz sample rates it was tuned against) gives frequency resolution
+    sfreq/nperseg -- at 2048 Hz that's 4 Hz/bin, coarse enough that the
+    narrowest bands here (cardiac's 0.8-2.0 Hz band and its 0.3-0.8 Hz
+    surround sub-band, line_noise's 49-51 Hz band) can land entirely between
+    two bins and select zero of them. `psd[:, :, empty_mask].mean()` is then
+    a mean of an empty slice -> NaN, which silently propagates through the
+    quality index and FAA all the way to a whole recording scoring "grade=F,
+    quality=nan%" -- confirmed against a real 2048 Hz recording (ds007615),
+    not a hypothetical.
+
+    Fix: only scale nperseg *up* from 512 when the sample rate demands finer
+    resolution than 512 alone provides, targeting `target_resolution_hz`
+    (default 0.5 Hz -- half the width of the narrowest band above, chosen
+    empirically so every band here keeps at least one real bin at 256, 500,
+    and 2048 Hz, see the module's test coverage). Never exceeds n_samples
+    (Welch can't use a window bigger than the data), and never goes below
+    512 -- this must be a no-op for the 256/500 Hz recordings the detectors'
+    variance/false-positive behavior was already tuned against.
+    """
+    target = int(sfreq / target_resolution_hz)
+    return min(n_samples, max(512, target))

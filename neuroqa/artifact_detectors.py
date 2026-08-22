@@ -23,6 +23,8 @@ from __future__ import annotations
 import numpy as np
 from scipy.signal import welch
 
+from bands import welch_nperseg
+
 # ---- PLACEHOLDER thresholds — replace once the taxonomy doc lands ----------
 THRESHOLDS = {
     "eog_ptp_uv": 100.0,          # frontal peak-to-peak amplitude, blink/saccade
@@ -54,7 +56,7 @@ def detect_eog(data: np.ndarray, ch_names: list[str], sfreq: float) -> np.ndarra
 
 def detect_emg(data: np.ndarray, ch_names: list[str], sfreq: float) -> np.ndarray:
     """Muscle: elevated relative power in the 20-45 Hz band."""
-    freqs, psd = welch(data, fs=sfreq, nperseg=min(512, data.shape[-1]), axis=-1)
+    freqs, psd = welch(data, fs=sfreq, nperseg=welch_nperseg(sfreq, data.shape[-1]), axis=-1)
     hi = (freqs >= 20) & (freqs <= 45)
     rel_power = psd[:, :, hi].sum(axis=2) / (psd.sum(axis=2) + 1e-20)
     return _score(rel_power, THRESHOLDS["emg_rel_power"])
@@ -71,7 +73,7 @@ def detect_pop(data: np.ndarray, ch_names: list[str], sfreq: float) -> np.ndarra
 def detect_line_noise(data: np.ndarray, ch_names: list[str], sfreq: float) -> np.ndarray:
     """Residual line noise the notch filter didn't fully remove: power right
     at 50 Hz well above its immediate neighbors."""
-    freqs, psd = welch(data, fs=sfreq, nperseg=min(512, data.shape[-1]), axis=-1)
+    freqs, psd = welch(data, fs=sfreq, nperseg=welch_nperseg(sfreq, data.shape[-1]), axis=-1)
     line = (freqs >= 49) & (freqs <= 51)
     neighbor = ((freqs >= 45) & (freqs < 49)) | ((freqs > 51) & (freqs <= 55))
     line_power = psd[:, :, line].mean(axis=2)
@@ -109,7 +111,7 @@ def detect_cardiac(data: np.ndarray, ch_names: list[str], sfreq: float) -> np.nd
     "peakiness near 1 Hz" with genuine cardiac contamination. Treat its flags
     as the lowest-confidence of the six until the taxonomy doc gives a
     sharper method or a real ECG channel becomes available."""
-    freqs, psd = welch(data, fs=sfreq, nperseg=min(512, data.shape[-1]), axis=-1)
+    freqs, psd = welch(data, fs=sfreq, nperseg=welch_nperseg(sfreq, data.shape[-1]), axis=-1)
     band = (freqs >= 0.8) & (freqs <= 2.0)
     surround = (freqs >= 0.3) & (freqs < 0.8) | (freqs > 2.0) & (freqs <= 3.0)
     peak_power = psd[:, :, band].mean(axis=2)

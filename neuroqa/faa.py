@@ -25,7 +25,7 @@ from __future__ import annotations
 import numpy as np
 from scipy.signal import welch
 
-from bands import EEG_BANDS
+from bands import EEG_BANDS, welch_nperseg
 
 F3, F4 = "F3", "F4"
 ALPHA_BAND = EEG_BANDS["alpha"]
@@ -36,7 +36,7 @@ def alpha_power(data: np.ndarray, ch_names: list[str], sfreq: float) -> np.ndarr
 
     data: (n_epochs, n_channels, n_samples). Returns (n_epochs, n_channels).
     """
-    freqs, psd = welch(data, fs=sfreq, nperseg=min(512, data.shape[-1]), axis=-1)
+    freqs, psd = welch(data, fs=sfreq, nperseg=welch_nperseg(sfreq, data.shape[-1]), axis=-1)
     band = (freqs >= ALPHA_BAND[0]) & (freqs <= ALPHA_BAND[1])
     return psd[:, :, band].mean(axis=2)
 

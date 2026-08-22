@@ -189,6 +189,35 @@ def test_faa_quality_weighting_pulls_toward_the_cleaner_epochs():
     assert not np.isclose(flat["faa"], weighted["faa"]) or n_epochs == 1
 
 
+def test_welch_nperseg_keeps_narrow_bands_non_empty_at_high_sample_rates():
+    """A fixed nperseg=512 gives 4 Hz/bin resolution at 2048 Hz -- coarse
+    enough that the cardiac band (0.8-2.0 Hz) and its 0.3-0.8 Hz surround
+    sub-band, and line_noise's 49-51 Hz band, can select zero PSD bins,
+    producing mean-of-empty-slice NaN. Confirmed against a real 2048 Hz
+    recording (ds007615) before this fix -- not a hypothetical. Every
+    sample rate this pipeline has actually seen (256/500/2048 Hz) must keep
+    at least one real bin in the narrowest band used anywhere."""
+    from bands import welch_nperseg
+    from scipy.signal import welch as scipy_welch
+
+    narrow_bands = [(0.8, 2.0), (0.3, 0.8), (2.0, 3.0), (49.0, 51.0)]
+    for sfreq in (256.0, 500.0, 2048.0):
+        n_samples = int(sfreq * 4.0)  # this pipeline's epoch length
+        nperseg = welch_nperseg(sfreq, n_samples)
+        freqs, _ = scipy_welch(np.zeros(n_samples), fs=sfreq, nperseg=nperseg)
+        for lo, hi in narrow_bands:
+            n_bins = int(((freqs >= lo) & (freqs <= hi)).sum())
+            assert n_bins > 0, f"sfreq={sfreq}: band ({lo},{hi}) has zero bins at nperseg={nperseg}"
+    # must be a no-op at 256 Hz specifically -- nperseg=512 already gives
+    # 0.5 Hz resolution there, exactly this function's target, so the
+    # detectors' variance/false-positive behavior at that rate (see
+    # artifact_detectors.detect_cardiac's docstring) is unaffected.
+    assert welch_nperseg(256.0, 1024) == 512
+    # never below the original 512 floor, and never above what's available
+    assert welch_nperseg(500.0, 2000) >= 512
+    assert welch_nperseg(2048.0, 8192) <= 8192
+
+
 def test_score_and_faa_is_deterministic(tmp_path):
     """Reproducibility: the same uploaded recording must score identically
     on repeat runs (no unseeded randomness in the default scoring path)."""
