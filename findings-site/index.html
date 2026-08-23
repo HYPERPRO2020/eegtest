@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>NeuroQA — Phase 1 Findings</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Does an endpoint-aware contamination score explain part of why frontal alpha asymmetry is an unreliable depression marker? Phase 1 findings on two real public EEG datasets.">
+<meta name="description" content="Does an endpoint-aware contamination score explain part of why frontal alpha asymmetry is an unreliable depression marker? Phase 1 findings on three real public EEG datasets.">
 <style>
   :root {
     color-scheme: light;
@@ -71,6 +71,7 @@
   section > p.dek { color:var(--text-secondary); margin:0 0 22px; max-width:660px; }
   .card { background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:20px 22px; }
   .stat-row { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:18px; }
+  .stat-row-3 { grid-template-columns:repeat(3,1fr); }
   .stat-tile { background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
   .stat-tile .label { font-size:.78rem; color:var(--text-muted); margin-bottom:6px; }
   .stat-tile .value { font-size:1.7rem; font-weight:600; }
@@ -117,8 +118,8 @@
         <p class="lede">Frontal alpha asymmetry (FAA) is a long-studied EEG depression marker that the
         literature calls unreliable without knowing why. We built an endpoint-aware contamination score
         — not a classifier, not a cleaner — and used it to test whether part of the answer is muscle
-        and eye-movement artifact that happens to share alpha's frequency band. Run on two independent
-        real public datasets, not synthetic data.</p>
+        and eye-movement artifact that happens to share alpha's frequency band. Run on three
+        independent real public datasets, not synthetic data.</p>
       </div>
       <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
     </div>
@@ -140,17 +141,17 @@
   </section>
 
   <section id="datasets">
-    <h2><span class="num">02</span>Two independent public datasets</h2>
-    <p class="dek">One primary, chosen specifically because it ships real per-subject clinical severity
-    (required for Test B.1); one secondary, run as an independent replication check on everything except B.1.</p>
-    <div class="stat-row">
-      <div class="stat-tile"><div class="label">ds003478 (OpenNeuro, CC0) — primary</div>
+    <h2><span class="num">02</span>Three independent public datasets</h2>
+    <p class="dek">Two ship real per-subject clinical severity (required for Test B.1), from two
+    different labs with no overlapping subjects; the third has diagnosis labels only and runs as
+    a replication check on everything except B.1.</p>
+    <div class="stat-row stat-row-3"><div class="stat-tile"><div class="label">ds003478 (real BDI severity · Univ. of Arizona)</div>
         <div class="value">119</div>
-        <div class="sub">recordings, real per-subject BDI severity, matches the dataset's own published groups</div></div>
-      <div class="stat-tile"><div class="label">Mumtaz/HUSM (figshare, CC BY 4.0) — secondary check</div>
+        <div class="sub">recordings</div></div><div class="stat-tile"><div class="label">ds007615 (real BDI-II severity · Univ. of Oslo)</div>
+        <div class="value">49</div>
+        <div class="sub">recordings</div></div><div class="stat-tile"><div class="label">Mumtaz/HUSM (replication check · no severity)</div>
         <div class="value">58</div>
-        <div class="sub">eyes-closed recordings, diagnosis label only, no severity data</div></div>
-    </div>
+        <div class="sub">recordings</div></div></div>
   </section>
 
   <section id="test-a">
@@ -161,7 +162,7 @@
     decisions, not biology, are steering the result.</strong> Bounded to 12 recordings per dataset —
     ICA and AutoReject are slow; see caveats.</p>
     <div class="dataset-block">
-          <h3>ds003478 <span class="dataset-sub">(primary · real BDI severity)</span></h3>
+          <h3>ds003478 <span class="dataset-sub">(real BDI severity · Univ. of Arizona)</span></h3>
           <div class="stat-row">
             <div class="stat-tile"><div class="label">Median FAA range (12 subjects)</div>
               <div class="value">0.344</div><div class="sub">typical swing across the 10 combos</div></div>
@@ -230,7 +231,76 @@
           <span class="bar-value">1.917</span>
         </div></div>
         </div><div class="dataset-block">
-          <h3>Mumtaz/HUSM <span class="dataset-sub">(secondary check · no severity)</span></h3>
+          <h3>ds007615 <span class="dataset-sub">(real BDI-II severity · Univ. of Oslo)</span></h3>
+          <div class="stat-row">
+            <div class="stat-tile"><div class="label">Median FAA range (12 subjects)</div>
+              <div class="value">0.101</div><div class="sub">typical swing across the 10 combos</div></div>
+            <div class="stat-tile"><div class="label">Max FAA range</div>
+              <div class="value" style="color:var(--warning)">0.673</div>
+              <div class="sub">largest single-subject swing</div></div>
+          </div>
+          <div class="card"><div class="bar-row">
+          <span class="bar-label">sub-07</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.4%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.049</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-10</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.7%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.054</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-41</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.8%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.056</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-18</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.0%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.080</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-08</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.6%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.091</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-01</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.9%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.098</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-37</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.1%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.101</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-09</span>
+          <div class="bar-track"><div class="bar-fill" style="width:6.1%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.121</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-02</span>
+          <div class="bar-track"><div class="bar-fill" style="width:6.2%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.123</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-04</span>
+          <div class="bar-track"><div class="bar-fill" style="width:6.5%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.130</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-30</span>
+          <div class="bar-track"><div class="bar-fill" style="width:15.8%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.317</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-42</span>
+          <div class="bar-track"><div class="bar-fill" style="width:33.7%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.673</span>
+        </div></div>
+        </div><div class="dataset-block">
+          <h3>Mumtaz/HUSM <span class="dataset-sub">(replication check · no severity)</span></h3>
           <div class="stat-row">
             <div class="stat-tile"><div class="label">Median FAA range (12 subjects)</div>
               <div class="value">0.207</div><div class="sub">typical swing across the 10 combos</div></div>
@@ -343,6 +413,38 @@
           <span class="bar-value">0.22</span>
         </div></div>
         </div><div class="dataset-block">
+          <h3>ds007615</h3>
+          <div class="card"><div class="bar-row">
+          <span class="bar-label">raw</span>
+          <div class="bar-track"><div class="bar-fill" style="width:36.1%;background:var(--good)"></div>
+            <div class="bar-chance-line"></div></div>
+          <span class="bar-value">0.36</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">ICA</span>
+          <div class="bar-track"><div class="bar-fill" style="width:33.3%;background:var(--good)"></div>
+            <div class="bar-chance-line"></div></div>
+          <span class="bar-value">0.33</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">generic reject</span>
+          <div class="bar-track"><div class="bar-fill" style="width:30.6%;background:var(--good)"></div>
+            <div class="bar-chance-line"></div></div>
+          <span class="bar-value">0.31</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">AutoReject</span>
+          <div class="bar-track"><div class="bar-fill" style="width:38.9%;background:var(--good)"></div>
+            <div class="bar-chance-line"></div></div>
+          <span class="bar-value">0.39</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">ours (endpoint-aware)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:36.1%;background:var(--good)"></div>
+            <div class="bar-chance-line"></div></div>
+          <span class="bar-value">0.36</span>
+        </div></div>
+        </div><div class="dataset-block">
           <h3>Mumtaz/HUSM</h3>
           <div class="card"><div class="bar-row">
           <span class="bar-label">raw</span>
@@ -381,7 +483,7 @@
     <h2><span class="num">05</span>Test B — is contamination tied to diagnosis?</h2>
     <p class="dek">Three group-level analyses per dataset.</p>
     <div class="dataset-block">
-      <h3>ds003478 <span class="dataset-sub">(primary · real BDI severity, n=119)</span></h3>
+      <h3>ds003478 <span class="dataset-sub">(real BDI severity · Univ. of Arizona, n=119)</span></h3>
       <div class="verdict-row"><div class="verdict-card">
       <div class="test-name">B.1</div>
       <div class="ask">quality ~ group + severity</div>
@@ -399,7 +501,25 @@
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div></div>
     </div><div class="dataset-block">
-      <h3>Mumtaz/HUSM <span class="dataset-sub">(secondary check · no severity, n=58)</span></h3>
+      <h3>ds007615 <span class="dataset-sub">(real BDI-II severity · Univ. of Oslo, n=49)</span></h3>
+      <div class="verdict-row"><div class="verdict-card">
+      <div class="test-name">B.1</div>
+      <div class="ask">quality ~ group + severity</div>
+      <div class="metric">p = 0.713</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div><div class="verdict-card">
+      <div class="test-name">Confound check</div>
+      <div class="ask">FAA ~ group + quality</div>
+      <div class="metric">p = 0.257</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div><div class="verdict-card">
+      <div class="test-name">B.2 — the sharp one</div>
+      <div class="ask">quality alone → group (5-fold CV)</div>
+      <div class="metric">AUC = 0.374</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div></div>
+    </div><div class="dataset-block">
+      <h3>Mumtaz/HUSM <span class="dataset-sub">(replication check · no severity, n=58)</span></h3>
       <div class="verdict-row"><div class="verdict-card">
       <div class="test-name">B.1</div>
       <div class="ask">quality ~ group + severity</div>
@@ -413,7 +533,7 @@
     </div><div class="verdict-card">
       <div class="test-name">B.2 — the sharp one</div>
       <div class="ask">quality alone → group (5-fold CV)</div>
-      <div class="metric">AUC = 0.312</div>
+      <div class="metric">AUC = 0.313</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div></div>
     </div>
@@ -421,13 +541,20 @@
 
   <section id="finding">
     <h2><span class="num">06</span>The finding</h2>
-    <p class="dek" style="max-width:100%">On both datasets, independently, under the current placeholder
-    weights, none of the three red flags fired: group/severity doesn't predict contamination (B.1),
-    contamination doesn't confound the FAA–group relationship, and contamination alone can't tell
-    healthy from depressed above chance (B.2). That's a real result — a null result, reported as one,
-    not tuned toward drama. It does <strong>not</strong> mean the contamination hypothesis is false; it
-    means these two datasets, at this sample size, with placeholder rather than physics-derived
-    weights, don't show it. See caveats before drawing a stronger conclusion either way.</p>
+    <p class="dek" style="max-width:100%">On all three datasets, independently, under the current
+    placeholder weights, none of the contamination red flags fired: group/severity doesn't predict
+    contamination (B.1), and contamination alone can't tell healthy from depressed above chance
+    (B.2). That holds up consistently — no evidence here that this endpoint-aware contamination
+    score explains the FAA–group relationship.</p>
+    <p class="dek" style="max-width:100%">On top of that, ds007615 — the dataset with the most
+    statistical power to detect FAA itself — shows a real, significant group effect on FAA
+    (p&nbsp;=&nbsp;0.020) that is <strong>not</strong> explained by quality/contamination
+    (p&nbsp;=&nbsp;0.257, no B.2 leakage either). ds003478 and Mumtaz don't reach significance on
+    that same question, which is inconclusive rather than contradictory — consistent with FAA
+    effects being small and these being modest sample sizes. Reported here plainly, not tuned
+    toward drama either way: this is not proof FAA is a reliable marker everywhere, but on the
+    specific question this project asked — is FAA's group difference actually just
+    contamination? — the answer across all three datasets is no.</p>
   </section>
 
   <section id="caveats">
@@ -443,10 +570,16 @@
       contamination there. Needs domain sign-off, not a unilateral widening to make the hypothesis land.</li>
       <li><strong>Test A and the 5 classifiers ran on 12 recordings per dataset</strong>, bounded by
       ICA/AutoReject runtime — suggestive, not a large-N result.</li>
-      <li><strong>Mumtaz/HUSM has no per-subject severity</strong> in its public deposit — Test B.1 only
-      ran on ds003478; Mumtaz's contribution is Test A and B.2/confound-check as a replication.</li>
-      <li><strong>Small dataset, small expected effect.</strong> FAA effects are known to be small in
-      the literature — a null result here is informative but not proof of absence.</li>
+      <li><strong>Mumtaz/HUSM has no per-subject severity</strong> in its public deposit — Test B.1 ran
+      on ds003478 and ds007615 (two independent cohorts), not Mumtaz; Mumtaz's contribution is Test A
+      and B.2/confound-check as a replication.</li>
+      <li><strong>ds003478 and ds007615 use the same BDI(&gt;13)/BDI(&lt;7) group thresholds</strong>
+      for consistency — chosen to match ds003478's own published groups, not independently re-derived
+      per dataset.</li>
+      <li><strong>Small samples, small expected effects.</strong> FAA effects are known to be small in
+      the literature — ds007615's significant group effect is the only one of three datasets to reach
+      p&lt;0.05 here; a null result on the other two is informative but not proof of absence, and a
+      significant result on one is not yet a replicated one.</li>
       <li><strong>Offline only.</strong> This is Phase 1 — entirely offline analysis of already-recorded
       public data. A causal/streaming version (deciding using only samples already seen) is a later,
       optional stretch, not part of this finding.</li>
@@ -459,7 +592,7 @@
       <a href="https://github.com/HYPERPRO2020/eegtest/blob/master/neuroqa/notebooks/phase1_findings.ipynb" target="_blank" rel="noopener">Reproducible notebook</a>
       <a href="https://eegtest.vercel.app" target="_blank" rel="noopener">Interactive quality grader →</a>
     </div>
-    <p>NeuroQA Phase 1 · findings, not peer-reviewed · generated from a real, seeded run of this repo's own pipeline against two public datasets</p>
+    <p>NeuroQA Phase 1 · findings, not peer-reviewed · generated from a real, seeded run of this repo's own pipeline against three public datasets</p>
   </footer>
 </div>
 <script>

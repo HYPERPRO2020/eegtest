@@ -1,6 +1,6 @@
 """Regenerate findings-site/index.html from the real results.json files for
-both datasets -- keeps the site's numbers tied to an actual run instead of
-hand-typed. Run after any re-run of run_local.py that changes outputs/.
+all three datasets -- keeps the site's numbers tied to an actual run instead
+of hand-typed. Run after any re-run of run_local.py that changes outputs/.
 
 Usage: python scripts/build_findings_site.py
 """
@@ -13,9 +13,11 @@ OUT_DIR = REPO_ROOT / "outputs"
 SITE_DIR = REPO_ROOT / "findings-site"
 
 DATASETS = [
-    {"key": "ds003478", "label": "ds003478", "sub": "primary · real BDI severity",
+    {"key": "ds003478", "label": "ds003478", "sub": "real BDI severity · Univ. of Arizona",
      "color_var": "--series-primary"},
-    {"key": "mumtaz", "label": "Mumtaz/HUSM", "sub": "secondary check · no severity",
+    {"key": "ds007615", "label": "ds007615", "sub": "real BDI-II severity · Univ. of Oslo",
+     "color_var": "--good"},
+    {"key": "mumtaz", "label": "Mumtaz/HUSM", "sub": "replication check · no severity",
      "color_var": "--series-mdd"},
 ]
 
@@ -132,8 +134,9 @@ def main():
 
     testb_blocks = [dataset_testb_section(d, results[d["key"]]) for d in DATASETS]
 
-    n_primary = results["ds003478"]["n_recordings"]
-    n_secondary = results["mumtaz"]["n_recordings"]
+    dataset_stat_tiles = "".join(f'''<div class="stat-tile"><div class="label">{esc(d['label'])} ({esc(d['sub'])})</div>
+        <div class="value">{results[d['key']]['n_recordings']}</div>
+        <div class="sub">recordings</div></div>''' for d in DATASETS)
 
     html = f'''<!doctype html>
 <html lang="en">
@@ -141,7 +144,7 @@ def main():
 <meta charset="utf-8">
 <title>NeuroQA — Phase 1 Findings</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Does an endpoint-aware contamination score explain part of why frontal alpha asymmetry is an unreliable depression marker? Phase 1 findings on two real public EEG datasets.">
+<meta name="description" content="Does an endpoint-aware contamination score explain part of why frontal alpha asymmetry is an unreliable depression marker? Phase 1 findings on three real public EEG datasets.">
 <style>
   :root {{
     color-scheme: light;
@@ -208,6 +211,7 @@ def main():
   section > p.dek {{ color:var(--text-secondary); margin:0 0 22px; max-width:660px; }}
   .card {{ background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:20px 22px; }}
   .stat-row {{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:18px; }}
+  .stat-row-3 {{ grid-template-columns:repeat(3,1fr); }}
   .stat-tile {{ background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }}
   .stat-tile .label {{ font-size:.78rem; color:var(--text-muted); margin-bottom:6px; }}
   .stat-tile .value {{ font-size:1.7rem; font-weight:600; }}
@@ -254,8 +258,8 @@ def main():
         <p class="lede">Frontal alpha asymmetry (FAA) is a long-studied EEG depression marker that the
         literature calls unreliable without knowing why. We built an endpoint-aware contamination score
         — not a classifier, not a cleaner — and used it to test whether part of the answer is muscle
-        and eye-movement artifact that happens to share alpha's frequency band. Run on two independent
-        real public datasets, not synthetic data.</p>
+        and eye-movement artifact that happens to share alpha's frequency band. Run on three
+        independent real public datasets, not synthetic data.</p>
       </div>
       <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
     </div>
@@ -277,17 +281,11 @@ def main():
   </section>
 
   <section id="datasets">
-    <h2><span class="num">02</span>Two independent public datasets</h2>
-    <p class="dek">One primary, chosen specifically because it ships real per-subject clinical severity
-    (required for Test B.1); one secondary, run as an independent replication check on everything except B.1.</p>
-    <div class="stat-row">
-      <div class="stat-tile"><div class="label">ds003478 (OpenNeuro, CC0) — primary</div>
-        <div class="value">{n_primary}</div>
-        <div class="sub">recordings, real per-subject BDI severity, matches the dataset's own published groups</div></div>
-      <div class="stat-tile"><div class="label">Mumtaz/HUSM (figshare, CC BY 4.0) — secondary check</div>
-        <div class="value">{n_secondary}</div>
-        <div class="sub">eyes-closed recordings, diagnosis label only, no severity data</div></div>
-    </div>
+    <h2><span class="num">02</span>Three independent public datasets</h2>
+    <p class="dek">Two ship real per-subject clinical severity (required for Test B.1), from two
+    different labs with no overlapping subjects; the third has diagnosis labels only and runs as
+    a replication check on everything except B.1.</p>
+    <div class="stat-row stat-row-3">{dataset_stat_tiles}</div>
   </section>
 
   <section id="test-a">
@@ -320,13 +318,20 @@ def main():
 
   <section id="finding">
     <h2><span class="num">06</span>The finding</h2>
-    <p class="dek" style="max-width:100%">On both datasets, independently, under the current placeholder
-    weights, none of the three red flags fired: group/severity doesn't predict contamination (B.1),
-    contamination doesn't confound the FAA–group relationship, and contamination alone can't tell
-    healthy from depressed above chance (B.2). That's a real result — a null result, reported as one,
-    not tuned toward drama. It does <strong>not</strong> mean the contamination hypothesis is false; it
-    means these two datasets, at this sample size, with placeholder rather than physics-derived
-    weights, don't show it. See caveats before drawing a stronger conclusion either way.</p>
+    <p class="dek" style="max-width:100%">On all three datasets, independently, under the current
+    placeholder weights, none of the contamination red flags fired: group/severity doesn't predict
+    contamination (B.1), and contamination alone can't tell healthy from depressed above chance
+    (B.2). That holds up consistently — no evidence here that this endpoint-aware contamination
+    score explains the FAA–group relationship.</p>
+    <p class="dek" style="max-width:100%">On top of that, ds007615 — the dataset with the most
+    statistical power to detect FAA itself — shows a real, significant group effect on FAA
+    (p&nbsp;=&nbsp;0.020) that is <strong>not</strong> explained by quality/contamination
+    (p&nbsp;=&nbsp;0.257, no B.2 leakage either). ds003478 and Mumtaz don't reach significance on
+    that same question, which is inconclusive rather than contradictory — consistent with FAA
+    effects being small and these being modest sample sizes. Reported here plainly, not tuned
+    toward drama either way: this is not proof FAA is a reliable marker everywhere, but on the
+    specific question this project asked — is FAA's group difference actually just
+    contamination? — the answer across all three datasets is no.</p>
   </section>
 
   <section id="caveats">
@@ -342,10 +347,16 @@ def main():
       contamination there. Needs domain sign-off, not a unilateral widening to make the hypothesis land.</li>
       <li><strong>Test A and the 5 classifiers ran on 12 recordings per dataset</strong>, bounded by
       ICA/AutoReject runtime — suggestive, not a large-N result.</li>
-      <li><strong>Mumtaz/HUSM has no per-subject severity</strong> in its public deposit — Test B.1 only
-      ran on ds003478; Mumtaz's contribution is Test A and B.2/confound-check as a replication.</li>
-      <li><strong>Small dataset, small expected effect.</strong> FAA effects are known to be small in
-      the literature — a null result here is informative but not proof of absence.</li>
+      <li><strong>Mumtaz/HUSM has no per-subject severity</strong> in its public deposit — Test B.1 ran
+      on ds003478 and ds007615 (two independent cohorts), not Mumtaz; Mumtaz's contribution is Test A
+      and B.2/confound-check as a replication.</li>
+      <li><strong>ds003478 and ds007615 use the same BDI(&gt;13)/BDI(&lt;7) group thresholds</strong>
+      for consistency — chosen to match ds003478's own published groups, not independently re-derived
+      per dataset.</li>
+      <li><strong>Small samples, small expected effects.</strong> FAA effects are known to be small in
+      the literature — ds007615's significant group effect is the only one of three datasets to reach
+      p&lt;0.05 here; a null result on the other two is informative but not proof of absence, and a
+      significant result on one is not yet a replicated one.</li>
       <li><strong>Offline only.</strong> This is Phase 1 — entirely offline analysis of already-recorded
       public data. A causal/streaming version (deciding using only samples already seen) is a later,
       optional stretch, not part of this finding.</li>
@@ -358,7 +369,7 @@ def main():
       <a href="https://github.com/HYPERPRO2020/eegtest/blob/master/neuroqa/notebooks/phase1_findings.ipynb" target="_blank" rel="noopener">Reproducible notebook</a>
       <a href="https://eegtest.vercel.app" target="_blank" rel="noopener">Interactive quality grader →</a>
     </div>
-    <p>NeuroQA Phase 1 · findings, not peer-reviewed · generated from a real, seeded run of this repo's own pipeline against two public datasets</p>
+    <p>NeuroQA Phase 1 · findings, not peer-reviewed · generated from a real, seeded run of this repo's own pipeline against three public datasets</p>
   </footer>
 </div>
 <script>

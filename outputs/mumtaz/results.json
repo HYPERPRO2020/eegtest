@@ -1059,41 +1059,41 @@
     "regression_1_skipped_reason": "no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs at least 2 recordings per group with a severity value",
     "regression_2_faa_on_group_quality": {
       "params": {
-        "const": 0.1416770936555254,
-        "group_mdd": -0.09044930615807104,
-        "quality_alpha_pct": 0.0001034796023427729
+        "const": 0.162792200295452,
+        "group_mdd": -0.09046181175383862,
+        "quality_alpha_pct": -0.00011398153833534861
       },
       "pvalues": {
-        "const": 0.9768084448222027,
-        "group_mdd": 0.330068384798081,
-        "quality_alpha_pct": 0.99835483773809
+        "const": 0.9734328864308492,
+        "group_mdd": 0.3300420389180654,
+        "quality_alpha_pct": 0.9981933634087307
       },
       "conf_int": {
         "const": [
-          -9.58087875116744,
-          9.86423293847849
+          -9.588906363968107,
+          9.914490764559012
         ],
         "group_mdd": [
-          -0.27490871001205963,
-          0.09401009769591756
+          -0.2749365815599172,
+          0.09401295805223993
         ],
         "quality_alpha_pct": [
-          -0.10001614736309428,
-          0.10022310656777983
+          -0.10053782926403346,
+          0.10030986618736276
         ]
       },
-      "rsquared": 0.017271838883681445,
+      "rsquared": 0.017271854670289244,
       "nobs": 58
     },
     "regression_3_quality_classifies_group": {
-      "accuracy": 0.3793103448275862,
-      "auc": 0.3119047619047619,
+      "accuracy": 0.3620689655172414,
+      "auc": 0.3130952380952381,
       "majority_class_baseline": 0.5172413793103449,
       "n": 58,
       "n_splits": 5,
       "leakage_flag": false
     },
-    "finding": "no strong evidence either way in this sample (group and/or quality effects on FAA are not significant at p<0.05) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
+    "finding": "no strong evidence either way in this sample (group's effect on FAA is not significant at p<0.05, controlling for quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
   },
   "faa_classifiers_by_pipeline": {
     "raw": {

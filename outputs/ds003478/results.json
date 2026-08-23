@@ -1120,7 +1120,7 @@
       "n_splits": 5,
       "leakage_flag": false
     },
-    "finding": "no strong evidence either way in this sample (group and/or quality effects on FAA are not significant at p<0.05) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
+    "finding": "no strong evidence either way in this sample (group's effect on FAA is not significant at p<0.05, controlling for quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
   },
   "faa_classifiers_by_pipeline": {
     "raw": {

@@ -8,13 +8,16 @@ so there is exactly one implementation of "how a recording gets scored" (the
 codebase's own stated design principle), not a second copy embedded in the
 notebook.
 
-Two datasets, matching the brief's actual ask ("Study result is the
-deliverable") plus the secondary-check scope agreed with the user:
-  - ds003478 (OpenNeuro, CC0): primary run -- real per-subject BDI severity,
-    enables Test B.1.
-  - Mumtaz/HUSM (figshare, CC BY 4.0): secondary replication check -- no
-    severity in this public deposit, so Test B.1 is skipped for it (by
-    design, see study_b.py), Tests A/B.2/B.3 still run.
+Three datasets, matching the brief's actual ask ("Study result is the
+deliverable") plus the replication scope agreed with the user:
+  - ds003478 (OpenNeuro, CC0): real per-subject BDI severity, enables Test
+    B.1. Univ. of Arizona cohort.
+  - ds007615 (OpenNeuro, CC0): real per-subject BDI-II severity, also
+    enables Test B.1 -- an independent cohort (Univ. of Oslo) from a
+    different lab, not overlapping with ds003478's subjects.
+  - Mumtaz/HUSM (figshare, CC BY 4.0): replication check -- no severity in
+    this public deposit, so Test B.1 is skipped for it (by design, see
+    study_b.py), Tests A/B.2/confound-check still run.
 
 Run: python scripts/build_notebook.py   (writes the .ipynb, unexecuted)
 Then execute with nbclient (see scripts/execute_notebook.py).
@@ -39,22 +42,29 @@ MNE, score each one by how much its frequency band overlaps the band we're about
 use that score to test whether a known depression marker (frontal alpha asymmetry, FAA) is partly
 contamination.
 
-This notebook runs the whole Phase 1 pipeline end to end against **two real public datasets**,
+This notebook runs the whole Phase 1 pipeline end to end against **three real public datasets**,
 calling the exact same `manifest.py` / `pipeline.py` / `study_a.py` / `study_b.py` functions
 `run_local.py` (offline CLI) and `webapp.py` (the deployed app's `/api/*` routes) call — one
 implementation of "how a recording gets scored," not a copy embedded here. Seeded throughout
 (`pipeline.SEED = 0` drives ICA/AutoReject/CV); re-running this notebook against the same data
 reproduces the same numbers.
 
-**Primary dataset — [ds003478](https://openneuro.org/datasets/ds003478)** ("EEG: Depression rest",
-Cavanagh lab, CC0): 119 resting-EEG recordings matching the dataset's own published high-BDI
-(>13) / control (<7) groups, real per-subject BDI severity from `participants.tsv` — this is what
-makes Test B.1 (`quality ~ group + severity`) possible at all.
+**[ds003478](https://openneuro.org/datasets/ds003478)** ("EEG: Depression rest", Cavanagh lab /
+Univ. of Arizona, CC0): 119 resting-EEG recordings matching the dataset's own published high-BDI
+(>13) / control (<7) groups, real per-subject BDI severity from `participants.tsv`.
 
-**Secondary replication check — Mumtaz/HUSM** (figshare 4244171, CC BY 4.0): 58 eyes-closed
-recordings, H/MDD labels only, **no severity score in this public deposit** — Test B.1 is
-skipped for it by design (see `study_b.py`'s `regression_1_skipped_reason`), Test A and Test
-B.2/B.3 still run as an independent check on the same questions.
+**[ds007615](https://openneuro.org/datasets/ds007615)** ("LDAEP and resting-state EEG in healthy
+women", Univ. of Oslo, CC0): 49 recordings, same BDI(>13)/BDI(<7) thresholds applied to a real
+per-subject BDI-II score (`phenotype/bdi.tsv`) — an independent cohort from a different lab, not
+overlapping with ds003478's subjects.
+
+**Mumtaz/HUSM** (figshare 4244171, CC BY 4.0): 58 eyes-closed recordings, H/MDD labels only,
+**no severity score in this public deposit** — Test B.1 is skipped for it by design (see
+`study_b.py`'s `regression_1_skipped_reason`), Test A and Test B.2/confound-check still run as an
+independent check on the same questions.
+
+Both ds003478 and ds007615 carry real per-subject severity, so Test B.1 runs on two independent
+cohorts, not one.
 
 **Read this before the numbers below:** `WEIGHT[artifact.type]` and the artifact/endpoint overlap
 logic are domain calls — supplied as placeholders here (`bands.py`, every weight = 1.0), pending
@@ -76,10 +86,13 @@ import matplotlib.pyplot as plt
 %matplotlib inline
 
 DATASETS = {
-    "ds003478": {"label": "ds003478 (primary, real BDI severity)",
+    "ds003478": {"label": "ds003478 (real BDI severity)",
                  "data_dir": REPO_ROOT / "data" / "ds003478",
                  "out_dir": REPO_ROOT / "outputs" / "ds003478"},
-    "mumtaz": {"label": "Mumtaz/HUSM (secondary check, no severity)",
+    "ds007615": {"label": "ds007615 (real BDI-II severity)",
+                 "data_dir": REPO_ROOT / "data" / "ds007615",
+                 "out_dir": REPO_ROOT / "outputs" / "ds007615"},
+    "mumtaz": {"label": "Mumtaz/HUSM (no severity)",
                "data_dir": REPO_ROOT / "data" / "mumtaz",
                "out_dir": REPO_ROOT / "outputs" / "mumtaz"},
 }
@@ -154,7 +167,7 @@ for name in DATASETS:
     display(df.groupby("group")[["quality_alpha_pct", "faa"]].agg(["mean", "std", "count"]))
     print()""")
 
-code(r"""fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+code(r"""fig, axes = plt.subplots(1, len(DATASETS), figsize=(5.5 * len(DATASETS), 4))
 for ax, name in zip(axes, DATASETS):
     df = summaries[name]
     for group, color in [("healthy", "tab:blue"), ("depressed", "tab:orange")]:
@@ -227,14 +240,15 @@ for name in DATASETS:
 clf_df = pd.DataFrame(clf_rows)
 display(clf_df)""")
 
-code(r"""fig, ax = plt.subplots(figsize=(8, 4))
-width = 0.35
+code(r"""fig, ax = plt.subplots(figsize=(9, 4))
+n_ds = len(DATASETS)
+width = 0.8 / n_ds
 x = np.arange(len(PIPELINES := ["raw", "ica", "generic", "autoreject", "ours"]))
 for i, name in enumerate(DATASETS):
     sub = clf_df[clf_df.dataset == name].set_index("pipeline").reindex(PIPELINES)
     ax.bar(x + i * width, sub["auc"], width, label=DATASETS[name]["label"])
 ax.axhline(0.5, color="gray", linestyle="--", linewidth=1, label="chance")
-ax.set_xticks(x + width / 2)
+ax.set_xticks(x + width * (n_ds - 1) / 2)
 ax.set_xticklabels(PIPELINES)
 ax.set_ylabel("AUC (5-fold CV)")
 ax.set_title("Per-pipeline FAA-only classifier: does any single pipeline's FAA predict group?")
@@ -314,9 +328,9 @@ md(r"""## 7. Caveats — read before citing any of the above
 - **Test A ran on a bounded subsample** (12 of each dataset's recordings) for runtime reasons
   (ICA + AutoReject are slow per recording) — suggestive, not a large-N result. Raise
   `pipeline.STUDY_A_N_PER_GROUP` to widen it.
-- **Mumtaz/HUSM has no per-subject severity** in its public deposit — Test B.1 only ran on
-  ds003478. Mumtaz's contribution here is Test A and B.2/B confound-check as an independent
-  replication check, not a full run of all three Study B analyses.
+- **Mumtaz/HUSM has no per-subject severity** in its public deposit — Test B.1 ran on ds003478
+  and ds007615 (two independent cohorts), not Mumtaz. Mumtaz's contribution here is Test A and
+  B.2/B confound-check as a replication check, not a full run of all three Study B analyses.
 - **ds003478's own README notes some channels were already interpolated** in a subset of files
   before this public release ("There are no raw data to revert to instead") — `manifest.py`'s
   "still looks raw" check is a heuristic and can't detect this from the file header alone; flagged
@@ -326,8 +340,9 @@ md(r"""## 7. Caveats — read before citing any of the above
   B.1/B confound/B.2 is informative but not proof of absence, and is reported here rather than
   hidden either way, per the brief's own instruction.
 - **The 5 per-pipeline classifiers (Part 4b) run on n=12** (Test A's bounded subsample) — every
-  AUC came back at or below chance in both datasets, consistent with the rest of this notebook's
-  null finding, but n=12 is too small to rule out a real small effect. Raise
+  AUC came back at or below chance across all three datasets, including ds007615 despite its
+  significant group-level effect on FAA (Part 5) — a classifier needs more than a mean
+  difference to beat chance at n=12. Too small to rule out a real small effect either way. Raise
   `pipeline.STUDY_A_N_PER_GROUP` and re-run if this needs to be more than indicative.
 - **Causal/streaming version** (feeding the quality index a recording sample-by-sample, no
   look-ahead) is explicitly a later, optional stretch per the brief — not required for this
