@@ -368,7 +368,7 @@ def main():
     reject) × 2 reference schemes, per subject. <strong>A large swing indicates that processing
     decisions, rather than biology, are driving the result.</strong> Limited to up to 30 recordings per
     dataset (15 per group where available); ICA and AutoReject remain computationally intensive even
-    when parallelized. See caveats below.</p>
+    when parallelized. See limitations below.</p>
     {"".join(testa_blocks)}
     <div class="legend">
       <span class="item"><span class="swatch" style="background:var(--series-h)"></span>healthy</span>
