@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>NeuroQA — Phase 1 Findings</title>
+<title>NeuroQA: Phase 1 Findings</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Does an endpoint-aware contamination score explain part of why frontal alpha asymmetry is an unreliable depression marker? Phase 1 findings on three real public EEG datasets.">
 <style>
@@ -120,10 +120,11 @@
         <p class="kicker">NeuroQA · Phase 1 · Findings</p>
         <h1>Is a known depression marker partly contamination?</h1>
         <p class="lede">Frontal alpha asymmetry (FAA) is a long-studied EEG depression marker that the
-        literature calls unreliable without knowing why. We built an endpoint-aware contamination score
-        — not a classifier, not a cleaner — and used it to test whether part of the answer is muscle
-        and eye-movement artifact that happens to share alpha's frequency band. Run on three
-        independent real public datasets, not synthetic data.</p>
+        literature describes as unreliable, without a clear explanation why. This project introduces an
+        endpoint-aware contamination score, distinct from a classifier or a signal-cleaning method, and
+        uses it to test whether part of the explanation is muscle and eye-movement artifact that shares
+        alpha's frequency band. Results below are computed on three independent, real public datasets,
+        not synthetic data.</p>
       </div>
       <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
     </div>
@@ -136,11 +137,12 @@
     you're about to measure</em>, not a single generic "clean vs. dirty" score.</p>
     <div class="callout">
       <code>for artifact in detected_artifacts: penalty += artifact.severity * WEIGHT[type] * spectral_overlap(artifact.band, ENDPOINT_BAND)</code><br>
-      A blink's energy sits below 4&nbsp;Hz — score it against <strong>delta</strong> and it costs a lot;
-      score the exact same detected blink against <strong>alpha</strong> (8–13&nbsp;Hz) and it costs almost nothing.
+      A blink's energy sits below 4&nbsp;Hz, so scoring it against <strong>delta</strong> incurs a large
+      penalty, while scoring the identical detected blink against <strong>alpha</strong> (8–13&nbsp;Hz)
+      incurs almost none.
     </div>
-    <p class="dek" style="margin-bottom:0">Same-recording sanity check — one real recording, split into clean vs.
-    contaminated epochs by amplitude, scored both ways:</p>
+    <p class="dek" style="margin-bottom:0">Same-recording validation: one real recording, split into clean
+    and contaminated epochs by amplitude, scored both ways.</p>
     <img class="demo-figure" src="validation_raw_clean_artifacts.png" alt="Waveform comparison: unclean, clean, and artifacts-only epochs from the same real recording">
   </section>
 
@@ -159,12 +161,13 @@
   </section>
 
   <section id="test-a">
-    <h2><span class="num">03</span>Test A — does cleaning choice decide the answer?</h2>
+    <h2><span class="num">03</span>Test A: Does cleaning choice decide the answer?</h2>
     <p class="dek">FAA computed under 5 preprocessing pipelines (raw, ICA, generic amplitude rejection,
-    AutoReject, and <strong>ours</strong> — the endpoint-conditional score used to weight instead of
-    reject) × 2 reference schemes, per subject. <strong>Red flag: a big swing means processing
-    decisions, not biology, are steering the result.</strong> Bounded to up to 30 recordings per
-    dataset (15/group where available) — ICA and AutoReject are slow, even parallelized; see caveats.</p>
+    AutoReject, and <strong>ours</strong>, the endpoint-conditional score used to weight instead of
+    reject) × 2 reference schemes, per subject. <strong>A large swing indicates that processing
+    decisions, rather than biology, are driving the result.</strong> Limited to up to 30 recordings per
+    dataset (15 per group where available); ICA and AutoReject remain computationally intensive even
+    when parallelized. See caveats below.</p>
     <div class="dataset-block">
           <h3>ds003478 <span class="dataset-sub">(real BDI severity · Univ. of Arizona)</span></h3>
           <div class="stat-row">
@@ -636,9 +639,10 @@
 
   <section id="classifiers">
     <h2><span class="num">04</span>Five independent classifiers, one per pipeline</h2>
-    <p class="dek">Not just "how much does FAA move" (Test A) — for each pipeline, an independent
-    classifier using <em>only</em> that pipeline's own FAA to guess depressed/healthy, none sharing
-    data with each other. Dashed line = chance (AUC 0.5); green = at/below chance.</p>
+    <p class="dek">A complement to Test A's pipeline-sensitivity analysis: for each pipeline, an
+    independent classifier is trained using <em>only</em> that pipeline's own FAA value to predict
+    depressed versus healthy, with no data shared across pipelines. The dashed line marks chance
+    performance (AUC 0.5); bars at or below chance are shown in green.</p>
     <div class="dataset-block">
           <h3>ds003478</h3>
           <div class="card"><div class="bar-row">
@@ -739,7 +743,7 @@
   </section>
 
   <section id="test-b">
-    <h2><span class="num">05</span>Test B — is contamination tied to diagnosis?</h2>
+    <h2><span class="num">05</span>Test B: Is contamination tied to diagnosis?</h2>
     <p class="dek">Three group-level analyses per dataset.</p>
     <div class="dataset-block">
       <h3>ds003478 <span class="dataset-sub">(real BDI severity · Univ. of Arizona, n=119)</span></h3>
@@ -834,7 +838,7 @@
       <div class="verdict-row"><div class="verdict-card">
       <div class="test-name">B.1 (frontal)</div>
       <div class="ask">quality ~ group + severity</div>
-      <div class="metric">skipped — no severity data</div>
+      <div class="metric">skipped: no severity data</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div><div class="verdict-card">
       <div class="test-name">Confound check (frontal)</div>
@@ -855,7 +859,7 @@
       <div class="verdict-row" style="margin-top:10px"><div class="verdict-card">
       <div class="test-name">B.1 (whole-scalp)</div>
       <div class="ask">quality ~ group + severity</div>
-      <div class="metric">skipped — no severity data</div>
+      <div class="metric">skipped: no severity data</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div><div class="verdict-card">
       <div class="test-name">Confound check (whole-scalp)</div>
@@ -878,69 +882,70 @@
 
   <section id="finding">
     <h2><span class="num">06</span>The finding</h2>
-    <p class="dek" style="max-width:100%">Across all three datasets, both quality variants, Test B.1
-    (does group/severity predict contamination) never came back significant — no evidence that
-    diagnosis or symptom severity is itself tied to how contaminated a recording is.</p>
-    <p class="dek" style="max-width:100%">On top of that, ds007615 (p=0.014 raw, p=0.042 Holm-corrected) — the frontal-specific group effect on FAA survives
-        Holm-Bonferroni correction, independent of frontal quality (no B.2 leakage on that variant). The other
-        dataset(s) don't reach significance on that same question, which is inconclusive rather than
-        contradictory — consistent with FAA effects being small and modest sample sizes. Reported here
-        plainly, not tuned toward drama either way.</p>
-    <p class="dek" style="max-width:100%"><strong>One red flag did fire</strong>:
-        Mumtaz/HUSM (whole-scalp) crossed the B.2 leakage threshold (AUC &gt; 0.65) — quality alone showed some
-        ability to predict group there. Reported here rather than smoothed over; see that dataset's B.2
-        card above for the exact AUC and confidence interval.</p>
+    <p class="dek" style="max-width:100%">Across all three datasets and both quality variants, Test B.1
+    (whether group or severity predicts contamination) never reached significance, providing no evidence
+    that diagnosis or symptom severity is itself associated with how contaminated a recording is.</p>
+    <p class="dek" style="max-width:100%">In addition, the frontal-specific group effect on FAA remains significant after
+        Holm-Bonferroni correction in ds007615 (p = 0.014 uncorrected, p = 0.042 Holm-corrected), and is independent of frontal quality (no B.2 leakage
+        on that variant). The remaining dataset(s) do not reach significance on this question, which is
+        inconclusive rather than contradictory, consistent with FAA effects being small relative to these
+        sample sizes. This result is reported as observed, without adjustment toward a preferred outcome.</p>
+    <p class="dek" style="max-width:100%"><strong>One flagged result:</strong>
+        Mumtaz/HUSM (whole-scalp) exceeded the B.2 leakage threshold (AUC &gt; 0.65), indicating quality alone had
+        some ability to predict group in that case. This result is reported rather than omitted; see the
+        corresponding B.2 card above for the exact AUC and confidence interval.</p>
   </section>
 
   <section id="changelog">
-    <h2><span class="num">07</span>v1 → v2: what changed</h2>
-    <p class="dek">Per the "Neureidos Phase 1 Methodology Upgrade" implementation guide
-    (2026-08-22), applied and re-run 2026-08-24. v1 (placeholder-weight, pre-fix) results are
-    archived, not overwritten in place.</p>
+    <h2><span class="num">07</span>Methodology revision (v2)</h2>
+    <p class="dek">The following changes were applied to the analysis pipeline and the study was
+    re-run in full on 2026-08-24. Prior (v1) results are archived rather than overwritten, and
+    remain available for comparison.</p>
     <ul class="caveats">
-      <li><strong>EMG/alpha band widened</strong> (20,45)&nbsp;→&nbsp;(8,45)&nbsp;Hz per Goncharova
-      et al. (2003) — Peter-approved. Was zero overlap with alpha, so detected EMG contributed
-      nothing to alpha-endpoint quality no matter how severe.</li>
-      <li><strong>Per-dataset mains frequency</strong>: ds003478 notch-filtered at 60&nbsp;Hz
-      (confirmed via its own metadata: University of Arizona, US mains), not the 50&nbsp;Hz every
-      dataset got before this fix.</li>
-      <li><strong><code>quality_alpha_frontal_pct</code></strong> (F3/F4/Fp1/Fp2 only) is now the
-      primary Study B variable — the hypothesis is about frontal contamination specifically, not a
-      whole-scalp average diluted by 15+ unrelated channels. Whole-scalp is still reported
-      alongside every result above, not replaced.</li>
-      <li><strong>Bootstrap 95% CIs</strong> on every AUC and <strong>Holm-Bonferroni correction</strong>
-      on the p-values feeding each finding.</li>
-      <li><strong>Test A scaled up and parallelized</strong> — up to 30 recordings per dataset
-      (15/group where available), up from 12, via joblib.</li>
-      <li><strong>Not done</strong>, on purpose: widening the EMG severity-detector's own 20-45&nbsp;Hz
-      window (separate Peter conversation), real <code>WEIGHT</code> values or the quality-decay
-      function (no numbers supplied yet), an EMG spectral-signature specificity check, and a
-      Stewart et al. (2011) 70-90&nbsp;Hz proxy-band comparison arm.</li>
+      <li><strong>EMG/alpha band widened</strong> from (20, 45)&nbsp;Hz to (8, 45)&nbsp;Hz, following
+      Goncharova et al. (2003). The previous definition had zero overlap with alpha, so detected EMG
+      contributed nothing to alpha-endpoint quality regardless of severity.</li>
+      <li><strong>Per-dataset mains frequency corrected.</strong> ds003478 is now notch-filtered at
+      60&nbsp;Hz, consistent with its own recording metadata (University of Arizona, US mains), rather
+      than the 50&nbsp;Hz previously applied to every dataset.</li>
+      <li><strong><code>quality_alpha_frontal_pct</code></strong> (F3, F4, Fp1, Fp2 only) is now the
+      primary Study B variable, since the hypothesis under test concerns frontal contamination
+      specifically rather than a whole-scalp average diluted by 15 or more unrelated channels.
+      Whole-scalp results are still reported alongside every result above, not replaced.</li>
+      <li><strong>Bootstrap 95% confidence intervals</strong> added to every AUC, and
+      <strong>Holm-Bonferroni correction</strong> applied to the p-values underlying each finding.</li>
+      <li><strong>Test A scaled up and parallelized:</strong> up to 30 recordings per dataset
+      (15 per group where available), increased from 12, using parallel processing.</li>
+      <li><strong>Out of scope for this revision:</strong> widening the EMG severity detector's own
+      20-45&nbsp;Hz window, finalized per-artifact-type weight values or the quality-decay function
+      (pending further validation), an EMG spectral-signature specificity check, and a comparison
+      against the 70-90&nbsp;Hz proxy-band method of Stewart et al. (2011).</li>
     </ul>
   </section>
 
   <section id="caveats">
-    <h2><span class="num">08</span>Caveats — read before citing any of this</h2>
+    <h2><span class="num">08</span>Limitations</h2>
     <ul class="caveats">
-      <li><strong>The per-type weights are still placeholders.</strong> <code>WEIGHT[artifact.type]</code>
-      is equal weighting (1.0 across the board) pending the real physics-derived values — only the EMG
-      *band definition* (which frequencies count as EMG) has real domain sign-off so far, not how much
-      each artifact type should count relative to the others, nor the quality-decay function.</li>
-      <li><strong>Test A and the 5 classifiers ran on up to 30 recordings per dataset</strong>
-      (15/group where available), bounded by ICA/AutoReject runtime even parallelized — larger than
-      v1's 12, still suggestive rather than a full-N result.</li>
-      <li><strong>Mumtaz/HUSM has no per-subject severity</strong> in its public deposit — Test B.1 ran
-      on ds003478 and ds007615 (two independent cohorts), not Mumtaz; Mumtaz's contribution is Test A
-      and B.2/confound-check as a replication.</li>
-      <li><strong>ds003478 and ds007615 use the same BDI(&gt;13)/BDI(&lt;7) group thresholds</strong>
-      for consistency — chosen to match ds003478's own published groups, not independently re-derived
-      per dataset.</li>
+      <li><strong>Per-type weights remain placeholders.</strong> <code>WEIGHT[artifact.type]</code> is
+      currently equal weighting (1.0 across all types), pending finalized physics-derived values. Only
+      the EMG <em>band definition</em> (which frequencies are classified as EMG) has been updated based
+      on published literature to date; the relative weighting between artifact types and the
+      quality-decay function have not.</li>
+      <li><strong>Test A and the five classifiers ran on up to 30 recordings per dataset</strong>
+      (15 per group where available), limited by ICA/AutoReject runtime even with parallelization. This
+      is larger than the prior sample of 12 but still indicative rather than a full-sample result.</li>
+      <li><strong>Mumtaz/HUSM has no per-subject severity data</strong> in its public release. Test B.1
+      was therefore run on ds003478 and ds007615 (two independent cohorts) only; Mumtaz/HUSM contributes
+      to Test A and the B.2/confound analyses as a replication check.</li>
+      <li><strong>ds003478 and ds007615 use the same BDI&nbsp;&gt;&nbsp;13 / BDI&nbsp;&lt;&nbsp;7 group
+      thresholds</strong> for consistency, matching ds003478's own published group definitions rather
+      than thresholds independently derived per dataset.</li>
       <li><strong>Small samples, small expected effects.</strong> FAA effects are known to be small in
-      the literature. A significant result on one dataset (see above) is not yet a replicated one, and
-      a null result on the others is informative but not proof of absence.</li>
-      <li><strong>Offline only.</strong> This is Phase 1 — entirely offline analysis of already-recorded
-      public data. A causal/streaming version (deciding using only samples already seen) is a later,
-      optional stretch, not part of this finding.</li>
+      the literature. A significant result in one dataset does not constitute a replicated finding, and
+      a null result in the others is informative but not proof of absence.</li>
+      <li><strong>Offline analysis only.</strong> This is Phase 1: entirely offline analysis of
+      already-recorded public data. A causal or streaming version, which would decide using only samples
+      already observed, is a later and optional extension, not part of this finding.</li>
     </ul>
   </section>
 
