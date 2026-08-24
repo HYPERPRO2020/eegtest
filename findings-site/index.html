@@ -408,7 +408,7 @@
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-01</span>
-          <div class="bar-track"><div class="bar-fill" style="width:5.0%;background:var(--series-h)"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:4.9%;background:var(--series-h)"></div></div>
           <span class="bar-value">0.099</span>
         </div>
 <div class="bar-row">
@@ -463,8 +463,8 @@
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-30</span>
-          <div class="bar-track"><div class="bar-fill" style="width:15.8%;background:var(--series-mdd)"></div></div>
-          <span class="bar-value">0.317</span>
+          <div class="bar-track"><div class="bar-fill" style="width:16.0%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.321</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-42</span>
@@ -744,7 +744,12 @@
 
   <section id="test-b">
     <h2><span class="num">05</span>Test B: Is contamination tied to diagnosis?</h2>
-    <p class="dek">Three group-level analyses per dataset.</p>
+    <p class="dek">Three group-level analyses per dataset. Each dataset's summary below also reports a
+    robustness check that reruns the group-to-FAA test on raw, unweighted FAA instead of NeuroQA's own
+    quality-weighted FAA (the primary result is partly built from the same per-channel weights used as
+    the quality predictor, so this check confirms the finding isn't an artifact of that overlap), and a
+    mediation check that separates how much of the group-FAA relationship runs through quality from how
+    much doesn't, since a single regression coefficient can't make that distinction on its own.</p>
     <div class="dataset-block">
       <h3>ds003478 <span class="dataset-sub">(real BDI severity · Univ. of Arizona, n=119)</span></h3>
       <div class="verdict-row"><div class="verdict-card">
@@ -789,6 +794,8 @@
       <div class="metric">AUC = 0.59 [0.47, 0.70]</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div></div>
+      <p class="dek" style="margin-top:14px;margin-bottom:0;max-width:100%">no strong evidence either way in this sample (group's effect on FAA is not significant at corrected p&lt;0.05, controlling for frontal quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA. A robustness check using unweighted (raw) FAA in place of NeuroQA's own quality-weighted FAA reaches the same conclusion (raw-FAA group p=0.943, uncorrected).</p>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%"><strong>Mediation check (frontal):</strong> indirect (quality-mediated) effect on FAA = +0.0048 (95%&nbsp;CI [-0.0137, +0.0291]).</p>
     </div><div class="dataset-block">
       <h3>ds007615 <span class="dataset-sub">(real BDI-II severity · Univ. of Oslo, n=49)</span></h3>
       <div class="verdict-row"><div class="verdict-card">
@@ -833,6 +840,8 @@
       <div class="metric">AUC = 0.37 [0.21, 0.55]</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div></div>
+      <p class="dek" style="margin-top:14px;margin-bottom:0;max-width:100%">group predicts FAA independent of frontal quality (Holm-Bonferroni corrected), and quality alone doesn't predict group above chance -- consistent with FAA carrying real signal in this sample, not just contamination correlated with diagnosis. A robustness check using unweighted (raw) FAA in place of NeuroQA's own quality-weighted FAA reaches the same conclusion (raw-FAA group p=0.014, uncorrected).</p>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%"><strong>Mediation check (frontal):</strong> indirect (quality-mediated) effect on FAA = -0.0002 (95%&nbsp;CI [-0.0122, +0.0146]), an estimated 0% of the group-FAA relationship.</p>
     </div><div class="dataset-block">
       <h3>Mumtaz/HUSM <span class="dataset-sub">(replication check · no severity, n=58)</span></h3>
       <div class="verdict-row"><div class="verdict-card">
@@ -877,11 +886,121 @@
       <div class="metric">AUC = 0.68 [0.52, 0.82]</div>
       <span class="badge warn"><span class="dot"></span>flagged</span>
     </div></div>
+      <p class="dek" style="margin-top:14px;margin-bottom:0;max-width:100%">no strong evidence either way in this sample (group's effect on FAA is not significant at corrected p&lt;0.05, controlling for frontal quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA. A robustness check using unweighted (raw) FAA in place of NeuroQA's own quality-weighted FAA reaches the same conclusion (raw-FAA group p=0.247, uncorrected).</p>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%"><strong>Mediation check (frontal):</strong> indirect (quality-mediated) effect on FAA = +0.0266 (95%&nbsp;CI [-0.0054, +0.0808]).</p>
+    </div>
+  </section>
+
+  <section id="test-c">
+    <h2><span class="num">06</span>Test C: A causal check via synthetic contamination</h2>
+    <p class="dek">Test A and Test B are both observational: they show FAA is sensitive to processing
+    choices and associated (or not) with diagnosis in real, already-collected data, but neither can show
+    that contamination <em>causes</em> FAA to shift. Test C injects a known, controlled amount of synthetic
+    contamination into real clean epochs at three frequency ranges and recomputes FAA at each dose:
+    EOG-like (0.5-4&nbsp;Hz), EMG limited to the alpha band itself (8-13&nbsp;Hz, maximal overlap), and
+    EMG outside the alpha band (20-45&nbsp;Hz, a specificity control that should show no effect if the
+    mechanism is really about spectral overlap and not just "more injected noise"). Injection is
+    spectral/amplitude-based on the same epoch data the rest of the pipeline uses, calibrated to each
+    recording's own channel amplitude; it is not anatomically-realistic forward-model simulation, see
+    the limitations below.</p>
+    <div class="dataset-block">
+      <h3>ds003478 <span class="dataset-sub">(real BDI severity · Univ. of Arizona, n=30)</span></h3>
+      <div class="card"><div class="bar-row">
+          <span class="bar-label">EOG (0.5-4 Hz, no alpha overlap)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">+0.0000</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">EMG, alpha-overlapping (8-13 Hz)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">+0.0063</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">EMG, non-overlapping (20-45 Hz)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">+0.0000</span>
+        </div></div>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%">Bootstrapped 95%&nbsp;CI on the
+      population-mean dose-response slope: alpha-overlapping = [-0.0064,
+      +0.0205];
+      EOG = [-0.0000, +0.0000]; non-overlapping EMG =
+      [-0.0000, +0.0000].</p>
+    </div><div class="dataset-block">
+      <h3>ds007615 <span class="dataset-sub">(real BDI-II severity · Univ. of Oslo, n=27)</span></h3>
+      <div class="card"><div class="bar-row">
+          <span class="bar-label">EOG (0.5-4 Hz, no alpha overlap)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">-0.0000</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">EMG, alpha-overlapping (8-13 Hz)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--warning)"></div></div>
+          <span class="bar-value">+0.0147</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">EMG, non-overlapping (20-45 Hz)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">+0.0000</span>
+        </div></div>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%">Bootstrapped 95%&nbsp;CI on the
+      population-mean dose-response slope: alpha-overlapping = [+0.0072,
+      +0.0233] (excludes zero);
+      EOG = [-0.0000, +0.0000]; non-overlapping EMG =
+      [-0.0000, +0.0000].</p>
+    </div><div class="dataset-block">
+      <h3>Mumtaz/HUSM <span class="dataset-sub">(replication check · no severity, n=30)</span></h3>
+      <div class="card"><div class="bar-row">
+          <span class="bar-label">EOG (0.5-4 Hz, no alpha overlap)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">-0.0000</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">EMG, alpha-overlapping (8-13 Hz)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">+0.0064</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">EMG, non-overlapping (20-45 Hz)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">+0.0000</span>
+        </div></div>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%">Bootstrapped 95%&nbsp;CI on the
+      population-mean dose-response slope: alpha-overlapping = [-0.0040,
+      +0.0177];
+      EOG = [-0.0000, +0.0000]; non-overlapping EMG =
+      [-0.0000, +0.0000].</p>
+    </div>
+    <div class="dataset-block">
+      <h3>Pooled across all three datasets <span class="dataset-sub">(n=87
+      recordings)</span></h3>
+      <div class="card"><div class="bar-row">
+          <span class="bar-label">EOG (0.5-4 Hz, no alpha overlap)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">-0.0000</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">EMG, alpha-overlapping (8-13 Hz)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:100.0%;background:var(--warning)"></div></div>
+          <span class="bar-value">+0.0089</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">EMG, non-overlapping (20-45 Hz)</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.0%;background:var(--text-muted)"></div></div>
+          <span class="bar-value">+0.0000</span>
+        </div></div>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%">Pooling every recording's own
+      dose-response slope across all three datasets (identical injection protocol and dose levels
+      throughout): the alpha-overlapping condition's 95%&nbsp;CI is
+      [+0.0027, +0.0157]
+      and excludes zero, while
+      EOG and the non-overlapping EMG control both sit at essentially exactly zero. That pattern, an effect
+      specific to the frequency range that overlaps alpha and absent elsewhere, is the signature the
+      project's spectral-overlap mechanism predicts.</p>
     </div>
   </section>
 
   <section id="finding">
-    <h2><span class="num">06</span>The finding</h2>
+    <h2><span class="num">07</span>The finding</h2>
     <p class="dek" style="max-width:100%">Across all three datasets and both quality variants, Test B.1
     (whether group or severity predicts contamination) never reached significance, providing no evidence
     that diagnosis or symptom severity is itself associated with how contaminated a recording is.</p>
@@ -891,13 +1010,21 @@
         inconclusive rather than contradictory, consistent with FAA effects being small relative to these
         sample sizes. This result is reported as observed, without adjustment toward a preferred outcome.</p>
     <p class="dek" style="max-width:100%"><strong>One flagged result:</strong>
-        Mumtaz/HUSM (whole-scalp) exceeded the B.2 leakage threshold (AUC &gt; 0.65), indicating quality alone had
-        some ability to predict group in that case. This result is reported rather than omitted; see the
-        corresponding B.2 card above for the exact AUC and confidence interval.</p>
+        Mumtaz/HUSM (whole-scalp) had a quality-alone-predicts-diagnosis AUC whose 95% confidence interval sat
+        entirely above chance (0.5), indicating quality alone had some ability to predict group in that
+        case. This result is reported rather than omitted; see the corresponding B.2 card above for the
+        exact AUC and confidence interval.</p>
+    <p class="dek" style="max-width:100%">Test C adds a causal check: injecting synthetic contamination confined to the
+        alpha band itself produces a small but statistically real upward drift in FAA, pooled across all
+        three datasets (95%&nbsp;CI [+0.0027, +0.0157], n=87 recordings), while
+        the same injection outside the alpha band and EOG-like injection both show no effect. That pattern,
+        an effect specific to the frequency range that overlaps alpha, is direct mechanistic evidence for
+        the contamination pathway this project proposes, independent of whether it explains any single
+        dataset's group difference above.</p>
   </section>
 
   <section id="changelog">
-    <h2><span class="num">07</span>Methodology revision (v2)</h2>
+    <h2><span class="num">08</span>Methodology revision (v2)</h2>
     <p class="dek">The following changes were applied to the analysis pipeline and the study was
     re-run in full on 2026-08-24. Prior (v1) results are archived rather than overwritten, and
     remain available for comparison.</p>
@@ -923,9 +1050,38 @@
     </ul>
   </section>
 
-  <section id="caveats">
-    <h2><span class="num">08</span>Limitations</h2>
+  <section id="changelog-v21">
+    <h2><span class="num">09</span>Methodology revision (v2.1)</h2>
+    <p class="dek">A self-review of the Test A/B design surfaced one structural issue and one
+    interpretation caveat worth fixing before treating v2's results as final. Applied and re-run in
+    full on 2026-08-24.</p>
     <ul class="caveats">
+      <li><strong>Raw-FAA robustness check added.</strong> The group-to-FAA regression is now also run
+      on unweighted FAA, since the primary result partly depends on the same per-channel quality
+      weights used as its own predictor; both results are reported together for every dataset above.</li>
+      <li><strong>Mediation analysis added.</strong> Quantifies the indirect (quality-mediated) and
+      direct effects of group on FAA, rather than relying on a single regression coefficient to judge
+      whether quality is a confound.</li>
+      <li><strong>Leakage threshold corrected.</strong> The quality-alone-predicts-diagnosis flag (Test
+      B.2) now derives from the already-computed 95% confidence interval, replacing an arbitrary
+      AUC&nbsp;&gt;&nbsp;0.65 cutoff disconnected from the chance level of 0.5.</li>
+      <li><strong>Sample-size floor added.</strong> Test B.1 (quality ~ group + severity) now requires
+      at least 6 total observations before running, not just 2 per group, avoiding a
+      1-residual-degree-of-freedom fit being reported the same way as a well-powered one.</li>
+      <li><strong>Test C added.</strong> Synthetic contamination injected at increasing doses to test for
+      a causal, spectrally-specific effect on FAA, complementing Test A and B's observational designs.
+      See section 06 above.</li>
+    </ul>
+  </section>
+
+  <section id="caveats">
+    <h2><span class="num">10</span>Limitations</h2>
+    <ul class="caveats">
+      <li><strong>Quality's causal role is unresolved.</strong> These analyses can't fully distinguish
+      whether contamination quality is a pre-existing confound or a mediator on the path from group to
+      FAA; this project's own rationale (more severe cases show more movement and blinking) points
+      toward the latter, which changes how the confound-check and mediation results above should be
+      read. See the mediation check reported with each dataset in Test B.</li>
       <li><strong>Per-type weights remain placeholders.</strong> <code>WEIGHT[artifact.type]</code> is
       currently equal weighting (1.0 across all types), pending finalized physics-derived values. Only
       the EMG <em>band definition</em> (which frequencies are classified as EMG) has been updated based
@@ -934,6 +1090,11 @@
       <li><strong>Test A and the five classifiers ran on up to 30 recordings per dataset</strong>
       (15 per group where available), limited by ICA/AutoReject runtime even with parallelization. This
       is larger than the prior sample of 12 but still indicative rather than a full-sample result.</li>
+      <li><strong>Test C's injection is spectral, not anatomical.</strong> Synthetic contamination is
+      added directly to the channel data at the right frequency content and location, calibrated to each
+      recording's own amplitude, but without a real head model or dipole simulation -- it tests whether
+      alpha-band-overlapping contamination biases FAA in a dose-dependent way, not whether a real blink or
+      jaw-clench of a given size would.</li>
       <li><strong>Mumtaz/HUSM has no per-subject severity data</strong> in its public release. Test B.1
       was therefore run on ds003478 and ds007615 (two independent cohorts) only; Mumtaz/HUSM contributes
       to Test A and the B.2/confound analyses as a replication check.</li>

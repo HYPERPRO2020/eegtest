@@ -156,7 +156,7 @@
         "group": "depressed",
         "pipeline": "ica",
         "reference": "original",
-        "faa": -0.1419
+        "faa": -0.1422
       },
       {
         "file": "sub-30_task-rest_acq-ec_eeg.vhdr",
@@ -191,7 +191,7 @@
         "group": "depressed",
         "pipeline": "ica",
         "reference": "average",
-        "faa": -0.4434
+        "faa": -0.4471
       },
       {
         "file": "sub-30_task-rest_acq-ec_eeg.vhdr",
@@ -856,7 +856,7 @@
         "group": "healthy",
         "pipeline": "ica",
         "reference": "original",
-        "faa": 0.0703
+        "faa": 0.0699
       },
       {
         "file": "sub-01_task-rest_acq-ec_eeg.vhdr",
@@ -891,7 +891,7 @@
         "group": "healthy",
         "pipeline": "ica",
         "reference": "average",
-        "faa": 0.0071
+        "faa": 0.011
       },
       {
         "file": "sub-01_task-rest_acq-ec_eeg.vhdr",
@@ -1031,7 +1031,7 @@
         "group": "healthy",
         "pipeline": "ica",
         "reference": "average",
-        "faa": -0.0972
+        "faa": -0.0976
       },
       {
         "file": "sub-04_task-rest_acq-ec_eeg.vhdr",
@@ -1932,17 +1932,17 @@
         "file": "sub-30_task-rest_acq-ec_eeg.vhdr",
         "group": "depressed",
         "raw_original": -0.131,
-        "ica_original": -0.1419,
+        "ica_original": -0.1422,
         "generic_original": -0.1292,
         "autoreject_original": -0.1264,
         "ours_original": -0.1309,
         "raw_average": -0.3963,
-        "ica_average": -0.4434,
+        "ica_average": -0.4471,
         "generic_average": -0.3709,
         "autoreject_average": -0.3895,
         "ours_average": -0.396,
-        "faa_range": 0.317,
-        "faa_std": 0.1347899495511442
+        "faa_range": 0.3207,
+        "faa_std": 0.13525434743474976
       },
       {
         "file": "sub-37_task-rest_acq-ec_eeg.vhdr",
@@ -2092,17 +2092,17 @@
         "file": "sub-01_task-rest_acq-ec_eeg.vhdr",
         "group": "healthy",
         "raw_original": 0.05,
-        "ica_original": 0.0703,
+        "ica_original": 0.0699,
         "generic_original": 0.0472,
         "autoreject_original": 0.0357,
         "ours_original": 0.0503,
         "raw_average": 0.0013,
-        "ica_average": 0.0071,
+        "ica_average": 0.011,
         "generic_average": 0.0011,
         "autoreject_average": -0.0288,
         "ours_average": 0.0022,
-        "faa_range": 0.0991,
-        "faa_std": 0.02962027008654715
+        "faa_range": 0.09870000000000001,
+        "faa_std": 0.029362235950281444
       },
       {
         "file": "sub-02_task-rest_acq-ec_eeg.vhdr",
@@ -2129,12 +2129,12 @@
         "autoreject_original": 0.0188,
         "ours_original": 0.0182,
         "raw_average": -0.1114,
-        "ica_average": -0.0972,
+        "ica_average": -0.0976,
         "generic_average": -0.1067,
         "autoreject_average": -0.1074,
         "ours_average": -0.1111,
         "faa_range": 0.1302,
-        "faa_std": 0.062399311694921765
+        "faa_std": 0.062433219522943076
       },
       {
         "file": "sub-07_task-rest_acq-ec_eeg.vhdr",
@@ -2407,6 +2407,55 @@
         "rsquared": 0.1963766177645041,
         "nobs": 49
       },
+      "regression_2_raw_faa_on_group_quality": {
+        "params": {
+          "const": 1.197882353503847,
+          "group_mdd": -0.05365703935330242,
+          "quality_alpha_frontal_pct": -0.011884158806859632
+        },
+        "pvalues": {
+          "const": 0.025588247935164954,
+          "group_mdd": 0.014402490342815046,
+          "quality_alpha_frontal_pct": 0.032122520190151986
+        },
+        "conf_int": {
+          "const": [
+            0.15286016696715876,
+            2.242904540040535
+          ],
+          "group_mdd": [
+            -0.0961214782473219,
+            -0.011192600459282942
+          ],
+          "quality_alpha_frontal_pct": [
+            -0.022708546704541987,
+            -0.0010597709091772767
+          ]
+        },
+        "rsquared": 0.1985019684284527,
+        "nobs": 49
+      },
+      "regression_2_raw_skipped_reason": null,
+      "mediation_analysis": {
+        "acme": {
+          "point": -0.00015863145539536606,
+          "ci_lo": -0.012214033802325431,
+          "ci_hi": 0.014632561029938304
+        },
+        "ade": {
+          "point": -0.05348551268874867,
+          "ci_lo": -0.09606854765786974,
+          "ci_hi": -0.012443112316148577
+        },
+        "total_effect": {
+          "point": -0.05364414414414415,
+          "ci_lo": -0.09921653716216217,
+          "ci_hi": -0.010154522113022143
+        },
+        "proportion_mediated": 0.0029571066502452987,
+        "n_boot_valid": 2000
+      },
+      "mediation_analysis_skipped_reason": null,
       "regression_3_quality_classifies_group": {
         "accuracy": 0.7551020408163265,
         "auc": 0.3581081081081081,
@@ -2483,6 +2532,55 @@
         "rsquared": 0.19023294112332612,
         "nobs": 49
       },
+      "regression_2_raw_faa_on_group_quality": {
+        "params": {
+          "const": 1.321619376900713,
+          "group_mdd": -0.05133603122690044,
+          "quality_alpha_pct": -0.013217906702496394
+        },
+        "pvalues": {
+          "const": 0.03158998322223585,
+          "group_mdd": 0.019448330982827413,
+          "quality_alpha_pct": 0.038348605883854
+        },
+        "conf_int": {
+          "const": [
+            0.12178700592770264,
+            2.5214517478737233
+          ],
+          "group_mdd": [
+            -0.09400602573342057,
+            -0.00866603672038032
+          ],
+          "quality_alpha_pct": [
+            -0.025695331891704754,
+            -0.0007404815132880348
+          ]
+        },
+        "rsquared": 0.1931576818077796,
+        "nobs": 49
+      },
+      "regression_2_raw_skipped_reason": null,
+      "mediation_analysis": {
+        "acme": {
+          "point": -0.0024015456104982,
+          "ci_lo": -0.016240469333022412,
+          "ci_hi": 0.008315249150727864
+        },
+        "ade": {
+          "point": -0.05124259853364605,
+          "ci_lo": -0.09436985231375757,
+          "ci_hi": -0.007917188060943214
+        },
+        "total_effect": {
+          "point": -0.05364414414414415,
+          "ci_lo": -0.09921653716216217,
+          "ci_hi": -0.010154522113022143
+        },
+        "proportion_mediated": 0.044768085106272594,
+        "n_boot_valid": 2000
+      },
+      "mediation_analysis_skipped_reason": null,
       "regression_3_quality_classifies_group": {
         "accuracy": 0.7551020408163265,
         "auc": 0.3693693693693693,
@@ -2556,6 +2654,53 @@
       "rsquared": 0.1963766177645041,
       "nobs": 49
     },
+    "regression_2_raw_faa_on_group_quality": {
+      "params": {
+        "const": 1.197882353503847,
+        "group_mdd": -0.05365703935330242,
+        "quality_alpha_frontal_pct": -0.011884158806859632
+      },
+      "pvalues": {
+        "const": 0.025588247935164954,
+        "group_mdd": 0.014402490342815046,
+        "quality_alpha_frontal_pct": 0.032122520190151986
+      },
+      "conf_int": {
+        "const": [
+          0.15286016696715876,
+          2.242904540040535
+        ],
+        "group_mdd": [
+          -0.0961214782473219,
+          -0.011192600459282942
+        ],
+        "quality_alpha_frontal_pct": [
+          -0.022708546704541987,
+          -0.0010597709091772767
+        ]
+      },
+      "rsquared": 0.1985019684284527,
+      "nobs": 49
+    },
+    "mediation_analysis": {
+      "acme": {
+        "point": -0.00015863145539536606,
+        "ci_lo": -0.012214033802325431,
+        "ci_hi": 0.014632561029938304
+      },
+      "ade": {
+        "point": -0.05348551268874867,
+        "ci_lo": -0.09606854765786974,
+        "ci_hi": -0.012443112316148577
+      },
+      "total_effect": {
+        "point": -0.05364414414414415,
+        "ci_lo": -0.09921653716216217,
+        "ci_hi": -0.010154522113022143
+      },
+      "proportion_mediated": 0.0029571066502452987,
+      "n_boot_valid": 2000
+    },
     "regression_3_quality_classifies_group": {
       "accuracy": 0.7551020408163265,
       "auc": 0.3581081081081081,
@@ -2566,7 +2711,7 @@
       "n_splits": 5,
       "leakage_flag": false
     },
-    "finding": "group predicts FAA independent of frontal quality (Holm-Bonferroni corrected), and quality alone doesn't predict group above chance -- consistent with FAA carrying real signal in this sample, not just contamination correlated with diagnosis."
+    "finding": "group predicts FAA independent of frontal quality (Holm-Bonferroni corrected), and quality alone doesn't predict group above chance -- consistent with FAA carrying real signal in this sample, not just contamination correlated with diagnosis. A robustness check using unweighted (raw) FAA in place of NeuroQA's own quality-weighted FAA reaches the same conclusion (raw-FAA group p=0.014, uncorrected)."
   },
   "faa_classifiers_by_pipeline": {
     "raw": {

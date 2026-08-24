@@ -55,11 +55,19 @@ def score_and_faa(path: str | Path, line_freq: float | None = None) -> dict:
     i3, i4 = ch_names.index("F3"), ch_names.index("F4")
     faa_result = compute_faa(data_uv, ch_names, sfreq,
                               weights_f3=quality[:, i3], weights_f4=quality[:, i4])
+    # Unweighted companion FAA (flat epoch mean, no quality weighting) --
+    # study_b.py's regression_2_raw uses this as a robustness-check DV,
+    # since `faa` above is partly built from the same per-channel quality
+    # array that quality_alpha_frontal_pct (score.py) also averages over,
+    # which makes a FAA~group+quality regression on `faa` alone partly
+    # circular. See study_b.py's module docstring.
+    faa_raw_result = compute_faa(data_uv, ch_names, sfreq)
 
     return {
         **row,
         "quality_alpha_pct": row["quality_alpha_pct"],
         "faa": round(faa_result["faa"], 4),
+        "faa_raw": round(faa_raw_result["faa"], 4),
         "n_channels_used": len(ch_names),
         "channels_used": ch_names,
         "channel_detail": channel_detail,

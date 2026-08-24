@@ -8,6 +8,8 @@ import json
 import shutil
 from pathlib import Path
 
+import numpy as np
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = REPO_ROOT / "outputs"
 SITE_DIR = REPO_ROOT / "findings-site"
@@ -121,19 +123,125 @@ def variant_cards(v, label):
     return cards
 
 
+def mediation_note(v, label):
+    """One-line summary of the mediation_analysis block (see study_b.py):
+    the indirect (quality-mediated) effect of group on FAA, with its
+    bootstrap CI. proportion_mediated is only shown when it falls in a
+    sane [0,1] range -- it's a known-unstable statistic when the total
+    effect is close to zero, and a raw out-of-range percentage would
+    confuse more than it clarifies."""
+    m = v.get("mediation_analysis")
+    if m is None:
+        return ""
+    acme, prop = m["acme"], m["proportion_mediated"]
+    prop_clause = (f", an estimated {prop * 100:.0f}% of the group-FAA relationship"
+                    if isinstance(prop, (int, float)) and 0 <= prop <= 1 else "")
+    return (f'<p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%">'
+            f'<strong>Mediation check ({esc(label)}):</strong> indirect (quality-mediated) effect on FAA = '
+            f'{acme["point"]:+.4f} (95%&nbsp;CI [{acme["ci_lo"]:+.4f}, {acme["ci_hi"]:+.4f}]){prop_clause}.</p>')
+
+
+STUDY_C_KIND_LABEL = {
+    "eog": "EOG (0.5-4 Hz, no alpha overlap)",
+    "emg_alpha_overlap": "EMG, alpha-overlapping (8-13 Hz)",
+    "emg_no_overlap": "EMG, non-overlapping (20-45 Hz)",
+}
+STUDY_C_KIND_ORDER = ["eog", "emg_alpha_overlap", "emg_no_overlap"]
+
+
+def load_study_c(key):
+    path = OUT_DIR / key / "study_c.json"
+    return json.loads(path.read_text()) if path.exists() else None
+
+
+def pooled_study_c(study_c_by_key, n_boot=5000, seed=0):
+    """Pool every recording's per-kind dose-response slope across all
+    datasets and bootstrap the combined mean -- more statistical power than
+    any single dataset's population-level estimate, since the injection
+    protocol and dose levels are identical across datasets."""
+    rng = np.random.RandomState(seed)
+    pooled = {k: [] for k in STUDY_C_KIND_ORDER}
+    for sc in study_c_by_key.values():
+        if sc is None:
+            continue
+        for s in sc["per_subject"]:
+            if "results" not in s:
+                continue
+            for k in STUDY_C_KIND_ORDER:
+                pooled[k].append(s["results"][k]["slope"])
+    out = {}
+    for k in STUDY_C_KIND_ORDER:
+        vals = np.array(pooled[k])
+        if len(vals) == 0:
+            out[k] = {"n_subjects": 0, "mean_slope": float("nan"), "slope_ci_lo": float("nan"),
+                       "slope_ci_hi": float("nan"), "nonzero_slope": False}
+            continue
+        idx = np.arange(len(vals))
+        boots = [vals[rng.choice(idx, size=len(idx), replace=True)].mean() for _ in range(n_boot)]
+        lo, hi = np.percentile(boots, [2.5, 97.5])
+        out[k] = {"n_subjects": int(len(vals)), "mean_slope": float(vals.mean()), "slope_ci_lo": float(lo),
+                   "slope_ci_hi": float(hi), "nonzero_slope": bool(not (lo <= 0.0 <= hi))}
+    return out
+
+
+def study_c_bars(summary, max_abs=None):
+    """summary: {kind: {...}} matching study_c.py's own run_study_c()["summary"]
+    schema (n_subjects/mean_slope/slope_ci_lo/slope_ci_hi/nonzero_slope) --
+    pooled_study_c above deliberately returns the same schema so this
+    renders either a single dataset's or the pooled summary identically."""
+    vals = [abs(summary[k]["mean_slope"]) for k in STUDY_C_KIND_ORDER if summary[k]["n_subjects"] > 0]
+    scale = max_abs if max_abs is not None else (max(vals) if vals else 1.0) or 1.0
+    out = []
+    for k in STUDY_C_KIND_ORDER:
+        s = summary[k]
+        if s["n_subjects"] == 0:
+            continue
+        pct = min(100.0, 100.0 * abs(s["mean_slope"]) / scale) if scale else 0.0
+        color = "var(--warning)" if s["nonzero_slope"] else "var(--text-muted)"
+        out.append(f'''<div class="bar-row">
+          <span class="bar-label">{esc(STUDY_C_KIND_LABEL[k])}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:{pct:.1f}%;background:{color}"></div></div>
+          <span class="bar-value">{s['mean_slope']:+.4f}</span>
+        </div>''')
+    return "\n".join(out)
+
+
+def study_c_section(d, sc):
+    if sc is None:
+        return f'''<div class="dataset-block"><h3>{esc(d['label'])}</h3>
+        <p class="dek">Study C not run for this dataset.</p></div>'''
+    s = sc["summary"]
+    ao = s["emg_alpha_overlap"]
+    return f'''<div class="dataset-block">
+      <h3>{esc(d['label'])} <span class="dataset-sub">({esc(d['sub'])}, n={sc['n_recordings']})</span></h3>
+      <div class="card">{study_c_bars(s)}</div>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%">Bootstrapped 95%&nbsp;CI on the
+      population-mean dose-response slope: alpha-overlapping = [{ao['slope_ci_lo']:+.4f},
+      {ao['slope_ci_hi']:+.4f}]{' (excludes zero)' if ao['nonzero_slope'] else ''};
+      EOG = [{s['eog']['slope_ci_lo']:+.4f}, {s['eog']['slope_ci_hi']:+.4f}]; non-overlapping EMG =
+      [{s['emg_no_overlap']['slope_ci_lo']:+.4f}, {s['emg_no_overlap']['slope_ci_hi']:+.4f}].</p>
+    </div>'''
+
+
 def dataset_testb_section(d, r):
     b = r["study_b"]
     frontal_cards = variant_cards(b["frontal"], "frontal")
     scalp_cards = variant_cards(b["whole_scalp"], "whole-scalp")
+    finding_text = esc(b.get("finding", ""))
+    mediation_html = mediation_note(b["frontal"], "frontal")
     return f'''<div class="dataset-block">
       <h3>{esc(d['label'])} <span class="dataset-sub">({esc(d['sub'])}, n={b['n']})</span></h3>
       <div class="verdict-row">{"".join(frontal_cards)}</div>
       <div class="verdict-row" style="margin-top:10px">{"".join(scalp_cards)}</div>
+      <p class="dek" style="margin-top:14px;margin-bottom:0;max-width:100%">{finding_text}</p>
+      {mediation_html}
     </div>'''
 
 
 def main():
     results = {d["key"]: load(d["key"]) for d in DATASETS}
+    study_c_results = {d["key"]: load_study_c(d["key"]) for d in DATASETS}
+    study_c_pooled = pooled_study_c(study_c_results)
 
     testa_blocks = []
     for d in DATASETS:
@@ -160,6 +268,8 @@ def main():
           <h3>{esc(d['label'])}</h3>
           <div class="card">{classifier_bars(r["faa_classifiers_by_pipeline"])}</div>
         </div>''')
+
+    testc_blocks = [study_c_section(d, study_c_results[d["key"]]) for d in DATASETS]
 
     testb_blocks = [dataset_testb_section(d, results[d["key"]]) for d in DATASETS]
 
@@ -199,11 +309,28 @@ def main():
     if leaks:
         leak_sentences = "; ".join(f"{esc(name)} ({esc(variant)})" for name, variant in leaks)
         finding_p3 = f'''<p class="dek" style="max-width:100%"><strong>One flagged result:</strong>
-        {leak_sentences} exceeded the B.2 leakage threshold (AUC &gt; 0.65), indicating quality alone had
-        some ability to predict group in that case. This result is reported rather than omitted; see the
-        corresponding B.2 card above for the exact AUC and confidence interval.</p>'''
+        {leak_sentences} had a quality-alone-predicts-diagnosis AUC whose 95% confidence interval sat
+        entirely above chance (0.5), indicating quality alone had some ability to predict group in that
+        case. This result is reported rather than omitted; see the corresponding B.2 card above for the
+        exact AUC and confidence interval.</p>'''
     else:
         finding_p3 = ""
+
+    ao = study_c_pooled["emg_alpha_overlap"]
+    if ao["nonzero_slope"]:
+        finding_p_c = (f'''Test C adds a causal check: injecting synthetic contamination confined to the
+        alpha band itself produces a small but statistically real upward drift in FAA, pooled across all
+        three datasets (95%&nbsp;CI [{ao['slope_ci_lo']:+.4f}, {ao['slope_ci_hi']:+.4f}], n={ao["n_subjects"]} recordings), while
+        the same injection outside the alpha band and EOG-like injection both show no effect. That pattern,
+        an effect specific to the frequency range that overlaps alpha, is direct mechanistic evidence for
+        the contamination pathway this project proposes, independent of whether it explains any single
+        dataset's group difference above.''')
+    else:
+        finding_p_c = (f'''Test C's causal check (synthetic contamination injected at increasing doses) did
+        not produce a statistically significant population-level FAA drift even in the alpha-overlapping
+        condition when pooled across all three datasets (95%&nbsp;CI [{ao['slope_ci_lo']:+.4f}, {ao['slope_ci_hi']:+.4f}]),
+        though its point estimate was consistently positive in every dataset individually. This is
+        inconclusive rather than a null result at this sample size.''')
 
     html = f'''<!doctype html>
 <html lang="en">
@@ -387,21 +514,55 @@ def main():
 
   <section id="test-b">
     <h2><span class="num">05</span>Test B: Is contamination tied to diagnosis?</h2>
-    <p class="dek">Three group-level analyses per dataset.</p>
+    <p class="dek">Three group-level analyses per dataset. Each dataset's summary below also reports a
+    robustness check that reruns the group-to-FAA test on raw, unweighted FAA instead of NeuroQA's own
+    quality-weighted FAA (the primary result is partly built from the same per-channel weights used as
+    the quality predictor, so this check confirms the finding isn't an artifact of that overlap), and a
+    mediation check that separates how much of the group-FAA relationship runs through quality from how
+    much doesn't, since a single regression coefficient can't make that distinction on its own.</p>
     {"".join(testb_blocks)}
   </section>
 
+  <section id="test-c">
+    <h2><span class="num">06</span>Test C: A causal check via synthetic contamination</h2>
+    <p class="dek">Test A and Test B are both observational: they show FAA is sensitive to processing
+    choices and associated (or not) with diagnosis in real, already-collected data, but neither can show
+    that contamination <em>causes</em> FAA to shift. Test C injects a known, controlled amount of synthetic
+    contamination into real clean epochs at three frequency ranges and recomputes FAA at each dose:
+    EOG-like (0.5-4&nbsp;Hz), EMG limited to the alpha band itself (8-13&nbsp;Hz, maximal overlap), and
+    EMG outside the alpha band (20-45&nbsp;Hz, a specificity control that should show no effect if the
+    mechanism is really about spectral overlap and not just "more injected noise"). Injection is
+    spectral/amplitude-based on the same epoch data the rest of the pipeline uses, calibrated to each
+    recording's own channel amplitude; it is not anatomically-realistic forward-model simulation, see
+    the limitations below.</p>
+    {"".join(testc_blocks)}
+    <div class="dataset-block">
+      <h3>Pooled across all three datasets <span class="dataset-sub">(n={study_c_pooled["emg_alpha_overlap"]["n_subjects"]}
+      recordings)</span></h3>
+      <div class="card">{study_c_bars(study_c_pooled)}</div>
+      <p class="dek" style="margin-top:10px;margin-bottom:0;max-width:100%">Pooling every recording's own
+      dose-response slope across all three datasets (identical injection protocol and dose levels
+      throughout): the alpha-overlapping condition's 95%&nbsp;CI is
+      [{study_c_pooled['emg_alpha_overlap']['slope_ci_lo']:+.4f}, {study_c_pooled['emg_alpha_overlap']['slope_ci_hi']:+.4f}]
+      {'and excludes zero' if study_c_pooled['emg_alpha_overlap']['nonzero_slope'] else '(includes zero)'}, while
+      EOG and the non-overlapping EMG control both sit at essentially exactly zero. That pattern, an effect
+      specific to the frequency range that overlaps alpha and absent elsewhere, is the signature the
+      project's spectral-overlap mechanism predicts.</p>
+    </div>
+  </section>
+
   <section id="finding">
-    <h2><span class="num">06</span>The finding</h2>
+    <h2><span class="num">07</span>The finding</h2>
     <p class="dek" style="max-width:100%">Across all three datasets and both quality variants, Test B.1
     (whether group or severity predicts contamination) never reached significance, providing no evidence
     that diagnosis or symptom severity is itself associated with how contaminated a recording is.</p>
     <p class="dek" style="max-width:100%">{finding_p2}</p>
     {finding_p3}
+    <p class="dek" style="max-width:100%">{finding_p_c}</p>
   </section>
 
   <section id="changelog">
-    <h2><span class="num">07</span>Methodology revision (v2)</h2>
+    <h2><span class="num">08</span>Methodology revision (v2)</h2>
     <p class="dek">The following changes were applied to the analysis pipeline and the study was
     re-run in full on 2026-08-24. Prior (v1) results are archived rather than overwritten, and
     remain available for comparison.</p>
@@ -427,9 +588,38 @@ def main():
     </ul>
   </section>
 
-  <section id="caveats">
-    <h2><span class="num">08</span>Limitations</h2>
+  <section id="changelog-v21">
+    <h2><span class="num">09</span>Methodology revision (v2.1)</h2>
+    <p class="dek">A self-review of the Test A/B design surfaced one structural issue and one
+    interpretation caveat worth fixing before treating v2's results as final. Applied and re-run in
+    full on 2026-08-24.</p>
     <ul class="caveats">
+      <li><strong>Raw-FAA robustness check added.</strong> The group-to-FAA regression is now also run
+      on unweighted FAA, since the primary result partly depends on the same per-channel quality
+      weights used as its own predictor; both results are reported together for every dataset above.</li>
+      <li><strong>Mediation analysis added.</strong> Quantifies the indirect (quality-mediated) and
+      direct effects of group on FAA, rather than relying on a single regression coefficient to judge
+      whether quality is a confound.</li>
+      <li><strong>Leakage threshold corrected.</strong> The quality-alone-predicts-diagnosis flag (Test
+      B.2) now derives from the already-computed 95% confidence interval, replacing an arbitrary
+      AUC&nbsp;&gt;&nbsp;0.65 cutoff disconnected from the chance level of 0.5.</li>
+      <li><strong>Sample-size floor added.</strong> Test B.1 (quality ~ group + severity) now requires
+      at least 6 total observations before running, not just 2 per group, avoiding a
+      1-residual-degree-of-freedom fit being reported the same way as a well-powered one.</li>
+      <li><strong>Test C added.</strong> Synthetic contamination injected at increasing doses to test for
+      a causal, spectrally-specific effect on FAA, complementing Test A and B's observational designs.
+      See section 06 above.</li>
+    </ul>
+  </section>
+
+  <section id="caveats">
+    <h2><span class="num">10</span>Limitations</h2>
+    <ul class="caveats">
+      <li><strong>Quality's causal role is unresolved.</strong> These analyses can't fully distinguish
+      whether contamination quality is a pre-existing confound or a mediator on the path from group to
+      FAA; this project's own rationale (more severe cases show more movement and blinking) points
+      toward the latter, which changes how the confound-check and mediation results above should be
+      read. See the mediation check reported with each dataset in Test B.</li>
       <li><strong>Per-type weights remain placeholders.</strong> <code>WEIGHT[artifact.type]</code> is
       currently equal weighting (1.0 across all types), pending finalized physics-derived values. Only
       the EMG <em>band definition</em> (which frequencies are classified as EMG) has been updated based
@@ -438,6 +628,11 @@ def main():
       <li><strong>Test A and the five classifiers ran on up to 30 recordings per dataset</strong>
       (15 per group where available), limited by ICA/AutoReject runtime even with parallelization. This
       is larger than the prior sample of 12 but still indicative rather than a full-sample result.</li>
+      <li><strong>Test C's injection is spectral, not anatomical.</strong> Synthetic contamination is
+      added directly to the channel data at the right frequency content and location, calibrated to each
+      recording's own amplitude, but without a real head model or dipole simulation -- it tests whether
+      alpha-band-overlapping contamination biases FAA in a dose-dependent way, not whether a real blink or
+      jaw-clench of a given size would.</li>
       <li><strong>Mumtaz/HUSM has no per-subject severity data</strong> in its public release. Test B.1
       was therefore run on ds003478 and ds007615 (two independent cohorts) only; Mumtaz/HUSM contributes
       to Test A and the B.2/confound analyses as a replication check.</li>

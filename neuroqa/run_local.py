@@ -113,7 +113,7 @@ def main():
     # (same cache convention its own intro cell documents: reuse outputs/*.csv
     # when present, delete to force a from-scratch recompute).
     summary_cols = ["file", "group", "clinical_severity", "grade", "quality_alpha_pct",
-                     "quality_alpha_frontal_pct", "raw_severity_mean", "faa", "n_epochs", "n_channels"]
+                     "quality_alpha_frontal_pct", "raw_severity_mean", "faa", "faa_raw", "n_epochs", "n_channels"]
     with open(args.out / "quality_faa_summary.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=summary_cols, extrasaction="ignore")
         w.writeheader()

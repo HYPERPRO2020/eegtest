@@ -2638,6 +2638,55 @@
         "rsquared": 0.032726477093603434,
         "nobs": 58
       },
+      "regression_2_raw_faa_on_group_quality": {
+        "params": {
+          "const": 1.6629531950964973,
+          "group_mdd": -0.1143376725757803,
+          "quality_alpha_frontal_pct": -0.01623046905264392
+        },
+        "pvalues": {
+          "const": 0.2959936342431684,
+          "group_mdd": 0.24712591716010093,
+          "quality_alpha_frontal_pct": 0.3403097580232336
+        },
+        "conf_int": {
+          "const": [
+            -1.4956485357785148,
+            4.821554925971509
+          ],
+          "group_mdd": [
+            -0.31021546531709554,
+            0.08154012016553493
+          ],
+          "quality_alpha_frontal_pct": [
+            -0.050045396242195235,
+            0.017584458136907392
+          ]
+        },
+        "rsquared": 0.03146755701646842,
+        "nobs": 58
+      },
+      "regression_2_raw_skipped_reason": null,
+      "mediation_analysis": {
+        "acme": {
+          "point": 0.026635859828880625,
+          "ci_lo": -0.005395143132678926,
+          "ci_hi": 0.0807523239981858
+        },
+        "ade": {
+          "point": -0.11670943125745226,
+          "ci_lo": -0.291520451111227,
+          "ci_hi": 0.08606372302123828
+        },
+        "total_effect": {
+          "point": -0.09007357142857135,
+          "ci_lo": -0.25603502604166667,
+          "ci_hi": 0.11456480476811098
+        },
+        "proportion_mediated": -0.2957122650566038,
+        "n_boot_valid": 2000
+      },
+      "mediation_analysis_skipped_reason": null,
       "regression_3_quality_classifies_group": {
         "accuracy": 0.6724137931034483,
         "auc": 0.6321428571428571,
@@ -2686,6 +2735,55 @@
         "rsquared": 0.017392727466078672,
         "nobs": 58
       },
+      "regression_2_raw_faa_on_group_quality": {
+        "params": {
+          "const": 0.4881043426520121,
+          "group_mdd": -0.09211623260822331,
+          "quality_alpha_pct": -0.003650286790596848
+        },
+        "pvalues": {
+          "const": 0.8052540020612975,
+          "group_mdd": 0.3572695581973849,
+          "quality_alpha_pct": 0.863605974680929
+        },
+        "conf_int": {
+          "const": [
+            -3.4602353787211784,
+            4.436444064025203
+          ],
+          "group_mdd": [
+            -0.29096371841381763,
+            0.10673125319737102
+          ],
+          "quality_alpha_pct": [
+            -0.046035525691324804,
+            0.03873495211013111
+          ]
+        },
+        "rsquared": 0.015707253879223004,
+        "nobs": 58
+      },
+      "regression_2_raw_skipped_reason": null,
+      "mediation_analysis": {
+        "acme": {
+          "point": 0.004622255611166638,
+          "ci_lo": -0.03194498428289494,
+          "ci_hi": 0.05772770539386866
+        },
+        "ade": {
+          "point": -0.09469582703973811,
+          "ci_lo": -0.2827565412395016,
+          "ci_hi": 0.11397898776412523
+        },
+        "total_effect": {
+          "point": -0.09007357142857135,
+          "ci_lo": -0.25603502604166667,
+          "ci_hi": 0.11456480476811098
+        },
+        "proportion_mediated": -0.05131644652096539,
+        "n_boot_valid": 2000
+      },
+      "mediation_analysis_skipped_reason": null,
       "regression_3_quality_classifies_group": {
         "accuracy": 0.6896551724137931,
         "auc": 0.6761904761904762,
@@ -2731,6 +2829,53 @@
       "rsquared": 0.032726477093603434,
       "nobs": 58
     },
+    "regression_2_raw_faa_on_group_quality": {
+      "params": {
+        "const": 1.6629531950964973,
+        "group_mdd": -0.1143376725757803,
+        "quality_alpha_frontal_pct": -0.01623046905264392
+      },
+      "pvalues": {
+        "const": 0.2959936342431684,
+        "group_mdd": 0.24712591716010093,
+        "quality_alpha_frontal_pct": 0.3403097580232336
+      },
+      "conf_int": {
+        "const": [
+          -1.4956485357785148,
+          4.821554925971509
+        ],
+        "group_mdd": [
+          -0.31021546531709554,
+          0.08154012016553493
+        ],
+        "quality_alpha_frontal_pct": [
+          -0.050045396242195235,
+          0.017584458136907392
+        ]
+      },
+      "rsquared": 0.03146755701646842,
+      "nobs": 58
+    },
+    "mediation_analysis": {
+      "acme": {
+        "point": 0.026635859828880625,
+        "ci_lo": -0.005395143132678926,
+        "ci_hi": 0.0807523239981858
+      },
+      "ade": {
+        "point": -0.11670943125745226,
+        "ci_lo": -0.291520451111227,
+        "ci_hi": 0.08606372302123828
+      },
+      "total_effect": {
+        "point": -0.09007357142857135,
+        "ci_lo": -0.25603502604166667,
+        "ci_hi": 0.11456480476811098
+      },
+      "proportion_mediated": -0.2957122650566038,
+      "n_boot_valid": 2000
+    },
     "regression_3_quality_classifies_group": {
       "accuracy": 0.6724137931034483,
       "auc": 0.6321428571428571,
@@ -2741,7 +2886,7 @@
       "n_splits": 5,
       "leakage_flag": false
     },
-    "finding": "no strong evidence either way in this sample (group's effect on FAA is not significant at corrected p<0.05, controlling for frontal quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
+    "finding": "no strong evidence either way in this sample (group's effect on FAA is not significant at corrected p<0.05, controlling for frontal quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA. A robustness check using unweighted (raw) FAA in place of NeuroQA's own quality-weighted FAA reaches the same conclusion (raw-FAA group p=0.247, uncorrected)."
   },
   "faa_classifiers_by_pipeline": {
     "raw": {

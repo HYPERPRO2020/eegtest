@@ -354,6 +354,275 @@ def test_study_b_regression_1_skips_gracefully_without_severity():
     assert result["regression_3_quality_classifies_group"]["n"] == len(rows)
 
 
+def test_score_and_faa_reports_raw_faa_alongside_quality_weighted_faa(tmp_path):
+    """score_and_faa must return both the quality-weighted `faa` and an
+    unweighted `faa_raw`, computed from the same data -- study_b.py's
+    regression_2_raw needs faa_raw as a DV independent of the quality
+    weights that also feed the quality predictor (see study_b.py docstring
+    on why regression_2 alone is partly circular)."""
+    from pipeline import score_and_faa
+
+    raw = make_synthetic_raw()
+    path = tmp_path / "sub_rawfaa.fif"
+    raw.save(str(path), verbose=False)
+
+    result = score_and_faa(path)
+    assert "faa_raw" in result
+    assert isinstance(result["faa_raw"], float)
+
+
+def test_study_b_regression_2_raw_uses_unweighted_faa_as_dv():
+    """regression_2_raw's dependent variable must be faa_raw, not the
+    quality-weighted faa regression_2 uses -- otherwise it isn't actually an
+    independent robustness check (see study_b.py module docstring)."""
+    from study_b import regression_2_raw, rows_to_frame
+
+    rng = np.random.default_rng(5)
+    n = 20
+    rows = [
+        {"file": f"s{i}", "group": "healthy" if i % 2 == 0 else "depressed",
+         "quality_alpha_pct": float(rng.uniform(60, 100)),
+         "faa": 999.0,  # deliberately garbage -- must NOT be what gets fit
+         "faa_raw": float(rng.normal())}
+        for i in range(n)
+    ]
+    df = rows_to_frame(rows, "quality_alpha_pct")
+    df["faa_raw"] = [r["faa_raw"] for r in rows]
+    m = regression_2_raw(df, "quality_alpha_pct")
+    # If faa (999.0 constant-ish) had leaked in, the fit would be degenerate/
+    # near-perfect on a constant; fitting real (small, ~N(0,1)) faa_raw
+    # values instead gives residual variance in a normal range.
+    assert 0.01 < m.mse_resid < 10.0
+
+
+def test_study_b_mediation_analysis_reports_acme_ade_total_with_cis():
+    """mediation_analysis must return ACME (indirect, quality-mediated
+    effect), ADE (direct effect), and total effect, each with a bootstrapped
+    CI, plus proportion_mediated -- the purpose-built tool for the
+    mediator-vs-confounder question regression_2's bare coefficient check
+    can't resolve (Table 2 Fallacy, see module docstring)."""
+    from study_b import mediation_analysis, rows_to_frame
+
+    rng = np.random.default_rng(9)
+    n = 40
+    group = ["healthy" if i % 2 == 0 else "depressed" for i in range(n)]
+    # quality is caused by group (mediator setup), and FAA is caused by
+    # quality (not directly by group) -- ACME should dominate, ADE should
+    # be small/non-significant, ~fully mediated.
+    quality = [rng.normal(90, 3) if g == "healthy" else rng.normal(70, 3) for g in group]
+    faa = [0.02 * q + rng.normal(0, 0.05) for q in quality]
+    rows = [{"file": f"s{i}", "group": group[i], "quality_alpha_pct": float(quality[i]),
+             "faa": float(faa[i])} for i in range(n)]
+    df = rows_to_frame(rows, "quality_alpha_pct")
+
+    result = mediation_analysis(df, "quality_alpha_pct", n_boot=200, seed=1)
+    for key in ("acme", "ade", "total_effect"):
+        assert set(result[key].keys()) == {"point", "ci_lo", "ci_hi"}
+    assert result["n_boot_valid"] > 0
+    # Constructed as a near-full-mediation scenario: ACME should be the
+    # dominant component of the total effect.
+    assert abs(result["acme"]["point"]) > abs(result["ade"]["point"])
+
+
+def test_study_b_leakage_flag_uses_ci_not_point_estimate_threshold():
+    """leakage_flag must be derived from auc_ci_lo > 0.5 (the bootstrap CI
+    already computed), not a bare `auc > 0.65` point-estimate cutoff -- see
+    study_b.py's regression_3 comment for why 0.65 is an arbitrary,
+    chance-disconnected threshold that both under- and over-flags relative
+    to the CI. Both directions of the old bug are checked with fixed seeds
+    against real (non-mocked) data so this regresses if anyone reverts to
+    the point-estimate rule."""
+    from study_b import regression_3, rows_to_frame
+
+    # Case 1: real, moderate quality-group separation at n=200 -- point AUC
+    # lands at 0.6433 (old rule: NOT flagged, since 0.6433 < 0.65) but the
+    # CI's lower bound (0.568) clears 0.5 comfortably (new rule: flagged).
+    # The old threshold would have missed a real, CI-confirmed leak here.
+    rng = np.random.default_rng(0)
+    n = 200
+    group = ["healthy" if i % 2 == 0 else "depressed" for i in range(n)]
+    quality = [rng.normal(80, 8) if g == "healthy" else rng.normal(83, 8) for g in group]
+    rows = [{"file": f"s{i}", "group": group[i], "quality_alpha_pct": float(quality[i]),
+             "faa": float(rng.normal())} for i in range(n)]
+    df = rows_to_frame(rows, "quality_alpha_pct")
+    r = regression_3(df, "quality_alpha_pct")
+    assert r["auc"] < 0.65
+    assert r["auc_ci_lo"] > 0.5
+    assert r["leakage_flag"] is True
+
+    # Case 2: quality independent of group by construction, small n=14 --
+    # point AUC drifts to 0.735 by chance (old rule: flagged, since
+    # 0.735 > 0.65) but the CI spans [0.4, 1.0], comfortably crossing 0.5
+    # (new rule: not flagged). The old threshold would have raised a false
+    # leakage warning here.
+    rng2 = np.random.default_rng(4)
+    n2 = 14
+    group2 = ["healthy" if i % 2 == 0 else "depressed" for i in range(n2)]
+    quality2 = [rng2.normal(80, 8) for _ in group2]
+    rows2 = [{"file": f"s{i}", "group": group2[i], "quality_alpha_pct": float(quality2[i]),
+              "faa": float(rng2.normal())} for i in range(n2)]
+    df2 = rows_to_frame(rows2, "quality_alpha_pct")
+    r2 = regression_3(df2, "quality_alpha_pct")
+    assert r2["auc"] > 0.65
+    assert r2["auc_ci_lo"] < 0.5
+    assert r2["leakage_flag"] is False
+
+
+def test_study_b_regression_1_enforces_total_n_floor_not_just_per_group():
+    """A batch with only MIN_PER_GROUP_FOR_SEVERITY (2) per group technically
+    passes the old per-group-only check but leaves a 3-parameter OLS fit
+    (const, group, severity) with 1 residual df on 4 total observations --
+    too thin to trust. regression_1 must now skip this case via the added
+    total-n floor (MIN_N_FOR_OLS), not silently return a p-value from it."""
+    from study_b import MIN_N_FOR_OLS, run_study_b
+
+    rng = np.random.default_rng(6)
+    rows = [
+        {"file": f"s{i}", "group": "healthy" if i < 2 else "depressed",
+         "quality_alpha_pct": float(rng.uniform(60, 100)),
+         "quality_alpha_frontal_pct": float(rng.uniform(60, 100)),
+         "clinical_severity": float(rng.uniform(0, 63)), "faa": float(rng.normal())}
+        for i in range(4)  # 2 per group -- passes MIN_PER_GROUP_FOR_SEVERITY, fails MIN_N_FOR_OLS
+    ]
+    assert len(rows) < MIN_N_FOR_OLS
+    result = run_study_b(rows)
+    assert result["regression_1_quality_on_group_severity"] is None
+    assert result["regression_1_skipped_reason"] is not None
+
+
+def test_study_c_inject_artifact_is_noop_at_dose_zero_and_confined_to_frontal_channels():
+    """dose=0.0 must return data unchanged (the no-injection baseline point
+    dose_response fits against), and any dose>0 must only touch
+    FRONTAL_INJECT_CHANNELS -- a non-frontal channel like O1 has no business
+    changing when Study C injects contamination at F3/F4/Fp1/Fp2."""
+    from study_c import inject_artifact
+
+    rng = np.random.default_rng(2)
+    sfreq = 256.0
+    ch_names = ["F3", "F4", "Fp1", "Fp2", "O1"]
+    data = rng.normal(0, 3.0, size=(20, len(ch_names), int(4 * sfreq)))
+
+    zero = inject_artifact(data, ch_names, sfreq, "eog", 0.0, seed=1)
+    assert np.array_equal(zero, data)
+
+    out = inject_artifact(data, ch_names, sfreq, "eog", 2.0, seed=1)
+    o1 = ch_names.index("O1")
+    f3 = ch_names.index("F3")
+    assert np.array_equal(out[:, o1, :], data[:, o1, :])
+    assert not np.array_equal(out[:, f3, :], data[:, f3, :])
+
+
+def test_study_c_inject_artifact_is_deterministic():
+    """Same call, same seed, must reproduce bit-identical output -- Study C
+    results need to be reproducible the same way the rest of the pipeline is
+    (see pipeline.py's module docstring on seeded randomness)."""
+    from study_c import inject_artifact
+
+    rng = np.random.default_rng(2)
+    sfreq = 256.0
+    ch_names = ["F3", "F4", "Fp1", "Fp2"]
+    data = rng.normal(0, 3.0, size=(10, len(ch_names), int(4 * sfreq)))
+
+    first = inject_artifact(data, ch_names, sfreq, "emg_alpha_overlap", 2.0, seed=1)
+    second = inject_artifact(data, ch_names, sfreq, "emg_alpha_overlap", 2.0, seed=1)
+    assert np.array_equal(first, second)
+
+
+def test_study_c_dose_scales_one_fixed_noise_shape_not_a_fresh_draw_per_dose():
+    """Injected noise at a given channel must be the SAME waveform shape
+    across every dose level for a fixed seed -- only its amplitude should
+    scale with dose. Otherwise each dose point in a dose-response curve
+    would sit on an independent random realization instead of tracing a
+    function of dose, which is what a "dose-response" claim requires."""
+    from study_c import inject_artifact
+
+    rng = np.random.default_rng(3)
+    sfreq = 256.0
+    ch_names = ["F3", "F4"]
+    data = rng.normal(0, 3.0, size=(5, len(ch_names), int(4 * sfreq)))
+    f4 = ch_names.index("F4")
+
+    at_1x = inject_artifact(data, ch_names, sfreq, "eog", 1.0, seed=7)
+    at_2x = inject_artifact(data, ch_names, sfreq, "eog", 2.0, seed=7)
+    added_1x = at_1x[:, f4, :] - data[:, f4, :]
+    added_2x = at_2x[:, f4, :] - data[:, f4, :]
+    # If the shape is reused, added_2x must be (near) exactly 2x added_1x,
+    # sample for sample -- not just "bigger" in some general sense.
+    ratio = added_2x / np.where(added_1x != 0, added_1x, np.nan)
+    assert np.nanstd(ratio) < 1e-6
+    assert abs(np.nanmean(ratio) - 2.0) < 1e-6
+
+
+def test_study_c_spectral_specificity_alpha_overlap_vs_no_overlap():
+    """The whole point of including emg_no_overlap as a control condition:
+    alpha-overlapping injection (8-13Hz) must raise measured alpha-band
+    power far more than equal-dose non-overlapping injection (20-45Hz) does,
+    on the same near-zero baseline. If this weren't true, Study C's
+    spectral-specificity comparison wouldn't actually test what its module
+    docstring claims it tests."""
+    from faa import alpha_power
+    from study_c import inject_artifact
+
+    rng = np.random.default_rng(8)
+    sfreq = 256.0
+    ch_names = ["F3", "F4", "Fp1", "Fp2"]
+    data = rng.normal(0, 1.0, size=(10, len(ch_names), int(4 * sfreq)))  # small, near-flat baseline
+
+    overlap = inject_artifact(data, ch_names, sfreq, "emg_alpha_overlap", dose=3.0, seed=5)
+    no_overlap = inject_artifact(data, ch_names, sfreq, "emg_no_overlap", dose=3.0, seed=5)
+
+    baseline_alpha = alpha_power(data, ch_names, sfreq).mean()
+    overlap_alpha = alpha_power(overlap, ch_names, sfreq).mean()
+    no_overlap_alpha = alpha_power(no_overlap, ch_names, sfreq).mean()
+
+    assert overlap_alpha > baseline_alpha * 5  # alpha-overlapping injection clearly raises alpha power
+    assert no_overlap_alpha < overlap_alpha / 5  # non-overlapping injection raises it far less
+
+
+def test_study_c_dose_response_matches_faa_at_dose_zero_and_is_deterministic():
+    """dose_response's dose=0.0 point must equal an ordinary unweighted
+    compute_faa call on the untouched data (the baseline point everything
+    else is compared against), and repeat calls with the same seed must be
+    bit-identical."""
+    from faa import compute_faa
+    from study_c import dose_response
+
+    rng = np.random.default_rng(4)
+    sfreq = 256.0
+    ch_names = ["F3", "F4", "Fp1", "Fp2"]
+    data = rng.normal(0, 3.0, size=(15, len(ch_names), int(4 * sfreq)))
+
+    result = dose_response(data, ch_names, sfreq, "eog", doses=(0.0, 1.0, 2.0), seed=2)
+    expected_baseline = compute_faa(data, ch_names, sfreq)["faa"]
+    assert abs(result["points"][0]["faa"] - expected_baseline) < 1e-9
+
+    result2 = dose_response(data, ch_names, sfreq, "eog", doses=(0.0, 1.0, 2.0), seed=2)
+    assert result == result2
+
+
+def test_run_study_c_summarizes_across_recordings(tmp_path):
+    """run_study_c must run every injection kind across every recording and
+    summarize each kind's population-level slope with a subject-level
+    bootstrap CI -- an end-to-end smoke test of the module's actual entry
+    point, not just its internal pieces."""
+    from study_c import INJECTION_BANDS, run_study_c
+
+    paths = []
+    for i in range(2):
+        raw = make_synthetic_raw(seed=i)
+        path = tmp_path / f"study_c_sub{i}.fif"
+        raw.save(str(path), verbose=False)
+        paths.append(path)
+
+    result = run_study_c(paths, doses=(0.0, 1.0, 2.0), n_boot=50)
+    assert result["n_recordings"] == 2
+    assert len(result["per_subject"]) == 2
+    for kind in INJECTION_BANDS:
+        s = result["summary"][kind]
+        assert s["n_subjects"] == 2
+        assert {"mean_slope", "slope_ci_lo", "slope_ci_hi", "nonzero_slope"} <= s.keys()
+
+
 def test_faa_classifiers_one_independent_result_per_pipeline():
     """Peter's ask: 4-5 classifiers, one per Study A pipeline, that don't
     share data -- each pipeline's result must come only from that

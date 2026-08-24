@@ -299,12 +299,69 @@ for name in DATASETS:
         print(f"    FAA~group+quality: group p={r2['pvalues']['group_mdd']:.4f}  "
               f"quality p={r2['pvalues'][qcol]:.4f}  R2={r2['rsquared']:.3f}  n={r2['nobs']}")
         print(f"    Holm-corrected: {v['holm_corrected_pvalues']}")
+        r2_raw = v.get("regression_2_raw_faa_on_group_quality")
+        if r2_raw is None:
+            print(f"    robustness check (raw FAA): SKIPPED -- {v.get('regression_2_raw_skipped_reason')}")
+        else:
+            print(f"    robustness check (raw FAA, uncorrected): group p={r2_raw['pvalues']['group_mdd']:.4f}  "
+                  f"quality p={r2_raw['pvalues'][qcol]:.4f}  n={r2_raw['nobs']}")
+        med = v.get("mediation_analysis")
+        if med is None:
+            print(f"    mediation analysis: SKIPPED -- {v.get('mediation_analysis_skipped_reason')}")
+        else:
+            print(f"    mediation analysis: ACME (indirect)={med['acme']['point']:+.4f} "
+                  f"[{med['acme']['ci_lo']:+.4f}, {med['acme']['ci_hi']:+.4f}]  "
+                  f"ADE (direct)={med['ade']['point']:+.4f}  proportion_mediated={med['proportion_mediated']:.3f}")
         r3 = v["regression_3_quality_classifies_group"]
         print(f"    B.2 quality-only classifier: AUC={r3['auc']:.3f} "
               f"(95% CI [{r3['auc_ci_lo']:.2f}, {r3['auc_ci_hi']:.2f}], baseline {r3['majority_class_baseline']:.3f})  "
               f"leakage_flag={r3['leakage_flag']}")
     print(f"  FINDING (frontal-based): {b['finding']}")
     print()""")
+
+md(r"""## 5b. Test C -- a causal check via synthetic contamination
+
+Test A and Test B are both observational. Test C injects a known, controlled amount of synthetic
+contamination into each recording's own real clean epochs at three frequency ranges -- EOG-like
+(0.5-4 Hz), EMG confined to the alpha band itself (8-13 Hz, maximal overlap with what FAA measures),
+and EMG outside the alpha band (20-45 Hz, a specificity control) -- and recomputes unweighted FAA at
+each dose, fitting a per-subject dose-response slope (see `neuroqa/study_c.py`). If FAA drifts with
+dose *specifically* in the alpha-overlapping condition and not the other two, that's direct causal,
+mechanistic evidence for the spectral-overlap pathway this project's whole scoring formula assumes,
+independent of whether any single dataset's group difference is explained by it. Scope: spectral/
+amplitude injection on the same epoch arrays, calibrated to each recording's own channel amplitude --
+not anatomically-realistic forward-model simulation. Run via `python scripts/run_study_c.py <data_dir>
+<manifest.csv> --out outputs/<dataset>`, same Study-A subsample each dataset already reports on.""")
+
+code(r"""study_c = {}
+for name in DATASETS:
+    path = DATASETS[name]["out_dir"] / "study_c.json"
+    if not path.exists():
+        print(f"=== {DATASETS[name]['label']}: study_c.json not found, run scripts/run_study_c.py first ===")
+        continue
+    sc = json.loads(path.read_text())
+    study_c[name] = sc
+    print(f"=== {DATASETS[name]['label']} (n={sc['n_recordings']}) ===")
+    for kind, s in sc["summary"].items():
+        print(f"  {kind:20s} n={s['n_subjects']:3d}  mean_slope={s['mean_slope']:+.5f}  "
+              f"95% CI=[{s['slope_ci_lo']:+.5f}, {s['slope_ci_hi']:+.5f}]  nonzero_slope={s['nonzero_slope']}")
+    print()
+
+# Pooled across all three datasets -- more statistical power than any single
+# dataset's population-level estimate, since the injection protocol and dose
+# levels are identical throughout.
+import numpy as np
+rng = np.random.RandomState(0)
+pooled = {}
+for kind in ["eog", "emg_alpha_overlap", "emg_no_overlap"]:
+    slopes = np.array([s["results"][kind]["slope"] for sc in study_c.values()
+                        for s in sc["per_subject"] if "results" in s])
+    idx = np.arange(len(slopes))
+    boots = [slopes[rng.choice(idx, size=len(idx), replace=True)].mean() for _ in range(5000)]
+    lo, hi = np.percentile(boots, [2.5, 97.5])
+    pooled[kind] = {"n": len(slopes), "mean": slopes.mean(), "ci": (lo, hi), "nonzero": not (lo <= 0 <= hi)}
+    print(f"POOLED {kind:20s} n={len(slopes):3d}  mean_slope={slopes.mean():+.5f}  "
+          f"95% CI=[{lo:+.5f}, {hi:+.5f}]  nonzero_slope={pooled[kind]['nonzero']}")""")
 
 md(r"""## 6. Results table""")
 
@@ -362,6 +419,41 @@ actual numbers supplied yet), an EMG spectral-signature specificity check, resol
 Mumtaz/HUSM's original paper reports severity not in the public deposit (checked; not found in
 searchable sources), and a Stewart et al. (2011) 70-90 Hz proxy-band comparison arm. All flagged,
 none silently dropped.""")
+
+md(r"""## 7b. v2 -> v2.1: methodology self-review fixes (2026-08-24)
+
+Prompted by re-examining whether Test A/B's design actually supports the claims made from it --
+not a Peter-approved algorithm change, a statistics/software correction:
+
+- **Circularity fix**: `regression_2`'s FAA (the DV in `FAA ~ group + quality`) was partly built
+  from the same per-channel `quality_index.compute_quality` weights that `quality_alpha_frontal_pct`
+  (the IV) also averages over (`pipeline.py`'s `score_and_faa` vs `score.py`'s frontal quality
+  column) -- biasing the confound check toward under-detecting a real association. Fix:
+  `regression_2_raw` reruns the same regression on `faa_raw` (unweighted, added to
+  `score_and_faa`'s output) as a robustness check, reported alongside the original everywhere it
+  appears (`study_b.py`'s `finding` text, the results table below, and the notebook print loop).
+- **Mediation analysis added** (`study_b.mediation_analysis`, bootstrapped product-of-coefficients /
+  Baron-Kenny, Imai-Keele-Tingley framing): ACME (indirect, quality-mediated effect), ADE (direct
+  effect), total effect, proportion mediated -- the purpose-built tool for "is quality a mediator or
+  a confounder", a question `regression_2`'s bare coefficient check can't resolve on its own (the
+  "Table 2 Fallacy", Westreich & Greenland 2013).
+- **B.2 leakage_flag fixed**: was `bool(auc > 0.65)`, a point-estimate threshold disconnected from
+  chance (0.5) and ignoring the bootstrap CI already computed alongside it. Now `auc_ci_lo > 0.5`.
+  Confirmed empirically (see `neuroqa/tests/test_pipeline.py`) this flips the flag in both
+  directions relative to the old rule on realistic data, not just a cosmetic change.
+- **`MIN_N_FOR_OLS` floor added** to `regression_1` (was per-group-count-only, could run a
+  4-observation/1-residual-df fit and report its p-value same as a well-powered one).
+- **Study C added** (`neuroqa/study_c.py`): synthetic EOG/EMG artifact injection at F3/F4/Fp1/Fp2,
+  dose-response on unweighted FAA, with a spectral-specificity control (alpha-overlapping vs
+  non-overlapping injection band) -- Test A/B are both observational; this is the one arm giving
+  causal, dose-response evidence for the contamination -> FAA mechanism specifically. See section 5b
+  above. Scope: spectral/amplitude injection on the existing epoch arrays, not anatomically-realistic
+  forward-model simulation (see `study_c.py`'s module docstring).
+
+All four Test A/B fixes are mechanical/statistical, not new scientific judgment calls -- no
+`WEIGHT` values, band definitions, or significance thresholds were touched. `WEIGHT`/decay
+sensitivity analysis remains explicitly out of scope pending Peter's input on what range is
+scientifically reasonable to test (see caveats below).""")
 
 md(r"""## 8. Caveats — read before citing any of the above
 
