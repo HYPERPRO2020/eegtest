@@ -32,18 +32,23 @@ STUDY_A_N_PER_GROUP = 6  # recordings per group in the pipeline-sweep subsample 
 # tradeoff -- same reasoning the previous fixed-dataset version used.
 
 
-def score_and_faa(path: str | Path) -> dict:
+def score_and_faa(path: str | Path, line_freq: float | None = None) -> dict:
     """Base per-recording scoring: quality across all bands + FAA under the
     endpoint-aware quality-weighted ("ours") pipeline. Cheap (no ICA/
     autoreject) -- this is what runs for every accepted upload, feeding
     Study B. Returns a JSON-safe dict.
+
+    line_freq: mains hum frequency for the notch filter, None uses
+    preprocess.py's default (50 Hz). Pass 60.0 for US-mains recordings
+    (e.g. ds003478) -- see preprocess.load_and_filter's docstring for why
+    this matters beyond just the notch filter itself.
     """
     from bands import EEG_BANDS
     from faa import compute_faa
-    from preprocess import preprocess_file
+    from preprocess import LINE_FREQ, preprocess_file
     from quality_index import compute_quality
 
-    data_uv, ch_names, sfreq = preprocess_file(path)
+    data_uv, ch_names, sfreq = preprocess_file(path, line_freq=line_freq if line_freq is not None else LINE_FREQ)
     row, channel_detail = score_recording(data_uv, ch_names, sfreq)
 
     quality = compute_quality(data_uv, ch_names, sfreq, EEG_BANDS["alpha"])["quality"]
@@ -80,13 +85,15 @@ def select_study_a_subsample(accepted: list[ValidationResult],
     return out
 
 
-def study_a_for_recording(path: str | Path, seed: int = SEED) -> dict[str, float]:
+def study_a_for_recording(path: str | Path, seed: int = SEED, line_freq: float | None = None) -> dict[str, float]:
     """Study A's 10-combo (5 pipelines x 2 references) FAA sweep for one
     recording. Expensive (ICA + AutoReject per combo) -- only called for
     `select_study_a_subsample`'s output, not every accepted recording.
     Returns {"pipeline_reference": faa_value, ...} (flat, JSON-safe keys).
+    See score_and_faa for line_freq.
     """
-    results = run_all_pipelines(str(path), seed=seed)
+    from preprocess import LINE_FREQ
+    results = run_all_pipelines(str(path), seed=seed, line_freq=line_freq if line_freq is not None else LINE_FREQ)
     return {f"{pipeline}_{reference}": round(v, 4) for (pipeline, reference), v in results.items()}
 
 

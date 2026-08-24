@@ -20,6 +20,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
 from study_a import PIPELINES
+from study_b import bootstrap_auc_ci
 
 CV_SEED = 0
 MIN_N = 4  # need at least this many labeled recordings to fit+CV anything meaningful
@@ -61,9 +62,14 @@ def classify_by_pipeline(study_a_long_rows: list[dict], reference: str = "origin
         proba = cross_val_predict(clf, X, y, cv=cv, method="predict_proba")[:, 1]
         pred = (proba >= 0.5).astype(int)
         baseline = float(max(y.mean(), 1 - y.mean()))
+        auc = float(roc_auc_score(y, proba)) if len(set(y)) > 1 else float("nan")
+        # Bootstrap CI: with n as small as MIN_N=4, a bare point-estimate AUC
+        # invites over-interpretation -- see study_b.bootstrap_auc_ci.
+        _, auc_ci_lo, auc_ci_hi = bootstrap_auc_ci(y, proba) if not np.isnan(auc) else (float("nan"),) * 3
         results[pipeline] = {
             "accuracy": float(accuracy_score(y, pred)),
-            "auc": float(roc_auc_score(y, proba)) if len(set(y)) > 1 else float("nan"),
+            "auc": auc,
+            "auc_ci_lo": auc_ci_lo, "auc_ci_hi": auc_ci_hi,
             "baseline": baseline,
             "n": int(len(y)),
             "n_splits": n_splits,

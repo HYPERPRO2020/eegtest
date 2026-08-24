@@ -63,7 +63,7 @@ GENERIC_REJECT_UV = 150.0
 RENAME_1020 = {"T3": "T7", "T4": "T8", "T5": "P7", "T6": "P8"}
 
 
-def load_referenced_raw(path: str, reference: str) -> mne.io.BaseRaw:
+def load_referenced_raw(path: str, reference: str, line_freq: float = LINE_FREQ) -> mne.io.BaseRaw:
     raw = _read_raw_any(Path(path))
     raw.load_data()
     raw.rename_channels({ch: canonical_channel_name(ch) for ch in raw.ch_names})
@@ -85,7 +85,7 @@ def load_referenced_raw(path: str, reference: str) -> mne.io.BaseRaw:
         raw.set_eeg_reference("average", verbose=False)
     # "original": no set_eeg_reference call -- keep whatever reference the
     # recording shipped with, as uploaded.
-    raw.notch_filter(LINE_FREQ, verbose=False)
+    raw.notch_filter(line_freq, verbose=False)
     raw.filter(L_FREQ, H_FREQ, verbose=False)
     return raw, [RENAME_1020.get(ch, ch) for ch in present]
 
@@ -150,7 +150,7 @@ def faa_pipeline_ours(epochs: mne.Epochs, ch_names: list[str], sfreq: float) -> 
                         weights_f3=quality[:, i3], weights_f4=quality[:, i4])["faa"]
 
 
-def run_all_pipelines(path: str, seed: int = 0) -> dict[tuple[str, str], float]:
+def run_all_pipelines(path: str, seed: int = 0, line_freq: float = LINE_FREQ) -> dict[tuple[str, str], float]:
     """FAA for one recording under every (pipeline, reference) combination.
 
     Returns {(pipeline_name, reference_name): faa_value} — 10 entries
@@ -158,7 +158,7 @@ def run_all_pipelines(path: str, seed: int = 0) -> dict[tuple[str, str], float]:
     """
     out: dict[tuple[str, str], float] = {}
     for reference in REFERENCES:
-        raw, ch_names = load_referenced_raw(path, reference)
+        raw, ch_names = load_referenced_raw(path, reference, line_freq=line_freq)
         sfreq = raw.info["sfreq"]
         epochs = make_epochs(raw)
         out[("raw", reference)] = faa_pipeline_raw(epochs, ch_names, sfreq)

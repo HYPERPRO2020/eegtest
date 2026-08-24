@@ -49,8 +49,19 @@ STANDARD_1020_ORDER = [
 ]
 
 
-def load_and_filter(path: str | Path) -> tuple[mne.io.BaseRaw, list[str]]:
+def load_and_filter(path: str | Path, line_freq: float = LINE_FREQ) -> tuple[mne.io.BaseRaw, list[str]]:
     """Load an uploaded recording, canonicalize+select channels, filter.
+
+    line_freq defaults to 50 Hz (this pipeline's original global default,
+    still correct for most of the world) -- pass 60.0 for US-mains
+    recordings. Matters beyond the notch filter itself:
+    artifact_detectors.detect_line_noise() checks specifically 49-51 Hz vs.
+    neighbors, so a 60 Hz recording notch-filtered (and detected) at 50 Hz
+    both misses the real line-noise band and silently zeros out that
+    detector's severity score. Confirmed real for ds003478 specifically --
+    its own eeg.json reports PowerLineFrequency: 60 (Univ. of Arizona, US),
+    not the 50 Hz this pipeline defaulted to for every dataset before this
+    fix.
 
     Returns (raw, ch_names) with raw already notch+bandpass filtered and
     picked down to `ch_names` (a subset of STANDARD_1020_ORDER, always
@@ -82,20 +93,21 @@ def load_and_filter(path: str | Path) -> tuple[mne.io.BaseRaw, list[str]]:
     raw.pick(present)
     raw.reorder_channels(present)
 
-    raw.notch_filter(LINE_FREQ, verbose=False)
+    raw.notch_filter(line_freq, verbose=False)
     raw.filter(L_FREQ, H_FREQ, verbose=False)
     return raw, present
 
 
-def preprocess_file(path: str | Path) -> tuple[np.ndarray, list[str], float]:
-    """Load, filter, and epoch one uploaded recording.
+def preprocess_file(path: str | Path, line_freq: float = LINE_FREQ) -> tuple[np.ndarray, list[str], float]:
+    """Load, filter, and epoch one uploaded recording. See load_and_filter
+    for line_freq (default 50 Hz, pass 60.0 for US-mains recordings).
 
     Returns (data_uv, ch_names, sfreq): data_uv is (n_epochs, n_channels,
     n_samples) in microvolts, ch_names is the canonicalized channel list
     actually present. Raises ValueError if F3/F4 don't survive
     canonicalization or the recording is too short to epoch.
     """
-    raw, present = load_and_filter(path)
+    raw, present = load_and_filter(path, line_freq=line_freq)
     epochs = mne.make_fixed_length_epochs(
         raw, duration=EPOCH_SEC, overlap=OVERLAP_SEC, preload=True, verbose=False,
     )

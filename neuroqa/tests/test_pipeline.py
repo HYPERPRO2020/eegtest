@@ -165,6 +165,32 @@ def test_quality_index_is_endpoint_aware_not_generic():
     )
 
 
+def test_emg_band_now_overlaps_alpha_and_penalizes_it():
+    """ARTIFACT_BANDS["emg"] was (20, 45) Hz -- zero overlap with alpha
+    (8-13 Hz), so detected EMG contributed nothing to alpha-endpoint
+    quality no matter how severe, in tension with the brief's own
+    hypothesis that muscle noise shares alpha's frequency band. Widened to
+    (8, 45) per Goncharova et al. (2003) (Peter-approved, 2026-08-22, see
+    bands.py). This must now measurably cost alpha-band quality -- the
+    entire reason for the change was to let EMG bite the endpoint that
+    matters for FAA, not just delta/beta/gamma."""
+    from bands import ARTIFACT_BANDS, spectral_overlap
+
+    assert spectral_overlap(ARTIFACT_BANDS["emg"], EEG_BANDS["alpha"]) > 0.0
+
+    clean = epoch(make_synthetic_raw())
+    dirty = epoch(inject_blink_and_emg(make_synthetic_raw()))
+    clean_detectors = run_all(clean, CH_NAMES, SFREQ)
+    dirty_detectors = run_all(dirty, CH_NAMES, SFREQ)
+
+    clean_alpha = compute_quality(clean, CH_NAMES, SFREQ, EEG_BANDS["alpha"], clean_detectors)["quality"].mean()
+    dirty_alpha = compute_quality(dirty, CH_NAMES, SFREQ, EEG_BANDS["alpha"], dirty_detectors)["quality"].mean()
+    assert dirty_alpha < clean_alpha, (
+        f"dirty alpha quality ({dirty_alpha:.1f}) should now be measurably below clean "
+        f"({clean_alpha:.1f}) -- planted EMG must cost the alpha endpoint something now"
+    )
+
+
 def test_faa_sign_follows_planted_asymmetry():
     louder_f4 = epoch(make_synthetic_raw(alpha_amp_f3=6.0, alpha_amp_f4=14.0))
     result = compute_faa(louder_f4, CH_NAMES, SFREQ)
@@ -246,9 +272,9 @@ def test_study_b_regression_3_is_deterministic():
          "clinical_severity": float(rng.uniform(0, 63)), "faa": float(rng.normal())}
         for i in range(12)
     ]
-    df = rows_to_frame(rows)
-    first = regression_3(df)
-    second = regression_3(df)
+    df = rows_to_frame(rows, "quality_alpha_pct")
+    first = regression_3(df, "quality_alpha_pct")
+    second = regression_3(df, "quality_alpha_pct")
     assert first == second
 
 
@@ -256,6 +282,7 @@ def _severity_rows(rng, n=12, with_severity=True):
     return [
         {"file": f"s{i}", "group": "healthy" if i % 2 == 0 else "depressed",
          "quality_alpha_pct": float(rng.uniform(60, 100)),
+         "quality_alpha_frontal_pct": float(rng.uniform(60, 100)),
          "clinical_severity": float(rng.uniform(0, 63)) if with_severity else None,
          "faa": float(rng.normal())}
         for i in range(n)
@@ -298,6 +325,7 @@ def test_study_b_finding_reports_real_signal_when_group_significant_and_no_leaka
     # FAA carries a real, large group effect and is NOT related to quality
     faa = [(-1.0 if g == "healthy" else 1.0) + rng.normal(0, 0.05) for g in group]
     rows = [{"file": f"s{i}", "group": group[i], "quality_alpha_pct": float(quality[i]),
+             "quality_alpha_frontal_pct": float(quality[i]),
              "clinical_severity": float(rng.uniform(0, 40)), "faa": float(faa[i])}
             for i in range(n)]
 

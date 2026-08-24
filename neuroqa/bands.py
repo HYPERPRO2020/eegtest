@@ -36,14 +36,24 @@ EEG_BANDS: dict[str, Band] = {
 # ---- which band each Step 3 detector's artifact lives in --------------
 # eog/motion: slow deflection, energy concentrated below ~4 Hz (blink/saccade
 #   potentials and gross movement artifact are both low-frequency dominant).
-# emg: matches detect_emg's own 20-45 Hz relative-power band.
+# emg: (8.0, 45.0), widened from the detector's own (20, 45) severity window
+#   per Goncharova, McFarland, Vaughan & Wolpaw (2003), Clin. Neurophysiol.
+#   114(9), 1580-1593 -- EMG is broadband, peaking 20-30 Hz frontally, with
+#   measurable power extending down into alpha under weak contraction.
+#   Peter-approved (2026-08-22): this is a domain/physics call, not fit to
+#   any accuracy number -- see module docstring. detect_emg()'s own 20-45 Hz
+#   severity-measurement window is intentionally left unchanged for now
+#   (widening *what counts as detected EMG* is a separate question from
+#   widening *where its energy overlaps alpha*, and changes what every other
+#   endpoint band sees, not just alpha -- flagged for a separate Peter
+#   conversation, not bundled into this change).
 # pop: an abrupt single-sample step is a broadband transient (in principle
 #   flat across the whole passband) -> spans the full 0.5-45 Hz recording band.
 # line_noise: matches detect_line_noise's 49-51 Hz band.
 # cardiac: matches detect_cardiac's 0.8-2.0 Hz resting-heart-rate band.
 ARTIFACT_BANDS: dict[str, Band] = {
     "eog": (0.5, 4.0),
-    "emg": (20.0, 45.0),
+    "emg": (8.0, 45.0),
     "pop": (0.5, 45.0),
     "line_noise": (49.0, 51.0),
     "motion": (0.5, 45.0),

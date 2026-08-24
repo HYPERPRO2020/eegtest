@@ -25,6 +25,7 @@ from quality_index import compute_quality, contributions
 
 PRIMARY_ENDPOINT = "alpha"  # what channel detail / artifact breakdown report on
 GRADE_BINS = [(90, "A"), (80, "B"), (70, "C"), (60, "D"), (0, "F")]
+FRONTAL_QUALITY_CHANNELS = ("F3", "F4", "Fp1", "Fp2")  # for quality_alpha_frontal_pct, see below
 
 
 def grade_from_pct(pct: float) -> str:
@@ -62,6 +63,20 @@ def score_recording(data: np.ndarray, ch_names: list[str], sfreq: float) -> tupl
     row["grade"] = grade_from_pct(row[f"quality_{PRIMARY_ENDPOINT}_pct"])
     row["worst_channel"] = ch_names[worst_idx]
     row["worst_channel_quality_pct"] = round(float(channel_quality_pct[worst_idx]), 2)
+
+    # Frontal-specific alpha quality, alongside (not instead of) the
+    # whole-scalp quality_alpha_pct above. The hypothesis Study B tests is
+    # specifically about frontal muscle contamination (corrugator/frontalis,
+    # under Fp1/Fp2/F3/F4) confounding FAA -- but quality_alpha_pct averages
+    # in every other channel in the montage too (15+ unrelated channels on
+    # a 19-23 channel recording), which could dilute a real frontal effect
+    # before Test B ever sees it. study_b.py runs its regressions on this
+    # frontal column and reports the whole-scalp one as secondary context,
+    # not the other way around -- see study_b.py's module docstring.
+    frontal_idx = [i for i, ch in enumerate(ch_names) if ch in FRONTAL_QUALITY_CHANNELS]
+    if frontal_idx:
+        row["quality_alpha_frontal_pct"] = round(
+            float(per_band_quality[PRIMARY_ENDPOINT][:, frontal_idx].mean()), 2)
 
     # Endpoint-independent "how much raw artifact content is in this
     # recording" -- mean detector severity across all 6 detectors, with no

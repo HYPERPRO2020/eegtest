@@ -24,6 +24,7 @@ autoreject==0.4.4
 pandas==3.0.5
 requests==2.33.1
 vercel_blob==0.4.2
+joblib==1.5.3
 
 # This is also what run_local.py (the offline batch CLI) needs -- one
 # requirements.txt for the whole project now, deployed or local.

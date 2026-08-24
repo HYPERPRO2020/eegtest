@@ -23,6 +23,8 @@ import csv
 import json
 from pathlib import Path
 
+from joblib import Parallel, delayed
+
 from manifest import parse_manifest_csv, validate_batch
 from pipeline import aggregate, score_and_faa, select_study_a_subsample, study_a_for_recording, validation_result_to_dict
 
@@ -33,6 +35,14 @@ def main():
     parser.add_argument("manifest_csv", type=Path)
     parser.add_argument("--out", type=Path, default=Path("neuroqa/outputs"))
     parser.add_argument("--study-a-n-per-group", type=int, default=None)
+    parser.add_argument("--line-freq", type=float, default=None,
+                         help="mains hum frequency (Hz) for the notch filter -- default 50.0 "
+                              "(preprocess.LINE_FREQ); pass 60.0 for US-mains recordings, e.g. ds003478")
+    parser.add_argument("--n-jobs", type=int, default=1,
+                         help="parallel workers for the Study A pipeline sweep (joblib); "
+                              "-1 uses all cores. Each recording's 10-combo sweep is independent "
+                              "of every other recording's, so this only speeds up Study A, not "
+                              "the (already cheap) base-scoring pass.")
     args = parser.parse_args()
 
     args.out.mkdir(parents=True, exist_ok=True)
@@ -67,7 +77,7 @@ def main():
     base_rows = []
     for r in batch.accepted:
         try:
-            row = score_and_faa(path_by_name[r.filename])
+            row = score_and_faa(path_by_name[r.filename], line_freq=args.line_freq)
         except Exception as e:
             print(f"  [ERROR] {r.filename}: {e}")
             continue
@@ -79,11 +89,16 @@ def main():
     if args.study_a_n_per_group is not None:
         kwargs["n_per_group"] = args.study_a_n_per_group
     subsample = select_study_a_subsample(batch.accepted, **kwargs)
-    print(f"\nrunning Study A pipeline sweep on {len(subsample)} recordings ...")
-    study_a_rows = []
-    for r in subsample:
+    print(f"\nrunning Study A pipeline sweep on {len(subsample)} recordings ({args.n_jobs} job(s)) ...")
+
+    def _run_one(r):
         print(f"  {r.filename} ...")
-        combos = study_a_for_recording(path_by_name[r.filename])
+        combos = study_a_for_recording(path_by_name[r.filename], line_freq=args.line_freq)
+        return r, combos
+
+    outcomes = Parallel(n_jobs=args.n_jobs)(delayed(_run_one)(r) for r in subsample)
+    study_a_rows = []
+    for r, combos in outcomes:
         for combo_key, faa_val in combos.items():
             pipeline, reference = combo_key.rsplit("_", 1)
             study_a_rows.append({"file": r.filename, "group": r.diagnosis,
@@ -98,7 +113,7 @@ def main():
     # (same cache convention its own intro cell documents: reuse outputs/*.csv
     # when present, delete to force a from-scratch recompute).
     summary_cols = ["file", "group", "clinical_severity", "grade", "quality_alpha_pct",
-                     "raw_severity_mean", "faa", "n_epochs", "n_channels"]
+                     "quality_alpha_frontal_pct", "raw_severity_mean", "faa", "n_epochs", "n_channels"]
     with open(args.out / "quality_faa_summary.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=summary_cols, extrasaction="ignore")
         w.writeheader()
