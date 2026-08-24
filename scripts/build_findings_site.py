@@ -62,18 +62,22 @@ def classifier_bars(clf_by_pipeline, max_auc=1.0):
             continue
         pct = min(100.0, 100.0 * r["auc"] / max_auc)
         color = "var(--good)" if r["auc"] < 0.5 else ("var(--warning)" if r["auc"] < 0.65 else "var(--critical)")
+        ci = f" [{r['auc_ci_lo']:.2f},{r['auc_ci_hi']:.2f}]" if "auc_ci_lo" in r else ""
         out.append(f'''<div class="bar-row">
           <span class="bar-label">{PIPELINE_LABEL[p]}</span>
           <div class="bar-track"><div class="bar-fill" style="width:{pct:.1f}%;background:{color}"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">{r['auc']:.2f}</span>
+          <span class="bar-value">{r['auc']:.2f}{ci}</span>
         </div>''')
     return "\n".join(out)
 
 
-def verdict_card(title, ask, metric, is_flag):
-    badge = ('<span class="badge warn"><span class="dot"></span>flagged</span>' if is_flag
-             else '<span class="badge good"><span class="dot"></span>no red flag</span>')
+def verdict_card(title, ask, metric, is_flag, badge_override=None):
+    if badge_override is not None:
+        badge = badge_override
+    else:
+        badge = ('<span class="badge warn"><span class="dot"></span>flagged</span>' if is_flag
+                 else '<span class="badge good"><span class="dot"></span>no red flag</span>')
     return f'''<div class="verdict-card">
       <div class="test-name">{esc(title)}</div>
       <div class="ask">{esc(ask)}</div>
@@ -82,24 +86,49 @@ def verdict_card(title, ask, metric, is_flag):
     </div>'''
 
 
-def dataset_testb_section(d, r):
-    b = r["study_b"]
-    r1 = b["regression_1_quality_on_group_severity"]
+SIGNAL_BADGE = '<span class="badge good"><span class="dot"></span>significant</span>'
+NO_SIGNAL_BADGE = '<span class="badge"><span class="dot"></span>not significant</span>'
+
+
+def variant_cards(v, label):
+    """One row of 4 verdict cards for a single quality variant (frontal or
+    whole-scalp), using its own Holm-Bonferroni-corrected p-values.
+    Group->FAA gets its own card (a significant result there is the actual
+    finding this project is testing for, not a red flag) -- distinct from
+    the confound check, which tests quality's own coefficient in that same
+    regression and *is* a red flag if significant (quality explaining FAA
+    would undercut the group result instead of supporting it)."""
+    corrected = v["holm_corrected_pvalues"]
+    r1 = v["regression_1_quality_on_group_severity"]
     cards = []
     if r1 is not None:
-        p = r1["pvalues"]["group_mdd"]
-        cards.append(verdict_card("B.1", "quality ~ group + severity", f"p = {p:.3f}", p < 0.05))
+        p = corrected.get("severity", 1.0)
+        cards.append(verdict_card(f"B.1 ({label})", "quality ~ group + severity (Holm-corrected)",
+                                   f"p = {p:.3f}", p < 0.05))
     else:
-        cards.append(verdict_card("B.1", "quality ~ group + severity", "skipped — no severity data", False))
-    r2 = b["regression_2_faa_on_group_quality"]
-    qp = r2["pvalues"]["quality_alpha_pct"]
-    cards.append(verdict_card("Confound check", "FAA ~ group + quality", f"p = {qp:.3f}", qp < 0.05))
-    r3 = b["regression_3_quality_classifies_group"]
-    cards.append(verdict_card("B.2 — the sharp one", "quality alone → group (5-fold CV)",
-                               f"AUC = {r3['auc']:.3f}", r3["auc"] > 0.65))
+        cards.append(verdict_card(f"B.1 ({label})", "quality ~ group + severity", "skipped — no severity data", False))
+    quality_col = [k for k in corrected if k not in ("group_mdd", "severity")][0]
+    qp = corrected[quality_col]
+    cards.append(verdict_card(f"Confound check ({label})", "does quality predict FAA? (Holm-corrected)",
+                               f"p = {qp:.3f}", qp < 0.05))
+    gp = corrected["group_mdd"]
+    cards.append(verdict_card(f"Group → FAA ({label})", "does group predict FAA, controlling for quality?",
+                               f"p = {gp:.3f}", False, badge_override=(SIGNAL_BADGE if gp < 0.05 else NO_SIGNAL_BADGE)))
+    r3 = v["regression_3_quality_classifies_group"]
+    cards.append(verdict_card(f"B.2 ({label})", "quality alone → group (5-fold CV, 95% CI)",
+                               f"AUC = {r3['auc']:.2f} [{r3['auc_ci_lo']:.2f}, {r3['auc_ci_hi']:.2f}]",
+                               r3["leakage_flag"]))
+    return cards
+
+
+def dataset_testb_section(d, r):
+    b = r["study_b"]
+    frontal_cards = variant_cards(b["frontal"], "frontal")
+    scalp_cards = variant_cards(b["whole_scalp"], "whole-scalp")
     return f'''<div class="dataset-block">
       <h3>{esc(d['label'])} <span class="dataset-sub">({esc(d['sub'])}, n={b['n']})</span></h3>
-      <div class="verdict-row">{"".join(cards)}</div>
+      <div class="verdict-row">{"".join(frontal_cards)}</div>
+      <div class="verdict-row" style="margin-top:10px">{"".join(scalp_cards)}</div>
     </div>'''
 
 
@@ -137,6 +166,43 @@ def main():
     dataset_stat_tiles = "".join(f'''<div class="stat-tile"><div class="label">{esc(d['label'])} ({esc(d['sub'])})</div>
         <div class="value">{results[d['key']]['n_recordings']}</div>
         <div class="sub">recordings</div></div>''' for d in DATASETS)
+
+    # Derive the finding narrative from the actual numbers rather than
+    # hand-typing them -- a v1 version of this section went stale exactly
+    # this way once the numbers underneath it changed.
+    significant = []   # (dataset label, frontal group p raw, holm-corrected)
+    leaks = []         # (dataset label, variant label) wherever leakage_flag fired
+    for d in DATASETS:
+        b = results[d["key"]]["study_b"]
+        for variant_label, v in [("frontal", b["frontal"]), ("whole-scalp", b["whole_scalp"])]:
+            if v["regression_3_quality_classifies_group"]["leakage_flag"]:
+                leaks.append((d["label"], variant_label))
+        fr = b["frontal"]
+        gp_corrected = fr["holm_corrected_pvalues"]["group_mdd"]
+        gp_raw = fr["regression_2_faa_on_group_quality"]["pvalues"]["group_mdd"]
+        if gp_corrected < 0.05:
+            significant.append((d["label"], gp_raw, gp_corrected))
+
+    if significant:
+        sig_sentences = "; ".join(
+            f"{esc(name)} (p={raw:.3f} raw, p={corr:.3f} Holm-corrected)" for name, raw, corr in significant)
+        finding_p2 = (f'''On top of that, {sig_sentences} — the frontal-specific group effect on FAA survives
+        Holm-Bonferroni correction, independent of frontal quality (no B.2 leakage on that variant). The other
+        dataset(s) don't reach significance on that same question, which is inconclusive rather than
+        contradictory — consistent with FAA effects being small and modest sample sizes. Reported here
+        plainly, not tuned toward drama either way.''')
+    else:
+        finding_p2 = '''No dataset showed a Holm-Bonferroni-significant group effect on FAA independent of
+        quality — inconclusive on whether FAA carries real signal here, not evidence against it.'''
+
+    if leaks:
+        leak_sentences = "; ".join(f"{esc(name)} ({esc(variant)})" for name, variant in leaks)
+        finding_p3 = f'''<p class="dek" style="max-width:100%"><strong>One red flag did fire</strong>:
+        {leak_sentences} crossed the B.2 leakage threshold (AUC &gt; 0.65) — quality alone showed some
+        ability to predict group there. Reported here rather than smoothed over; see that dataset's B.2
+        card above for the exact AUC and confidence interval.</p>'''
+    else:
+        finding_p3 = ""
 
     html = f'''<!doctype html>
 <html lang="en">
@@ -216,12 +282,13 @@ def main():
   .stat-tile .label {{ font-size:.78rem; color:var(--text-muted); margin-bottom:6px; }}
   .stat-tile .value {{ font-size:1.7rem; font-weight:600; }}
   .stat-tile .sub {{ font-size:.82rem; color:var(--text-secondary); margin-top:4px; }}
-  .verdict-row {{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }}
+  .verdict-row {{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }}
   .verdict-card {{ background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:18px; }}
   .verdict-card .test-name {{ font-size:.78rem; color:var(--text-muted); margin-bottom:8px; }}
   .verdict-card .metric {{ font-size:1.35rem; font-weight:600; margin-bottom:4px; }}
   .verdict-card .ask {{ font-size:.85rem; color:var(--text-secondary); margin-bottom:12px; }}
-  .badge {{ display:inline-flex; align-items:center; gap:6px; font-size:.8rem; font-weight:600; padding:4px 10px; border-radius:999px; }}
+  .badge {{ display:inline-flex; align-items:center; gap:6px; font-size:.8rem; font-weight:600; padding:4px 10px; border-radius:999px;
+    background: color-mix(in srgb, var(--text-muted) 16%, transparent); color: var(--text-muted); }}
   .badge.good {{ background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }}
   .badge.warn {{ background: color-mix(in srgb, var(--warning) 20%, transparent); color: color-mix(in srgb, var(--warning) 70%, black); }}
   .badge .dot {{ width:8px; height:8px; border-radius:50%; background:currentColor; }}
@@ -242,6 +309,9 @@ def main():
   footer a {{ color:var(--series-primary); text-decoration:none; }}
   footer a:hover {{ text-decoration:underline; }}
   .footer-links {{ display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px; }}
+  @media (max-width:900px) {{
+    .verdict-row {{ grid-template-columns:repeat(2,1fr); }}
+  }}
   @media (max-width:640px) {{
     .stat-row, .verdict-row {{ grid-template-columns:1fr; }}
     .bar-row {{ grid-template-columns: 90px 1fr 48px; }}
@@ -293,8 +363,8 @@ def main():
     <p class="dek">FAA computed under 5 preprocessing pipelines (raw, ICA, generic amplitude rejection,
     AutoReject, and <strong>ours</strong> — the endpoint-conditional score used to weight instead of
     reject) × 2 reference schemes, per subject. <strong>Red flag: a big swing means processing
-    decisions, not biology, are steering the result.</strong> Bounded to 12 recordings per dataset —
-    ICA and AutoReject are slow; see caveats.</p>
+    decisions, not biology, are steering the result.</strong> Bounded to up to 30 recordings per
+    dataset (15/group where available) — ICA and AutoReject are slow, even parallelized; see caveats.</p>
     {"".join(testa_blocks)}
     <div class="legend">
       <span class="item"><span class="swatch" style="background:var(--series-h)"></span>healthy</span>
@@ -318,35 +388,50 @@ def main():
 
   <section id="finding">
     <h2><span class="num">06</span>The finding</h2>
-    <p class="dek" style="max-width:100%">On all three datasets, independently, under the current
-    placeholder weights, none of the contamination red flags fired: group/severity doesn't predict
-    contamination (B.1), and contamination alone can't tell healthy from depressed above chance
-    (B.2). That holds up consistently — no evidence here that this endpoint-aware contamination
-    score explains the FAA–group relationship.</p>
-    <p class="dek" style="max-width:100%">On top of that, ds007615 — the dataset with the most
-    statistical power to detect FAA itself — shows a real, significant group effect on FAA
-    (p&nbsp;=&nbsp;0.020) that is <strong>not</strong> explained by quality/contamination
-    (p&nbsp;=&nbsp;0.257, no B.2 leakage either). ds003478 and Mumtaz don't reach significance on
-    that same question, which is inconclusive rather than contradictory — consistent with FAA
-    effects being small and these being modest sample sizes. Reported here plainly, not tuned
-    toward drama either way: this is not proof FAA is a reliable marker everywhere, but on the
-    specific question this project asked — is FAA's group difference actually just
-    contamination? — the answer across all three datasets is no.</p>
+    <p class="dek" style="max-width:100%">Across all three datasets, both quality variants, Test B.1
+    (does group/severity predict contamination) never came back significant — no evidence that
+    diagnosis or symptom severity is itself tied to how contaminated a recording is.</p>
+    <p class="dek" style="max-width:100%">{finding_p2}</p>
+    {finding_p3}
+  </section>
+
+  <section id="changelog">
+    <h2><span class="num">07</span>v1 → v2: what changed</h2>
+    <p class="dek">Per the "Neureidos Phase 1 Methodology Upgrade" implementation guide
+    (2026-08-22), applied and re-run 2026-08-24. v1 (placeholder-weight, pre-fix) results are
+    archived, not overwritten in place.</p>
+    <ul class="caveats">
+      <li><strong>EMG/alpha band widened</strong> (20,45)&nbsp;→&nbsp;(8,45)&nbsp;Hz per Goncharova
+      et al. (2003) — Peter-approved. Was zero overlap with alpha, so detected EMG contributed
+      nothing to alpha-endpoint quality no matter how severe.</li>
+      <li><strong>Per-dataset mains frequency</strong>: ds003478 notch-filtered at 60&nbsp;Hz
+      (confirmed via its own metadata: University of Arizona, US mains), not the 50&nbsp;Hz every
+      dataset got before this fix.</li>
+      <li><strong><code>quality_alpha_frontal_pct</code></strong> (F3/F4/Fp1/Fp2 only) is now the
+      primary Study B variable — the hypothesis is about frontal contamination specifically, not a
+      whole-scalp average diluted by 15+ unrelated channels. Whole-scalp is still reported
+      alongside every result above, not replaced.</li>
+      <li><strong>Bootstrap 95% CIs</strong> on every AUC and <strong>Holm-Bonferroni correction</strong>
+      on the p-values feeding each finding.</li>
+      <li><strong>Test A scaled up and parallelized</strong> — up to 30 recordings per dataset
+      (15/group where available), up from 12, via joblib.</li>
+      <li><strong>Not done</strong>, on purpose: widening the EMG severity-detector's own 20-45&nbsp;Hz
+      window (separate Peter conversation), real <code>WEIGHT</code> values or the quality-decay
+      function (no numbers supplied yet), an EMG spectral-signature specificity check, and a
+      Stewart et al. (2011) 70-90&nbsp;Hz proxy-band comparison arm.</li>
+    </ul>
   </section>
 
   <section id="caveats">
-    <h2><span class="num">07</span>Caveats — read before citing any of this</h2>
+    <h2><span class="num">08</span>Caveats — read before citing any of this</h2>
     <ul class="caveats">
-      <li><strong>The weights are placeholders.</strong> <code>WEIGHT[artifact.type]</code> is equal
-      weighting (1.0 across the board) pending the real physics-derived values. Every number above is
-      contingent on this.</li>
-      <li><strong>EMG/alpha overlap is currently zero.</strong> The muscle-artifact band (20–45&nbsp;Hz)
-      doesn't overlap alpha (8–13&nbsp;Hz) under the current placeholder band assignment — in tension
-      with the hypothesis that muscle noise sits at the same frequency as alpha. If real EMG
-      contamination extends into alpha, the alpha-quality numbers above likely <em>underestimate</em>
-      contamination there. Needs domain sign-off, not a unilateral widening to make the hypothesis land.</li>
-      <li><strong>Test A and the 5 classifiers ran on 12 recordings per dataset</strong>, bounded by
-      ICA/AutoReject runtime — suggestive, not a large-N result.</li>
+      <li><strong>The per-type weights are still placeholders.</strong> <code>WEIGHT[artifact.type]</code>
+      is equal weighting (1.0 across the board) pending the real physics-derived values — only the EMG
+      *band definition* (which frequencies count as EMG) has real domain sign-off so far, not how much
+      each artifact type should count relative to the others, nor the quality-decay function.</li>
+      <li><strong>Test A and the 5 classifiers ran on up to 30 recordings per dataset</strong>
+      (15/group where available), bounded by ICA/AutoReject runtime even parallelized — larger than
+      v1's 12, still suggestive rather than a full-N result.</li>
       <li><strong>Mumtaz/HUSM has no per-subject severity</strong> in its public deposit — Test B.1 ran
       on ds003478 and ds007615 (two independent cohorts), not Mumtaz; Mumtaz's contribution is Test A
       and B.2/confound-check as a replication.</li>
@@ -354,9 +439,8 @@ def main():
       for consistency — chosen to match ds003478's own published groups, not independently re-derived
       per dataset.</li>
       <li><strong>Small samples, small expected effects.</strong> FAA effects are known to be small in
-      the literature — ds007615's significant group effect is the only one of three datasets to reach
-      p&lt;0.05 here; a null result on the other two is informative but not proof of absence, and a
-      significant result on one is not yet a replicated one.</li>
+      the literature. A significant result on one dataset (see above) is not yet a replicated one, and
+      a null result on the others is informative but not proof of absence.</li>
       <li><strong>Offline only.</strong> This is Phase 1 — entirely offline analysis of already-recorded
       public data. A causal/streaming version (deciding using only samples already seen) is a later,
       optional stretch, not part of this finding.</li>

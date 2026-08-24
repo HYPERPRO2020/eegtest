@@ -1,7 +1,7 @@
 {
   "seed": 0,
   "n_recordings": 119,
-  "n_study_a_recordings": 12,
+  "n_study_a_recordings": 30,
   "study_a": {
     "long": [
       {
@@ -9,1034 +9,2582 @@
         "group": "depressed",
         "pipeline": "raw",
         "reference": "original",
-        "faa": 0.2953
+        "faa": 0.1344
       },
       {
         "file": "sub-052_task-Rest_run-01_eeg.set",
         "group": "depressed",
         "pipeline": "ica",
         "reference": "original",
-        "faa": 0.2953
+        "faa": 0.1344
       },
       {
         "file": "sub-052_task-Rest_run-01_eeg.set",
         "group": "depressed",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": -0.136
-      },
-      {
-        "file": "sub-052_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": -0.1686
-      },
-      {
-        "file": "sub-052_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": 0.2801
-      },
-      {
-        "file": "sub-052_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": 0.4184
-      },
-      {
-        "file": "sub-052_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": 0.4184
-      },
-      {
-        "file": "sub-052_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.1683
-      },
-      {
-        "file": "sub-052_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.2019
-      },
-      {
-        "file": "sub-052_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": 0.401
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": -0.0181
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": 0.0474
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": -0.0096
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": 0.0196
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": -0.0181
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": -0.0562
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": -0.0117
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.0298
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.0295
-      },
-      {
-        "file": "sub-053_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": -0.0563
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": 0.11
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": 0.11
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": -0.0282
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": -0.0374
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": 0.1036
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": 0.175
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": 0.175
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.0359
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.1685
-      },
-      {
-        "file": "sub-055_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": 0.1684
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": -0.1771
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": -0.2214
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": -0.1846
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": 0.0621
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": -0.1665
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": -0.3109
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": -0.4624
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.2301
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.2385
-      },
-      {
-        "file": "sub-058_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": -0.2917
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": -0.0046
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": 0.0069
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": 0.0033
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": -0.0047
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": -0.0043
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": -0.0405
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": -0.032
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.0238
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.0248
-      },
-      {
-        "file": "sub-059_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": -0.0404
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": 0.0026
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": 0.0209
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": -0.1017
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": -0.0223
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": 0.0028
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": -0.0449
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": -0.028
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.1346
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.0936
-      },
-      {
-        "file": "sub-060_task-Rest_run-01_eeg.set",
-        "group": "depressed",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": -0.0455
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": 0.6121
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": 0.6121
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": 0.0049
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": -0.0076
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": 0.6158
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": 0.5768
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": 0.5768
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.0209
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.0259
-      },
-      {
-        "file": "sub-001_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": 0.5807
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": -0.6818
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": -0.6818
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": -0.0287
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": 0.0486
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": -0.654
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": -1.6043
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": -1.6043
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.1224
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.1233
-      },
-      {
-        "file": "sub-002_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": -1.5388
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": 1.4654
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": 1.4654
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "generic",
-        "reference": "original",
-        "faa": 0.1948
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "autoreject",
-        "reference": "original",
-        "faa": 0.1113
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ours",
-        "reference": "original",
-        "faa": 1.4656
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "raw",
-        "reference": "average",
-        "faa": 1.7798
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ica",
-        "reference": "average",
-        "faa": 1.7798
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "generic",
-        "reference": "average",
-        "faa": -0.1377
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "autoreject",
-        "reference": "average",
-        "faa": -0.1112
-      },
-      {
-        "file": "sub-004_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ours",
-        "reference": "average",
-        "faa": 1.7785
-      },
-      {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "raw",
-        "reference": "original",
-        "faa": -0.1478
-      },
-      {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
-        "pipeline": "ica",
-        "reference": "original",
-        "faa": -0.1147
-      },
-      {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
         "pipeline": "generic",
         "reference": "original",
         "faa": -0.1207
       },
       {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-052_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "autoreject",
         "reference": "original",
-        "faa": -0.1322
+        "faa": -0.1697
       },
       {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-052_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "ours",
         "reference": "original",
-        "faa": -0.1485
+        "faa": 0.0563
       },
       {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-052_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "raw",
         "reference": "average",
-        "faa": -0.2698
+        "faa": 0.3489
       },
       {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-052_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "ica",
         "reference": "average",
-        "faa": -0.2491
+        "faa": 0.3489
       },
       {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-052_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "generic",
         "reference": "average",
-        "faa": -0.2776
+        "faa": -0.1384
       },
       {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-052_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "autoreject",
         "reference": "average",
-        "faa": -0.2724
+        "faa": -0.1755
       },
       {
-        "file": "sub-005_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-052_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "ours",
         "reference": "average",
-        "faa": -0.2709
+        "faa": 0.2778
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "raw",
         "reference": "original",
-        "faa": -0.0738
+        "faa": -0.008
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "ica",
         "reference": "original",
-        "faa": -0.1601
+        "faa": 0.0601
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "generic",
         "reference": "original",
-        "faa": -0.061
+        "faa": 0.004
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "autoreject",
         "reference": "original",
-        "faa": -0.0669
+        "faa": 0.0155
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "ours",
         "reference": "original",
-        "faa": -0.0734
+        "faa": -0.0071
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "raw",
         "reference": "average",
-        "faa": -0.0596
+        "faa": -0.0375
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "ica",
         "reference": "average",
-        "faa": -0.0987
+        "faa": -0.0155
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "generic",
         "reference": "average",
-        "faa": -0.0293
+        "faa": -0.018
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "autoreject",
         "reference": "average",
-        "faa": -0.0435
+        "faa": -0.0131
       },
       {
-        "file": "sub-006_task-Rest_run-01_eeg.set",
-        "group": "healthy",
+        "file": "sub-053_task-Rest_run-01_eeg.set",
+        "group": "depressed",
         "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0371
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.091
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.091
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0399
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0413
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0578
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.2249
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.2249
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0372
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0505
+      },
+      {
+        "file": "sub-055_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1931
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.153
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.2343
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.1582
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0661
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.1336
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.2783
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.4434
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.1821
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.1735
+      },
+      {
+        "file": "sub-058_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.248
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0001
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0116
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0117
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0029
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0005
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0298
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0211
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0212
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0045
+      },
+      {
+        "file": "sub-059_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0291
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0171
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.026
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0831
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0099
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.018
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0412
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0453
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.1218
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0949
+      },
+      {
+        "file": "sub-060_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0424
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1024
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0983
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1194
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0842
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1015
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.171
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1691
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1842
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1268
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1669
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.121
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.121
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.1036
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0843
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1246
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.1459
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.1459
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
         "reference": "average",
         "faa": -0.0586
       },
       {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0702
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.1426
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0976
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.11
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0962
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.1119
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.0971
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0269
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0183
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0544
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0483
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0272
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1271
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0877
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1164
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1116
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1275
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1991
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1681
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1866
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.185
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1983
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0232
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0232
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0537
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0469
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0124
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1906
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1906
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.2044
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1946
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1914
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.1198
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.1198
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.1018
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.1251
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.1186
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0622
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0622
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0384
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0413
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0618
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0831
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0418
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0975
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0666
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0805
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0534
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0607
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0574
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0836
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0562
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.3433
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.3433
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1009
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.2276
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.33
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0526
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0526
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0304
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0973
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0368
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0196
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.0089
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0104
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.019
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.0192
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0012
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0006
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.021
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0224
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0065
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.4296
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.4296
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0419
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0167
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.4407
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.3504
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.3504
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0329
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0145
+      },
+      {
+        "file": "sub-001_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.3559
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.2345
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.2345
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0164
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0659
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.2284
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.8161
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.8161
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.1018
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.1049
+      },
+      {
+        "file": "sub-002_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.8094
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 1.0672
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 1.0672
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1697
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.106
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 1.0674
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 1.2655
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 1.2655
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.1553
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.1287
+      },
+      {
+        "file": "sub-004_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 1.2564
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.1202
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.0886
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0994
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.1049
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.1208
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.2504
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.2308
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.2577
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.2481
+      },
+      {
+        "file": "sub-005_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.2538
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0616
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.1501
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.059
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0539
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.0619
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0563
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0983
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0259
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0384
+      },
+      {
+        "file": "sub-006_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0602
+      },
+      {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "raw",
         "reference": "original",
-        "faa": -0.0214
+        "faa": -0.1008
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "ica",
         "reference": "original",
-        "faa": -0.0214
+        "faa": -0.1008
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "generic",
         "reference": "original",
-        "faa": -0.1254
+        "faa": -0.1405
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "autoreject",
         "reference": "original",
-        "faa": -0.0307
+        "faa": -0.028
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "ours",
         "reference": "original",
-        "faa": -0.0227
+        "faa": -0.1029
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "raw",
         "reference": "average",
-        "faa": 0.0016
+        "faa": 0.0246
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "ica",
         "reference": "average",
-        "faa": 0.0016
+        "faa": 0.0246
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "generic",
         "reference": "average",
-        "faa": -0.003
+        "faa": -0.0289
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "autoreject",
         "reference": "average",
-        "faa": -0.0147
+        "faa": -0.0316
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
         "pipeline": "ours",
         "reference": "average",
-        "faa": 0.0015
+        "faa": 0.0219
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1301
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0889
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1393
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0846
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.13
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1446
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1161
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1492
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1373
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1469
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.9021
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.9021
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0486
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0309
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.9068
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.8323
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.8323
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0322
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0252
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.8433
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.66
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.66
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.4518
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.4536
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.6488
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.3411
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.3411
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.2973
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.3311
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.3192
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.3535
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.4056
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.3827
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.3998
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.354
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.4244
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.4383
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.4672
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.4643
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.422
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.5511
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.5511
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.1256
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.146
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.5004
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.5955
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.5955
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.2325
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.2161
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.5536
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0719
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.048
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0757
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.1187
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.0706
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.1966
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.1893
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.1998
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.2324
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.1934
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0635
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0568
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.076
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0441
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0626
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0208
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0118
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0106
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0168
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.019
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.106
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.106
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0265
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0177
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.1429
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0826
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0826
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0312
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.013
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0412
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0108
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.0003
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0648
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0205
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0004
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1616
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1796
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1521
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1089
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1569
       }
     ],
     "wide": [
       {
         "file": "sub-052_task-Rest_run-01_eeg.set",
         "group": "depressed",
-        "raw_original": 0.2953,
-        "ica_original": 0.2953,
-        "generic_original": -0.136,
-        "autoreject_original": -0.1686,
-        "ours_original": 0.2801,
-        "raw_average": 0.4184,
-        "ica_average": 0.4184,
-        "generic_average": -0.1683,
-        "autoreject_average": -0.2019,
-        "ours_average": 0.401,
-        "faa_range": 0.6203,
-        "faa_std": 0.2596611640195738
+        "raw_original": 0.1344,
+        "ica_original": 0.1344,
+        "generic_original": -0.1207,
+        "autoreject_original": -0.1697,
+        "ours_original": 0.0563,
+        "raw_average": 0.3489,
+        "ica_average": 0.3489,
+        "generic_average": -0.1384,
+        "autoreject_average": -0.1755,
+        "ours_average": 0.2778,
+        "faa_range": 0.5244,
+        "faa_std": 0.20118542790172456
       },
       {
         "file": "sub-053_task-Rest_run-01_eeg.set",
         "group": "depressed",
-        "raw_original": -0.0181,
-        "ica_original": 0.0474,
-        "generic_original": -0.0096,
-        "autoreject_original": 0.0196,
-        "ours_original": -0.0181,
-        "raw_average": -0.0562,
-        "ica_average": -0.0117,
-        "generic_average": -0.0298,
-        "autoreject_average": -0.0295,
-        "ours_average": -0.0563,
-        "faa_range": 0.1037,
-        "faa_std": 0.029945752620363374
+        "raw_original": -0.008,
+        "ica_original": 0.0601,
+        "generic_original": 0.004,
+        "autoreject_original": 0.0155,
+        "ours_original": -0.0071,
+        "raw_average": -0.0375,
+        "ica_average": -0.0155,
+        "generic_average": -0.018,
+        "autoreject_average": -0.0131,
+        "ours_average": -0.0371,
+        "faa_range": 0.09759999999999999,
+        "faa_std": 0.026794964079095162
       },
       {
         "file": "sub-055_task-Rest_run-01_eeg.set",
         "group": "depressed",
-        "raw_original": 0.11,
-        "ica_original": 0.11,
-        "generic_original": -0.0282,
-        "autoreject_original": -0.0374,
-        "ours_original": 0.1036,
-        "raw_average": 0.175,
-        "ica_average": 0.175,
-        "generic_average": -0.0359,
-        "autoreject_average": -0.1685,
-        "ours_average": 0.1684,
-        "faa_range": 0.3435,
-        "faa_std": 0.11121968350970975
+        "raw_original": 0.091,
+        "ica_original": 0.091,
+        "generic_original": -0.0399,
+        "autoreject_original": -0.0413,
+        "ours_original": 0.0578,
+        "raw_average": 0.2249,
+        "ica_average": 0.2249,
+        "generic_average": -0.0372,
+        "autoreject_average": -0.0505,
+        "ours_average": 0.1931,
+        "faa_range": 0.2754,
+        "faa_std": 0.10706596844936303
       },
       {
         "file": "sub-058_task-Rest_run-01_eeg.set",
         "group": "depressed",
-        "raw_original": -0.1771,
-        "ica_original": -0.2214,
-        "generic_original": -0.1846,
-        "autoreject_original": 0.0621,
-        "ours_original": -0.1665,
-        "raw_average": -0.3109,
-        "ica_average": -0.4624,
-        "generic_average": -0.2301,
-        "autoreject_average": -0.2385,
-        "ours_average": -0.2917,
-        "faa_range": 0.5245,
-        "faa_std": 0.12573757950588996
+        "raw_original": -0.153,
+        "ica_original": -0.2343,
+        "generic_original": -0.1582,
+        "autoreject_original": 0.0661,
+        "ours_original": -0.1336,
+        "raw_average": -0.2783,
+        "ica_average": -0.4434,
+        "generic_average": -0.1821,
+        "autoreject_average": -0.1735,
+        "ours_average": -0.248,
+        "faa_range": 0.5095000000000001,
+        "faa_std": 0.12193084966488177
       },
       {
         "file": "sub-059_task-Rest_run-01_eeg.set",
         "group": "depressed",
-        "raw_original": -0.0046,
-        "ica_original": 0.0069,
-        "generic_original": 0.0033,
-        "autoreject_original": -0.0047,
-        "ours_original": -0.0043,
-        "raw_average": -0.0405,
-        "ica_average": -0.032,
-        "generic_average": -0.0238,
-        "autoreject_average": -0.0248,
-        "ours_average": -0.0404,
-        "faa_range": 0.0474,
-        "faa_std": 0.01696740699105199
+        "raw_original": -0.0001,
+        "ica_original": 0.0116,
+        "generic_original": 0.0117,
+        "autoreject_original": -0.0029,
+        "ours_original": 0.0005,
+        "raw_average": -0.0298,
+        "ica_average": -0.0211,
+        "generic_average": -0.0212,
+        "autoreject_average": -0.0045,
+        "ours_average": -0.0291,
+        "faa_range": 0.0415,
+        "faa_std": 0.014862937125615514
       },
       {
         "file": "sub-060_task-Rest_run-01_eeg.set",
         "group": "depressed",
-        "raw_original": 0.0026,
-        "ica_original": 0.0209,
-        "generic_original": -0.1017,
-        "autoreject_original": -0.0223,
-        "ours_original": 0.0028,
-        "raw_average": -0.0449,
-        "ica_average": -0.028,
-        "generic_average": -0.1346,
-        "autoreject_average": -0.0936,
-        "ours_average": -0.0455,
-        "faa_range": 0.1555,
-        "faa_std": 0.048269784544785366
+        "raw_original": 0.0171,
+        "ica_original": 0.026,
+        "generic_original": -0.0831,
+        "autoreject_original": -0.0099,
+        "ours_original": 0.018,
+        "raw_average": -0.0412,
+        "ica_average": -0.0453,
+        "generic_average": -0.1218,
+        "autoreject_average": -0.0949,
+        "ours_average": -0.0424,
+        "faa_range": 0.14780000000000001,
+        "faa_std": 0.048408620100143324
+      },
+      {
+        "file": "sub-061_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": 0.1024,
+        "ica_original": 0.0983,
+        "generic_original": 0.1194,
+        "autoreject_original": 0.0842,
+        "ours_original": 0.1015,
+        "raw_average": 0.171,
+        "ica_average": 0.1691,
+        "generic_average": 0.1842,
+        "autoreject_average": 0.1268,
+        "ours_average": 0.1669,
+        "faa_range": 0.1,
+        "faa_std": 0.03500222278656029
+      },
+      {
+        "file": "sub-063_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": 0.121,
+        "ica_original": 0.121,
+        "generic_original": -0.1036,
+        "autoreject_original": -0.0843,
+        "ours_original": 0.1246,
+        "raw_average": -0.1459,
+        "ica_average": -0.1459,
+        "generic_average": -0.0586,
+        "autoreject_average": -0.0702,
+        "ours_average": -0.1426,
+        "faa_range": 0.2705,
+        "faa_std": 0.1091480485395868
+      },
+      {
+        "file": "sub-065_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": -0.0976,
+        "ica_original": -0.11,
+        "generic_original": -0.0962,
+        "autoreject_original": -0.1119,
+        "ours_original": -0.0971,
+        "raw_average": 0.0269,
+        "ica_average": 0.0183,
+        "generic_average": 0.0544,
+        "autoreject_average": 0.0483,
+        "ours_average": 0.0272,
+        "faa_range": 0.1663,
+        "faa_std": 0.06965391661636838
+      },
+      {
+        "file": "sub-066_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": 0.1271,
+        "ica_original": 0.0877,
+        "generic_original": 0.1164,
+        "autoreject_original": 0.1116,
+        "ours_original": 0.1275,
+        "raw_average": 0.1991,
+        "ica_average": 0.1681,
+        "generic_average": 0.1866,
+        "autoreject_average": 0.185,
+        "ours_average": 0.1983,
+        "faa_range": 0.1114,
+        "faa_std": 0.03891768749553344
+      },
+      {
+        "file": "sub-080_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": 0.0232,
+        "ica_original": 0.0232,
+        "generic_original": 0.0537,
+        "autoreject_original": 0.0469,
+        "ours_original": 0.0124,
+        "raw_average": 0.1906,
+        "ica_average": 0.1906,
+        "generic_average": 0.2044,
+        "autoreject_average": 0.1946,
+        "ours_average": 0.1914,
+        "faa_range": 0.192,
+        "faa_std": 0.08205890567147481
+      },
+      {
+        "file": "sub-081_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": -0.1198,
+        "ica_original": -0.1198,
+        "generic_original": -0.1018,
+        "autoreject_original": -0.1251,
+        "ours_original": -0.1186,
+        "raw_average": -0.0622,
+        "ica_average": -0.0622,
+        "generic_average": -0.0384,
+        "autoreject_average": -0.0413,
+        "ours_average": -0.0618,
+        "faa_range": 0.0867,
+        "faa_std": 0.033317202763737536
+      },
+      {
+        "file": "sub-084_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": 0.0831,
+        "ica_original": 0.0418,
+        "generic_original": 0.0975,
+        "autoreject_original": 0.0666,
+        "ours_original": 0.0805,
+        "raw_average": -0.0534,
+        "ica_average": -0.0607,
+        "generic_average": -0.0574,
+        "autoreject_average": -0.0836,
+        "ours_average": -0.0562,
+        "faa_range": 0.18109999999999998,
+        "faa_std": 0.06979569900789016
+      },
+      {
+        "file": "sub-085_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": 0.3433,
+        "ica_original": 0.3433,
+        "generic_original": 0.1009,
+        "autoreject_original": -0.2276,
+        "ours_original": 0.33,
+        "raw_average": 0.0526,
+        "ica_average": 0.0526,
+        "generic_average": -0.0304,
+        "autoreject_average": -0.0973,
+        "ours_average": 0.0368,
+        "faa_range": 0.5709,
+        "faa_std": 0.18496318444490512
+      },
+      {
+        "file": "sub-086_task-Rest_run-01_eeg.set",
+        "group": "depressed",
+        "raw_original": -0.0196,
+        "ica_original": -0.0089,
+        "generic_original": -0.0104,
+        "autoreject_original": -0.019,
+        "ours_original": -0.0192,
+        "raw_average": 0.0012,
+        "ica_average": -0.0006,
+        "generic_average": 0.021,
+        "autoreject_average": 0.0224,
+        "ours_average": 0.0065,
+        "faa_range": 0.041999999999999996,
+        "faa_std": 0.014890345865694323
       },
       {
         "file": "sub-001_task-Rest_run-01_eeg.set",
         "group": "healthy",
-        "raw_original": 0.6121,
-        "ica_original": 0.6121,
-        "generic_original": 0.0049,
-        "autoreject_original": -0.0076,
-        "ours_original": 0.6158,
-        "raw_average": 0.5768,
-        "ica_average": 0.5768,
-        "generic_average": -0.0209,
-        "autoreject_average": -0.0259,
-        "ours_average": 0.5807,
-        "faa_range": 0.6417,
-        "faa_std": 0.2983151548279101
+        "raw_original": 0.4296,
+        "ica_original": 0.4296,
+        "generic_original": -0.0419,
+        "autoreject_original": -0.0167,
+        "ours_original": 0.4407,
+        "raw_average": 0.3504,
+        "ica_average": 0.3504,
+        "generic_average": -0.0329,
+        "autoreject_average": -0.0145,
+        "ours_average": 0.3559,
+        "faa_range": 0.4826,
+        "faa_std": 0.2079329372658406
       },
       {
         "file": "sub-002_task-Rest_run-01_eeg.set",
         "group": "healthy",
-        "raw_original": -0.6818,
-        "ica_original": -0.6818,
-        "generic_original": -0.0287,
-        "autoreject_original": 0.0486,
-        "ours_original": -0.654,
-        "raw_average": -1.6043,
-        "ica_average": -1.6043,
-        "generic_average": -0.1224,
-        "autoreject_average": -0.1233,
-        "ours_average": -1.5388,
-        "faa_range": 1.6529,
-        "faa_std": 0.6339655145195202
+        "raw_original": -0.2345,
+        "ica_original": -0.2345,
+        "generic_original": -0.0164,
+        "autoreject_original": 0.0659,
+        "ours_original": -0.2284,
+        "raw_average": -0.8161,
+        "ica_average": -0.8161,
+        "generic_average": -0.1018,
+        "autoreject_average": -0.1049,
+        "ours_average": -0.8094,
+        "faa_range": 0.882,
+        "faa_std": 0.3299696070852587
       },
       {
         "file": "sub-004_task-Rest_run-01_eeg.set",
         "group": "healthy",
-        "raw_original": 1.4654,
-        "ica_original": 1.4654,
-        "generic_original": 0.1948,
-        "autoreject_original": 0.1113,
-        "ours_original": 1.4656,
-        "raw_average": 1.7798,
-        "ica_average": 1.7798,
-        "generic_average": -0.1377,
-        "autoreject_average": -0.1112,
-        "ours_average": 1.7785,
-        "faa_range": 1.9175,
-        "faa_std": 0.8021931551066739
+        "raw_original": 1.0672,
+        "ica_original": 1.0672,
+        "generic_original": 0.1697,
+        "autoreject_original": 0.106,
+        "ours_original": 1.0674,
+        "raw_average": 1.2655,
+        "ica_average": 1.2655,
+        "generic_average": -0.1553,
+        "autoreject_average": -0.1287,
+        "ours_average": 1.2564,
+        "faa_range": 1.4208,
+        "faa_std": 0.5836193356118353
       },
       {
         "file": "sub-005_task-Rest_run-01_eeg.set",
         "group": "healthy",
-        "raw_original": -0.1478,
-        "ica_original": -0.1147,
-        "generic_original": -0.1207,
-        "autoreject_original": -0.1322,
-        "ours_original": -0.1485,
-        "raw_average": -0.2698,
-        "ica_average": -0.2491,
-        "generic_average": -0.2776,
-        "autoreject_average": -0.2724,
-        "ours_average": -0.2709,
-        "faa_range": 0.16290000000000002,
-        "faa_std": 0.06863695870301946
+        "raw_original": -0.1202,
+        "ica_original": -0.0886,
+        "generic_original": -0.0994,
+        "autoreject_original": -0.1049,
+        "ours_original": -0.1208,
+        "raw_average": -0.2504,
+        "ica_average": -0.2308,
+        "generic_average": -0.2577,
+        "autoreject_average": -0.2481,
+        "ours_average": -0.2538,
+        "faa_range": 0.16909999999999997,
+        "faa_std": 0.07152981266576895
       },
       {
         "file": "sub-006_task-Rest_run-01_eeg.set",
         "group": "healthy",
-        "raw_original": -0.0738,
-        "ica_original": -0.1601,
-        "generic_original": -0.061,
-        "autoreject_original": -0.0669,
-        "ours_original": -0.0734,
-        "raw_average": -0.0596,
-        "ica_average": -0.0987,
-        "generic_average": -0.0293,
-        "autoreject_average": -0.0435,
-        "ours_average": -0.0586,
-        "faa_range": 0.1308,
-        "faa_std": 0.03404874300176146
+        "raw_original": -0.0616,
+        "ica_original": -0.1501,
+        "generic_original": -0.059,
+        "autoreject_original": -0.0539,
+        "ours_original": -0.0619,
+        "raw_average": -0.0563,
+        "ica_average": -0.0983,
+        "generic_average": -0.0259,
+        "autoreject_average": -0.0384,
+        "ours_average": -0.0602,
+        "faa_range": 0.1242,
+        "faa_std": 0.032927259223931776
       },
       {
         "file": "sub-007_task-Rest_run-01_eeg.set",
         "group": "healthy",
-        "raw_original": -0.0214,
-        "ica_original": -0.0214,
-        "generic_original": -0.1254,
-        "autoreject_original": -0.0307,
-        "ours_original": -0.0227,
-        "raw_average": 0.0016,
-        "ica_average": 0.0016,
-        "generic_average": -0.003,
-        "autoreject_average": -0.0147,
-        "ours_average": 0.0015,
-        "faa_range": 0.127,
-        "faa_std": 0.03581564462633613
+        "raw_original": -0.1008,
+        "ica_original": -0.1008,
+        "generic_original": -0.1405,
+        "autoreject_original": -0.028,
+        "ours_original": -0.1029,
+        "raw_average": 0.0246,
+        "ica_average": 0.0246,
+        "generic_average": -0.0289,
+        "autoreject_average": -0.0316,
+        "ours_average": 0.0219,
+        "faa_range": 0.16510000000000002,
+        "faa_std": 0.057945029122436376
+      },
+      {
+        "file": "sub-008_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": 0.1301,
+        "ica_original": 0.0889,
+        "generic_original": 0.1393,
+        "autoreject_original": 0.0846,
+        "ours_original": 0.13,
+        "raw_average": 0.1446,
+        "ica_average": 0.1161,
+        "generic_average": 0.1492,
+        "autoreject_average": 0.1373,
+        "ours_average": 0.1469,
+        "faa_range": 0.0646,
+        "faa_std": 0.022004272312439694
+      },
+      {
+        "file": "sub-009_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": -0.9021,
+        "ica_original": -0.9021,
+        "generic_original": 0.0486,
+        "autoreject_original": 0.0309,
+        "ours_original": -0.9068,
+        "raw_average": -0.8323,
+        "ica_average": -0.8323,
+        "generic_average": 0.0322,
+        "autoreject_average": 0.0252,
+        "ours_average": -0.8433,
+        "faa_range": 0.9554,
+        "faa_std": 0.4437085507402354
+      },
+      {
+        "file": "sub-010_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": 0.66,
+        "ica_original": 0.66,
+        "generic_original": -0.4518,
+        "autoreject_original": -0.4536,
+        "ours_original": 0.6488,
+        "raw_average": 0.3411,
+        "ica_average": 0.3411,
+        "generic_average": -0.2973,
+        "autoreject_average": -0.3311,
+        "ours_average": 0.3192,
+        "faa_range": 1.1136,
+        "faa_std": 0.4503659294396058
+      },
+      {
+        "file": "sub-011_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": 0.3535,
+        "ica_original": 0.4056,
+        "generic_original": 0.3827,
+        "autoreject_original": 0.3998,
+        "ours_original": 0.354,
+        "raw_average": 0.4244,
+        "ica_average": 0.4383,
+        "generic_average": 0.4672,
+        "autoreject_average": 0.4643,
+        "ours_average": 0.422,
+        "faa_range": 0.11370000000000002,
+        "faa_std": 0.03815179681220795
+      },
+      {
+        "file": "sub-012_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": 0.5511,
+        "ica_original": 0.5511,
+        "generic_original": -0.1256,
+        "autoreject_original": -0.146,
+        "ours_original": 0.5004,
+        "raw_average": 0.5955,
+        "ica_average": 0.5955,
+        "generic_average": 0.2325,
+        "autoreject_average": 0.2161,
+        "ours_average": 0.5536,
+        "faa_range": 0.7415,
+        "faa_std": 0.2773777741636846
+      },
+      {
+        "file": "sub-013_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": -0.0719,
+        "ica_original": -0.048,
+        "generic_original": -0.0757,
+        "autoreject_original": -0.1187,
+        "ours_original": -0.0706,
+        "raw_average": -0.1966,
+        "ica_average": -0.1893,
+        "generic_average": -0.1998,
+        "autoreject_average": -0.2324,
+        "ours_average": -0.1934,
+        "faa_range": 0.1844,
+        "faa_std": 0.06565383766391725
+      },
+      {
+        "file": "sub-014_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": 0.0635,
+        "ica_original": 0.0568,
+        "generic_original": 0.076,
+        "autoreject_original": 0.0441,
+        "ours_original": 0.0626,
+        "raw_average": 0.0208,
+        "ica_average": 0.0118,
+        "generic_average": 0.0106,
+        "autoreject_average": 0.0168,
+        "ours_average": 0.019,
+        "faa_range": 0.0654,
+        "faa_std": 0.023734236874186625
+      },
+      {
+        "file": "sub-015_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": -0.106,
+        "ica_original": -0.106,
+        "generic_original": 0.0265,
+        "autoreject_original": 0.0177,
+        "ours_original": -0.1429,
+        "raw_average": 0.0826,
+        "ica_average": 0.0826,
+        "generic_average": 0.0312,
+        "autoreject_average": -0.013,
+        "ours_average": 0.0412,
+        "faa_range": 0.2255,
+        "faa_std": 0.07723472599808974
+      },
+      {
+        "file": "sub-016_task-Rest_run-01_eeg.set",
+        "group": "healthy",
+        "raw_original": 0.0108,
+        "ica_original": -0.0003,
+        "generic_original": -0.0648,
+        "autoreject_original": -0.0205,
+        "ours_original": 0.0004,
+        "raw_average": 0.1616,
+        "ica_average": 0.1796,
+        "generic_average": 0.1521,
+        "autoreject_average": 0.1089,
+        "ours_average": 0.1569,
+        "faa_range": 0.2444,
+        "faa_std": 0.08708428158973351
       }
     ],
     "combo_cols": [
@@ -1055,107 +2603,273 @@
   "study_b": {
     "n": 119,
     "n_with_severity": 119,
+    "quality_variant_primary": "quality_alpha_frontal_pct",
+    "quality_variant_secondary": "quality_alpha_pct",
+    "frontal": {
+      "n": 119,
+      "n_with_severity": 119,
+      "regression_1_quality_on_group_severity": {
+        "params": {
+          "const": 94.43977526318322,
+          "group_mdd": -0.9594464825441591,
+          "clinical_severity": 0.03208642702799014
+        },
+        "pvalues": {
+          "const": 5.657923236309893e-172,
+          "group_mdd": 0.5272947885307233,
+          "clinical_severity": 0.6456472971998313
+        },
+        "conf_int": {
+          "const": [
+            93.84621951802697,
+            95.03333100833947
+          ],
+          "group_mdd": [
+            -3.95652331802421,
+            2.0376303529358917
+          ],
+          "clinical_severity": [
+            -0.10576264101241131,
+            0.1699354950683916
+          ]
+        },
+        "rsquared": 0.005472260928014894,
+        "nobs": 119
+      },
+      "regression_1_skipped_reason": null,
+      "regression_2_faa_on_group_quality": {
+        "params": {
+          "const": 1.6287671307108404,
+          "group_mdd": -0.0057394173736776315,
+          "quality_alpha_frontal_pct": -0.016463272406911162
+        },
+        "pvalues": {
+          "const": 0.1889527935116685,
+          "group_mdd": 0.9279106354128055,
+          "quality_alpha_frontal_pct": 0.2092057377552727
+        },
+        "conf_int": {
+          "const": [
+            -0.8124798472549275,
+            4.070014108676609
+          ],
+          "group_mdd": [
+            -0.1311122177163673,
+            0.11963338296901203
+          ],
+          "quality_alpha_frontal_pct": [
+            -0.042285618361515426,
+            0.009359073547693102
+          ]
+        },
+        "rsquared": 0.013561706629056092,
+        "nobs": 119
+      },
+      "regression_3_quality_classifies_group": {
+        "accuracy": 0.6218487394957983,
+        "auc": 0.5303303303303304,
+        "auc_ci_lo": 0.4180622921286032,
+        "auc_ci_hi": 0.6445158867854178,
+        "majority_class_baseline": 0.6218487394957983,
+        "n": 119,
+        "n_splits": 5,
+        "leakage_flag": false
+      },
+      "holm_corrected_pvalues": {
+        "group_mdd": 1.0,
+        "quality_alpha_frontal_pct": 0.6276172132658181,
+        "severity": 1.0
+      }
+    },
+    "whole_scalp": {
+      "n": 119,
+      "n_with_severity": 119,
+      "regression_1_quality_on_group_severity": {
+        "params": {
+          "const": 94.66958826414697,
+          "group_mdd": -1.8390846813470283,
+          "clinical_severity": 0.0537436459603603
+        },
+        "pvalues": {
+          "const": 1.1508557084156084e-181,
+          "group_mdd": 0.14430336752895875,
+          "clinical_severity": 0.3522967904875682
+        },
+        "conf_int": {
+          "const": [
+            94.17880678877144,
+            95.1603697395225
+          ],
+          "group_mdd": [
+            -4.317217195662956,
+            0.6390478329688998
+          ],
+          "clinical_severity": [
+            -0.06023683446477737,
+            0.16772412638549797
+          ]
+        },
+        "rsquared": 0.038613580544756276,
+        "nobs": 119
+      },
+      "regression_1_skipped_reason": null,
+      "regression_2_faa_on_group_quality": {
+        "params": {
+          "const": 1.834888704541749,
+          "group_mdd": -0.014359237335967804,
+          "quality_alpha_pct": -0.018592311660899
+        },
+        "pvalues": {
+          "const": 0.22115178347101,
+          "group_mdd": 0.8235573205636165,
+          "quality_alpha_pct": 0.23982612494726782
+        },
+        "conf_int": {
+          "const": [
+            -1.1195493731887727,
+            4.789326782272271
+          ],
+          "group_mdd": [
+            -0.14162187053211217,
+            0.11290339586017656
+          ],
+          "quality_alpha_pct": [
+            -0.0497601846948095,
+            0.0125755613730115
+          ]
+        },
+        "rsquared": 0.011892362111827315,
+        "nobs": 119
+      },
+      "regression_3_quality_classifies_group": {
+        "accuracy": 0.6302521008403361,
+        "auc": 0.5876876876876876,
+        "auc_ci_lo": 0.47439137737629616,
+        "auc_ci_hi": 0.7045045045045044,
+        "majority_class_baseline": 0.6218487394957983,
+        "n": 119,
+        "n_splits": 5,
+        "leakage_flag": false
+      },
+      "holm_corrected_pvalues": {
+        "group_mdd": 0.8235573205636165,
+        "quality_alpha_pct": 0.7194783748418034,
+        "severity": 0.7194783748418034
+      }
+    },
     "regression_1_quality_on_group_severity": {
       "params": {
-        "const": 98.01423823928772,
-        "group_mdd": 0.2574116928990051,
-        "clinical_severity": -0.006208371603963203
+        "const": 94.43977526318322,
+        "group_mdd": -0.9594464825441591,
+        "clinical_severity": 0.03208642702799014
       },
       "pvalues": {
-        "const": 2.1063773970829427e-204,
-        "group_mdd": 0.7554985314301093,
-        "clinical_severity": 0.8702708922035084
+        "const": 5.657923236309893e-172,
+        "group_mdd": 0.5272947885307233,
+        "clinical_severity": 0.6456472971998313
       },
       "conf_int": {
         "const": [
-          97.69075458369831,
-          98.33772189487713
+          93.84621951802697,
+          95.03333100833947
         ],
         "group_mdd": [
-          -1.3759738462608013,
-          1.8907972320588116
+          -3.95652331802421,
+          2.0376303529358917
         ],
         "clinical_severity": [
-          -0.08133513233907239,
-          0.06891838913114598
+          -0.10576264101241131,
+          0.1699354950683916
         ]
       },
-      "rsquared": 0.0025964627913878102,
+      "rsquared": 0.005472260928014894,
       "nobs": 119
     },
     "regression_1_skipped_reason": null,
     "regression_2_faa_on_group_quality": {
       "params": {
-        "const": 6.847071555774035,
-        "group_mdd": -0.09382990512221162,
-        "quality_alpha_pct": -0.06823177163727312
+        "const": 1.6287671307108404,
+        "group_mdd": -0.0057394173736776315,
+        "quality_alpha_frontal_pct": -0.016463272406911162
       },
       "pvalues": {
-        "const": 0.07510185699322594,
-        "group_mdd": 0.36313952989524745,
-        "quality_alpha_pct": 0.0820332495872493
+        "const": 0.1889527935116685,
+        "group_mdd": 0.9279106354128055,
+        "quality_alpha_frontal_pct": 0.2092057377552727
       },
       "conf_int": {
         "const": [
-          -0.703981301490531,
-          14.398124413038602
+          -0.8124798472549275,
+          4.070014108676609
         ],
         "group_mdd": [
-          -0.2973821937781861,
-          0.10972238353376285
+          -0.1311122177163673,
+          0.11963338296901203
         ],
-        "quality_alpha_pct": [
-          -0.14526968852573202,
-          0.008806145251185782
+        "quality_alpha_frontal_pct": [
+          -0.042285618361515426,
+          0.009359073547693102
         ]
       },
-      "rsquared": 0.03394765904915864,
+      "rsquared": 0.013561706629056092,
       "nobs": 119
     },
     "regression_3_quality_classifies_group": {
       "accuracy": 0.6218487394957983,
-      "auc": 0.48273273273273276,
+      "auc": 0.5303303303303304,
+      "auc_ci_lo": 0.4180622921286032,
+      "auc_ci_hi": 0.6445158867854178,
       "majority_class_baseline": 0.6218487394957983,
       "n": 119,
       "n_splits": 5,
       "leakage_flag": false
     },
-    "finding": "no strong evidence either way in this sample (group's effect on FAA is not significant at p<0.05, controlling for quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
+    "finding": "no strong evidence either way in this sample (group's effect on FAA is not significant at corrected p<0.05, controlling for frontal quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
   },
   "faa_classifiers_by_pipeline": {
     "raw": {
-      "accuracy": 0.3333333333333333,
-      "auc": 0.2222222222222222,
+      "accuracy": 0.36666666666666664,
+      "auc": 0.44000000000000006,
+      "auc_ci_lo": 0.21050869360902255,
+      "auc_ci_hi": 0.6613921957671957,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     },
     "ica": {
-      "accuracy": 0.3333333333333333,
-      "auc": 0.2222222222222222,
+      "accuracy": 0.43333333333333335,
+      "auc": 0.41333333333333333,
+      "auc_ci_lo": 0.18747916666666667,
+      "auc_ci_hi": 0.6363636363636364,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     },
     "generic": {
-      "accuracy": 0.5833333333333334,
-      "auc": 0.4166666666666667,
+      "accuracy": 0.43333333333333335,
+      "auc": 0.3422222222222222,
+      "auc_ci_lo": 0.15555555555555556,
+      "auc_ci_hi": 0.5580357142857142,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     },
     "autoreject": {
-      "accuracy": 0.4166666666666667,
-      "auc": 0.25,
+      "accuracy": 0.6,
+      "auc": 0.49777777777777776,
+      "auc_ci_lo": 0.2918610446570973,
+      "auc_ci_hi": 0.7098214285714285,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     },
     "ours": {
-      "accuracy": 0.3333333333333333,
-      "auc": 0.2222222222222222,
+      "accuracy": 0.4666666666666667,
+      "auc": 0.4622222222222222,
+      "auc_ci_lo": 0.22665610859728505,
+      "auc_ci_hi": 0.6785754686489981,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     }
   }

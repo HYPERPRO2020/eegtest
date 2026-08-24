@@ -1,0 +1,13 @@
+dataset,test,metric,value,red_flag_if
+ds003478,A -- pipeline sensitivity,median FAA range across 10 combos,0.253,large swing
+ds003478,B.1 -- quality~group+severity,group coefficient p-value,0.7555,p<0.05 (group predicts contamination)
+ds003478,B confound -- FAA~group+quality,quality coefficient p-value,0.082,p<0.05 (quality confounds FAA-group)
+ds003478,B.2 -- quality-alone classifier,AUC (5-fold CV),0.483,> ~0.65 (noise alone predicts diagnosis)
+ds007615,A -- pipeline sensitivity,median FAA range across 10 combos,0.099,large swing
+ds007615,B.1 -- quality~group+severity,group coefficient p-value,0.7128,p<0.05 (group predicts contamination)
+ds007615,B confound -- FAA~group+quality,quality coefficient p-value,0.2572,p<0.05 (quality confounds FAA-group)
+ds007615,B.2 -- quality-alone classifier,AUC (5-fold CV),0.374,> ~0.65 (noise alone predicts diagnosis)
+mumtaz,A -- pipeline sensitivity,median FAA range across 10 combos,0.168,large swing
+mumtaz,B.1 -- quality~group+severity,group coefficient p-value,,no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs at least 2 recordings per group with a severity value
+mumtaz,B confound -- FAA~group+quality,quality coefficient p-value,0.9982,p<0.05 (quality confounds FAA-group)
+mumtaz,B.2 -- quality-alone classifier,AUC (5-fold CV),0.313,> ~0.65 (noise alone predicts diagnosis)

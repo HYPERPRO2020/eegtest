@@ -1,7 +1,7 @@
 {
   "seed": 0,
   "n_recordings": 58,
-  "n_study_a_recordings": 12,
+  "n_study_a_recordings": 30,
   "study_a": {
     "long": [
       {
@@ -37,7 +37,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "original",
-        "faa": -0.0613
+        "faa": -0.0617
       },
       {
         "file": "MDD_S10_EC.edf",
@@ -72,7 +72,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "average",
-        "faa": 0.0433
+        "faa": 0.0413
       },
       {
         "file": "MDD_S11__EC.edf",
@@ -107,7 +107,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "original",
-        "faa": -0.004
+        "faa": -0.0024
       },
       {
         "file": "MDD_S11__EC.edf",
@@ -142,7 +142,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "average",
-        "faa": 0.1587
+        "faa": 0.1598
       },
       {
         "file": "MDD_S13_EC.edf",
@@ -177,7 +177,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.0501
+        "faa": 0.052
       },
       {
         "file": "MDD_S13_EC.edf",
@@ -212,7 +212,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "average",
-        "faa": 0.0194
+        "faa": 0.022
       },
       {
         "file": "MDD_S14_EC.edf",
@@ -247,7 +247,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.3106
+        "faa": 0.3088
       },
       {
         "file": "MDD_S14_EC.edf",
@@ -282,7 +282,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "average",
-        "faa": 0.5359
+        "faa": 0.5351
       },
       {
         "file": "MDD_S15_EC.edf",
@@ -317,7 +317,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.0191
+        "faa": 0.0167
       },
       {
         "file": "MDD_S15_EC.edf",
@@ -352,7 +352,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "average",
-        "faa": -0.0167
+        "faa": -0.0411
       },
       {
         "file": "MDD_S17_EC.edf",
@@ -387,7 +387,7 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.2164
+        "faa": 0.2175
       },
       {
         "file": "MDD_S17_EC.edf",
@@ -422,7 +422,637 @@
         "group": "depressed",
         "pipeline": "ours",
         "reference": "average",
-        "faa": -0.1672
+        "faa": -0.1696
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0733
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0795
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0728
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0697
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0733
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0548
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0759
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0587
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0422
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0553
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0958
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0958
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0958
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0865
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0951
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.018
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.018
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.018
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0099
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0198
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.1195
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.0475
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.2244
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.2028
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.1239
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0085
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0685
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0142
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0473
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0319
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1244
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.1244
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1211
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1283
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.125
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0837
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0837
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1881
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1919
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0981
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0009
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.0009
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.001
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0002
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.0017
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0383
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0383
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0379
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0344
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0409
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0477
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.1134
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0574
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0574
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0456
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.3535
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.3337
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.37
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.3255
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.3631
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0433
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.1779
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1319
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1287
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0518
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.2564
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.2563
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.2544
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.2564
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.2583
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0812
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0812
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0812
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0793
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0817
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1697
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1697
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1697
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1888
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1708
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0145
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.022
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0001
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0037
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.0136
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0536
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0521
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0473
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0483
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0539
       },
       {
         "file": "H_S10_EC.edf",
@@ -457,7 +1087,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.0578
+        "faa": 0.0597
       },
       {
         "file": "H_S10_EC.edf",
@@ -492,7 +1122,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "average",
-        "faa": -0.0579
+        "faa": -0.0583
       },
       {
         "file": "H_S11_EC.edf",
@@ -527,7 +1157,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.0103
+        "faa": 0.0107
       },
       {
         "file": "H_S11_EC.edf",
@@ -562,7 +1192,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "average",
-        "faa": 0.0868
+        "faa": 0.0888
       },
       {
         "file": "H_S13_EC.edf",
@@ -597,7 +1227,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.4553
+        "faa": 0.47
       },
       {
         "file": "H_S13_EC.edf",
@@ -632,7 +1262,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "average",
-        "faa": -0.298
+        "faa": -0.2879
       },
       {
         "file": "H_S14_EC.edf",
@@ -667,7 +1297,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "original",
-        "faa": -0.0437
+        "faa": -0.0446
       },
       {
         "file": "H_S14_EC.edf",
@@ -702,7 +1332,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "average",
-        "faa": -0.2616
+        "faa": -0.2614
       },
       {
         "file": "H_S15_EC.edf",
@@ -737,7 +1367,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.8042
+        "faa": 0.7976
       },
       {
         "file": "H_S15_EC.edf",
@@ -772,7 +1402,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "average",
-        "faa": 0.5769
+        "faa": 0.5784
       },
       {
         "file": "H_S16_EC.edf",
@@ -807,7 +1437,7 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "original",
-        "faa": 0.0092
+        "faa": 0.0098
       },
       {
         "file": "H_S16_EC.edf",
@@ -842,7 +1472,637 @@
         "group": "healthy",
         "pipeline": "ours",
         "reference": "average",
-        "faa": -0.0101
+        "faa": -0.0096
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0617
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0617
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0617
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0617
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0608
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0717
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0717
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0717
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0648
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0681
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.3506
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.3511
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.3657
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.3683
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.3529
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.2799
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.3231
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.3133
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.2619
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.2818
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1589
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.1667
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.172
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1685
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1589
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.2898
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.295
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.2984
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.2884
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.2904
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0063
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0063
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0117
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0091
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0062
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0048
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0048
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0075
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0042
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.005
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1644
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.1644
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1654
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1582
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1638
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0674
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0674
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0649
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0704
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0671
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0235
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.0355
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0215
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0128
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.0234
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0632
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0447
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0624
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0645
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0651
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.5804
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.5804
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.5573
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0654
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.5805
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.4291
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.4291
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.4476
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.7478
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.4293
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0637
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.0622
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.0834
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.0722
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.0664
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0797
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.0797
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0595
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0843
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.0774
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.101
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.101
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1237
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1136
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1024
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1027
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1027
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1027
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1027
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1034
       }
     ],
     "wide": [
@@ -853,14 +2113,14 @@
         "ica_original": -0.0618,
         "generic_original": -0.0627,
         "autoreject_original": -0.0666,
-        "ours_original": -0.0613,
+        "ours_original": -0.0617,
         "raw_average": 0.0427,
         "ica_average": 0.0427,
         "generic_average": 0.0427,
         "autoreject_average": 0.0631,
-        "ours_average": 0.0433,
+        "ours_average": 0.0413,
         "faa_range": 0.1297,
-        "faa_std": 0.05518530692131738
+        "faa_std": 0.05504121092417935
       },
       {
         "file": "MDD_S11__EC.edf",
@@ -869,14 +2129,14 @@
         "ica_original": 0.0251,
         "generic_original": -0.0048,
         "autoreject_original": -0.0001,
-        "ours_original": -0.004,
+        "ours_original": -0.0024,
         "raw_average": 0.1591,
         "ica_average": 0.2019,
         "generic_average": 0.1591,
         "autoreject_average": 0.1601,
-        "ours_average": 0.1587,
+        "ours_average": 0.1598,
         "faa_range": 0.2067,
-        "faa_std": 0.0839161849704811
+        "faa_std": 0.0838444631445631
       },
       {
         "file": "MDD_S13_EC.edf",
@@ -885,14 +2145,14 @@
         "ica_original": 0.0422,
         "generic_original": 0.0579,
         "autoreject_original": 0.0595,
-        "ours_original": 0.0501,
+        "ours_original": 0.052,
         "raw_average": 0.0188,
         "ica_average": 0.0039,
         "generic_average": 0.0188,
         "autoreject_average": 0.0354,
-        "ours_average": 0.0194,
+        "ours_average": 0.022,
         "faa_range": 0.0556,
-        "faa_std": 0.018236230421882695
+        "faa_std": 0.018182343083332247
       },
       {
         "file": "MDD_S14_EC.edf",
@@ -901,14 +2161,14 @@
         "ica_original": 0.3148,
         "generic_original": 0.2453,
         "autoreject_original": 0.0447,
-        "ours_original": 0.3106,
+        "ours_original": 0.3088,
         "raw_average": 0.5436,
         "ica_average": 0.5436,
         "generic_average": 0.4421,
         "autoreject_average": -0.181,
-        "ours_average": 0.5359,
+        "ours_average": 0.5351,
         "faa_range": 0.7245999999999999,
-        "faa_std": 0.22210268436018507
+        "faa_std": 0.2220232231096558
       },
       {
         "file": "MDD_S15_EC.edf",
@@ -917,14 +2177,14 @@
         "ica_original": 0.0183,
         "generic_original": 0.0253,
         "autoreject_original": 0.0222,
-        "ours_original": 0.0191,
+        "ours_original": 0.0167,
         "raw_average": -0.0147,
         "ica_average": -0.0147,
         "generic_average": -0.0078,
         "autoreject_average": -0.008,
-        "ours_average": -0.0167,
-        "faa_range": 0.041999999999999996,
-        "faa_std": 0.016831105133056475
+        "ours_average": -0.0411,
+        "faa_range": 0.0664,
+        "faa_std": 0.020752843178706865
       },
       {
         "file": "MDD_S17_EC.edf",
@@ -933,14 +2193,158 @@
         "ica_original": 0.2159,
         "generic_original": 0.2161,
         "autoreject_original": 0.2326,
-        "ours_original": 0.2164,
+        "ours_original": 0.2175,
         "raw_average": -0.1675,
         "ica_average": -0.1675,
         "generic_average": -0.1705,
         "autoreject_average": -0.1635,
-        "ours_average": -0.1672,
+        "ours_average": -0.1696,
         "faa_range": 0.4031,
-        "faa_std": 0.19337294045444933
+        "faa_std": 0.19372252424537525
+      },
+      {
+        "file": "MDD_S18_EC.edf",
+        "group": "depressed",
+        "raw_original": 0.0733,
+        "ica_original": 0.0795,
+        "generic_original": 0.0728,
+        "autoreject_original": 0.0697,
+        "ours_original": 0.0733,
+        "raw_average": 0.0548,
+        "ica_average": 0.0759,
+        "generic_average": 0.0587,
+        "autoreject_average": 0.0422,
+        "ours_average": 0.0553,
+        "faa_range": 0.0373,
+        "faa_std": 0.011421055117632521
+      },
+      {
+        "file": "MDD_S19_EC.edf",
+        "group": "depressed",
+        "raw_original": 0.0958,
+        "ica_original": 0.0958,
+        "generic_original": 0.0958,
+        "autoreject_original": 0.0865,
+        "ours_original": 0.0951,
+        "raw_average": -0.018,
+        "ica_average": -0.018,
+        "generic_average": -0.018,
+        "autoreject_average": -0.0099,
+        "ours_average": -0.0198,
+        "faa_range": 0.1156,
+        "faa_std": 0.05538557664229921
+      },
+      {
+        "file": "MDD_S1_EC.edf",
+        "group": "depressed",
+        "raw_original": -0.1195,
+        "ica_original": -0.0475,
+        "generic_original": -0.2244,
+        "autoreject_original": -0.2028,
+        "ours_original": -0.1239,
+        "raw_average": 0.0085,
+        "ica_average": 0.0685,
+        "generic_average": 0.0142,
+        "autoreject_average": 0.0473,
+        "ours_average": 0.0319,
+        "faa_range": 0.2929,
+        "faa_std": 0.10079405786057033
+      },
+      {
+        "file": "MDD_S20_EC.edf",
+        "group": "depressed",
+        "raw_original": 0.1244,
+        "ica_original": 0.1244,
+        "generic_original": 0.1211,
+        "autoreject_original": 0.1283,
+        "ours_original": 0.125,
+        "raw_average": 0.0837,
+        "ica_average": 0.0837,
+        "generic_average": 0.1881,
+        "autoreject_average": 0.1919,
+        "ours_average": 0.0981,
+        "faa_range": 0.10819999999999999,
+        "faa_std": 0.03547402007103226
+      },
+      {
+        "file": "MDD_S21_EC.edf",
+        "group": "depressed",
+        "raw_original": -0.0009,
+        "ica_original": -0.0009,
+        "generic_original": -0.001,
+        "autoreject_original": -0.0002,
+        "ours_original": -0.0017,
+        "raw_average": -0.0383,
+        "ica_average": -0.0383,
+        "generic_average": -0.0379,
+        "autoreject_average": -0.0344,
+        "ours_average": -0.0409,
+        "faa_range": 0.0407,
+        "faa_std": 0.018571173899352728
+      },
+      {
+        "file": "MDD_S22_EC.edf",
+        "group": "depressed",
+        "raw_original": 0.0477,
+        "ica_original": -0.1134,
+        "generic_original": 0.0574,
+        "autoreject_original": 0.0574,
+        "ours_original": 0.0456,
+        "raw_average": -0.3535,
+        "ica_average": -0.3337,
+        "generic_average": -0.37,
+        "autoreject_average": -0.3255,
+        "ours_average": -0.3631,
+        "faa_range": 0.4274,
+        "faa_std": 0.19031563493312892
+      },
+      {
+        "file": "MDD_S23_EC.edf",
+        "group": "depressed",
+        "raw_original": 0.0433,
+        "ica_original": 0.1779,
+        "generic_original": 0.1319,
+        "autoreject_original": 0.1287,
+        "ours_original": 0.0518,
+        "raw_average": 0.2564,
+        "ica_average": 0.2563,
+        "generic_average": 0.2544,
+        "autoreject_average": 0.2564,
+        "ours_average": 0.2583,
+        "faa_range": 0.21499999999999997,
+        "faa_std": 0.08319253812692579
+      },
+      {
+        "file": "MDD_S24__EC.edf",
+        "group": "depressed",
+        "raw_original": 0.0812,
+        "ica_original": 0.0812,
+        "generic_original": 0.0812,
+        "autoreject_original": 0.0793,
+        "ours_original": 0.0817,
+        "raw_average": 0.1697,
+        "ica_average": 0.1697,
+        "generic_average": 0.1697,
+        "autoreject_average": 0.1888,
+        "ours_average": 0.1708,
+        "faa_range": 0.1095,
+        "faa_std": 0.0467191192125879
+      },
+      {
+        "file": "MDD_S25_EC.edf",
+        "group": "depressed",
+        "raw_original": -0.0145,
+        "ica_original": -0.022,
+        "generic_original": 0.0001,
+        "autoreject_original": -0.0037,
+        "ours_original": -0.0136,
+        "raw_average": -0.0536,
+        "ica_average": -0.0521,
+        "generic_average": -0.0473,
+        "autoreject_average": -0.0483,
+        "ours_average": -0.0539,
+        "faa_range": 0.054000000000000006,
+        "faa_std": 0.021008924294213638
       },
       {
         "file": "H_S10_EC.edf",
@@ -949,14 +2353,14 @@
         "ica_original": 0.0575,
         "generic_original": 0.0598,
         "autoreject_original": 0.07,
-        "ours_original": 0.0578,
+        "ours_original": 0.0597,
         "raw_average": -0.0575,
         "ica_average": -0.0575,
         "generic_average": -0.0575,
         "autoreject_average": -0.0579,
-        "ours_average": -0.0579,
-        "faa_range": 0.1279,
-        "faa_std": 0.059188259815608706
+        "ours_average": -0.0583,
+        "faa_range": 0.1283,
+        "faa_std": 0.05941188096668881
       },
       {
         "file": "H_S11_EC.edf",
@@ -965,14 +2369,14 @@
         "ica_original": 0.0103,
         "generic_original": 0.0104,
         "autoreject_original": 0.0139,
-        "ours_original": 0.0103,
+        "ours_original": 0.0107,
         "raw_average": 0.0868,
         "ica_average": 0.0868,
         "generic_average": 0.0857,
         "autoreject_average": 0.0868,
-        "ours_average": 0.0868,
-        "faa_range": 0.0765,
-        "faa_std": 0.03778482367300395
+        "ours_average": 0.0888,
+        "faa_range": 0.0785,
+        "faa_std": 0.03794952568873555
       },
       {
         "file": "H_S13_EC.edf",
@@ -981,14 +2385,14 @@
         "ica_original": 0.4374,
         "generic_original": 0.6553,
         "autoreject_original": 0.6438,
-        "ours_original": 0.4553,
+        "ours_original": 0.47,
         "raw_average": -0.3084,
         "ica_average": -0.3084,
         "generic_average": -0.194,
         "autoreject_average": -0.1651,
-        "ours_average": -0.298,
+        "ours_average": -0.2879,
         "faa_range": 0.9637,
-        "faa_std": 0.3992577439449359
+        "faa_std": 0.3993705032923689
       },
       {
         "file": "H_S14_EC.edf",
@@ -997,14 +2401,14 @@
         "ica_original": -0.0438,
         "generic_original": -0.0438,
         "autoreject_original": -0.0389,
-        "ours_original": -0.0437,
+        "ours_original": -0.0446,
         "raw_average": -0.2615,
         "ica_average": -0.2615,
         "generic_average": -0.2615,
         "autoreject_average": -0.266,
-        "ours_average": -0.2616,
+        "ours_average": -0.2614,
         "faa_range": 0.22710000000000002,
-        "faa_std": 0.10982595731428887
+        "faa_std": 0.10971717094420545
       },
       {
         "file": "H_S15_EC.edf",
@@ -1013,14 +2417,14 @@
         "ica_original": 0.8349,
         "generic_original": 0.8037,
         "autoreject_original": 0.4427,
-        "ours_original": 0.8042,
+        "ours_original": 0.7976,
         "raw_average": 0.5774,
         "ica_average": 0.5854,
         "generic_average": 0.5774,
         "autoreject_average": 0.4482,
-        "ours_average": 0.5769,
+        "ours_average": 0.5784,
         "faa_range": 0.3922,
-        "faa_std": 0.1444855788651587
+        "faa_std": 0.14370208210043442
       },
       {
         "file": "H_S16_EC.edf",
@@ -1029,14 +2433,158 @@
         "ica_original": 0.0091,
         "generic_original": 0.0091,
         "autoreject_original": 0.0117,
-        "ours_original": 0.0092,
+        "ours_original": 0.0098,
         "raw_average": -0.0103,
         "ica_average": -0.0103,
         "generic_average": -0.0103,
         "autoreject_average": -0.0062,
-        "ours_average": -0.0101,
+        "ours_average": -0.0096,
         "faa_range": 0.022,
-        "faa_std": 0.009636285591450681
+        "faa_std": 0.009642556714896729
+      },
+      {
+        "file": "H_S17_EC.edf",
+        "group": "healthy",
+        "raw_original": 0.0617,
+        "ica_original": 0.0617,
+        "generic_original": 0.0617,
+        "autoreject_original": 0.0617,
+        "ours_original": 0.0608,
+        "raw_average": 0.0717,
+        "ica_average": 0.0717,
+        "generic_average": 0.0717,
+        "autoreject_average": 0.0648,
+        "ours_average": 0.0681,
+        "faa_range": 0.0109,
+        "faa_std": 0.004498710926476606
+      },
+      {
+        "file": "H_S19_EC.edf",
+        "group": "healthy",
+        "raw_original": 0.3506,
+        "ica_original": 0.3511,
+        "generic_original": 0.3657,
+        "autoreject_original": 0.3683,
+        "ours_original": 0.3529,
+        "raw_average": -0.2799,
+        "ica_average": -0.3231,
+        "generic_average": -0.3133,
+        "autoreject_average": -0.2619,
+        "ours_average": -0.2818,
+        "faa_range": 0.6914,
+        "faa_std": 0.3253015407279836
+      },
+      {
+        "file": "H_S1_EC.edf",
+        "group": "healthy",
+        "raw_original": 0.1589,
+        "ica_original": 0.1667,
+        "generic_original": 0.172,
+        "autoreject_original": 0.1685,
+        "ours_original": 0.1589,
+        "raw_average": 0.2898,
+        "ica_average": 0.295,
+        "generic_average": 0.2984,
+        "autoreject_average": 0.2884,
+        "ours_average": 0.2904,
+        "faa_range": 0.13949999999999999,
+        "faa_std": 0.06386311924734024
+      },
+      {
+        "file": "H_S20_EC.edf",
+        "group": "healthy",
+        "raw_original": 0.0063,
+        "ica_original": 0.0063,
+        "generic_original": 0.0117,
+        "autoreject_original": 0.0091,
+        "ours_original": 0.0062,
+        "raw_average": 0.0048,
+        "ica_average": 0.0048,
+        "generic_average": 0.0075,
+        "autoreject_average": 0.0042,
+        "ours_average": 0.005,
+        "faa_range": 0.007500000000000001,
+        "faa_std": 0.002195654799826239
+      },
+      {
+        "file": "H_S21_EC.edf",
+        "group": "healthy",
+        "raw_original": 0.1644,
+        "ica_original": 0.1644,
+        "generic_original": 0.1654,
+        "autoreject_original": 0.1582,
+        "ours_original": 0.1638,
+        "raw_average": -0.0674,
+        "ica_average": -0.0674,
+        "generic_average": -0.0649,
+        "autoreject_average": -0.0704,
+        "ours_average": -0.0671,
+        "faa_range": 0.2358,
+        "faa_std": 0.1153609812718321
+      },
+      {
+        "file": "H_S22_EC.edf",
+        "group": "healthy",
+        "raw_original": -0.0235,
+        "ica_original": -0.0355,
+        "generic_original": -0.0215,
+        "autoreject_original": -0.0128,
+        "ours_original": -0.0234,
+        "raw_average": -0.0632,
+        "ica_average": -0.0447,
+        "generic_average": -0.0624,
+        "autoreject_average": -0.0645,
+        "ours_average": -0.0651,
+        "faa_range": 0.052300000000000006,
+        "faa_std": 0.01978621742526853
+      },
+      {
+        "file": "H_S23_EC.edf",
+        "group": "healthy",
+        "raw_original": 0.5804,
+        "ica_original": 0.5804,
+        "generic_original": 0.5573,
+        "autoreject_original": -0.0654,
+        "ours_original": 0.5805,
+        "raw_average": -0.4291,
+        "ica_average": -0.4291,
+        "generic_average": -0.4476,
+        "autoreject_average": -0.7478,
+        "ours_average": -0.4293,
+        "faa_range": 1.3283,
+        "faa_std": 0.5129753133436346
+      },
+      {
+        "file": "H_S24_EC.edf",
+        "group": "healthy",
+        "raw_original": -0.0637,
+        "ica_original": -0.0622,
+        "generic_original": -0.0834,
+        "autoreject_original": -0.0722,
+        "ours_original": -0.0664,
+        "raw_average": 0.0797,
+        "ica_average": 0.0797,
+        "generic_average": 0.0595,
+        "autoreject_average": 0.0843,
+        "ours_average": 0.0774,
+        "faa_range": 0.16770000000000002,
+        "faa_std": 0.07330664431004873
+      },
+      {
+        "file": "H_S25_EC.edf",
+        "group": "healthy",
+        "raw_original": 0.101,
+        "ica_original": 0.101,
+        "generic_original": 0.1237,
+        "autoreject_original": 0.1136,
+        "ours_original": 0.1024,
+        "raw_average": 0.1027,
+        "ica_average": 0.1027,
+        "generic_average": 0.1027,
+        "autoreject_average": 0.1027,
+        "ours_average": 0.1034,
+        "faa_range": 0.022699999999999998,
+        "faa_std": 0.006947294437405112
       }
     ],
     "combo_cols": [
@@ -1055,80 +2603,190 @@
   "study_b": {
     "n": 58,
     "n_with_severity": 0,
+    "quality_variant_primary": "quality_alpha_frontal_pct",
+    "quality_variant_secondary": "quality_alpha_pct",
+    "frontal": {
+      "n": 58,
+      "n_with_severity": 0,
+      "regression_1_quality_on_group_severity": null,
+      "regression_1_skipped_reason": "no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs at least 2 recordings per group with a severity value",
+      "regression_2_faa_on_group_quality": {
+        "params": {
+          "const": 1.612833760217225,
+          "group_mdd": -0.11670943125745226,
+          "quality_alpha_frontal_pct": -0.01565981848334217
+        },
+        "pvalues": {
+          "const": 0.3014450024296747,
+          "group_mdd": 0.22871623378370629,
+          "quality_alpha_frontal_pct": 0.3482458372526015
+        },
+        "conf_int": {
+          "const": [
+            -1.485674594051011,
+            4.711342114485461
+          ],
+          "group_mdd": [
+            -0.30886058830011387,
+            0.07544172578520938
+          ],
+          "quality_alpha_frontal_pct": [
+            -0.04883140620572696,
+            0.017511769239042616
+          ]
+        },
+        "rsquared": 0.032726477093603434,
+        "nobs": 58
+      },
+      "regression_3_quality_classifies_group": {
+        "accuracy": 0.6724137931034483,
+        "auc": 0.6321428571428571,
+        "auc_ci_lo": 0.479780330183556,
+        "auc_ci_hi": 0.7825700374235715,
+        "majority_class_baseline": 0.5172413793103449,
+        "n": 58,
+        "n_splits": 5,
+        "leakage_flag": false
+      },
+      "holm_corrected_pvalues": {
+        "group_mdd": 0.45743246756741257,
+        "quality_alpha_frontal_pct": 0.45743246756741257
+      }
+    },
+    "whole_scalp": {
+      "n": 58,
+      "n_with_severity": 0,
+      "regression_1_quality_on_group_severity": null,
+      "regression_1_skipped_reason": "no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs at least 2 recordings per group with a severity value",
+      "regression_2_faa_on_group_quality": {
+        "params": {
+          "const": 0.4431025151898291,
+          "group_mdd": -0.09469582703973811,
+          "quality_alpha_pct": -0.0031332268506940077
+        },
+        "pvalues": {
+          "const": 0.8194761219068325,
+          "group_mdd": 0.3347721981057379,
+          "quality_alpha_pct": 0.8804900736966612
+        },
+        "conf_int": {
+          "const": [
+            -3.42931875245584,
+            4.315523782835498
+          ],
+          "group_mdd": [
+            -0.2897198845906037,
+            0.10032823051112749
+          ],
+          "quality_alpha_pct": [
+            -0.044703484765668364,
+            0.03843703106428034
+          ]
+        },
+        "rsquared": 0.017392727466078672,
+        "nobs": 58
+      },
+      "regression_3_quality_classifies_group": {
+        "accuracy": 0.6896551724137931,
+        "auc": 0.6761904761904762,
+        "auc_ci_lo": 0.5228181936977301,
+        "auc_ci_hi": 0.8196152387284296,
+        "majority_class_baseline": 0.5172413793103449,
+        "n": 58,
+        "n_splits": 5,
+        "leakage_flag": true
+      },
+      "holm_corrected_pvalues": {
+        "group_mdd": 0.6695443962114758,
+        "quality_alpha_pct": 0.8804900736966612
+      }
+    },
     "regression_1_quality_on_group_severity": null,
     "regression_1_skipped_reason": "no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs at least 2 recordings per group with a severity value",
     "regression_2_faa_on_group_quality": {
       "params": {
-        "const": 0.162792200295452,
-        "group_mdd": -0.09046181175383862,
-        "quality_alpha_pct": -0.00011398153833534861
+        "const": 1.612833760217225,
+        "group_mdd": -0.11670943125745226,
+        "quality_alpha_frontal_pct": -0.01565981848334217
       },
       "pvalues": {
-        "const": 0.9734328864308492,
-        "group_mdd": 0.3300420389180654,
-        "quality_alpha_pct": 0.9981933634087307
+        "const": 0.3014450024296747,
+        "group_mdd": 0.22871623378370629,
+        "quality_alpha_frontal_pct": 0.3482458372526015
       },
       "conf_int": {
         "const": [
-          -9.588906363968107,
-          9.914490764559012
+          -1.485674594051011,
+          4.711342114485461
         ],
         "group_mdd": [
-          -0.2749365815599172,
-          0.09401295805223993
+          -0.30886058830011387,
+          0.07544172578520938
         ],
-        "quality_alpha_pct": [
-          -0.10053782926403346,
-          0.10030986618736276
+        "quality_alpha_frontal_pct": [
+          -0.04883140620572696,
+          0.017511769239042616
         ]
       },
-      "rsquared": 0.017271854670289244,
+      "rsquared": 0.032726477093603434,
       "nobs": 58
     },
     "regression_3_quality_classifies_group": {
-      "accuracy": 0.3620689655172414,
-      "auc": 0.3130952380952381,
+      "accuracy": 0.6724137931034483,
+      "auc": 0.6321428571428571,
+      "auc_ci_lo": 0.479780330183556,
+      "auc_ci_hi": 0.7825700374235715,
       "majority_class_baseline": 0.5172413793103449,
       "n": 58,
       "n_splits": 5,
       "leakage_flag": false
     },
-    "finding": "no strong evidence either way in this sample (group's effect on FAA is not significant at p<0.05, controlling for quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
+    "finding": "no strong evidence either way in this sample (group's effect on FAA is not significant at corrected p<0.05, controlling for frontal quality) -- treat this as inconclusive, not as support for either an artifact or a real-signal reading of FAA."
   },
   "faa_classifiers_by_pipeline": {
     "raw": {
-      "accuracy": 0.3333333333333333,
-      "auc": 0.3055555555555556,
+      "accuracy": 0.6,
+      "auc": 0.5777777777777777,
+      "auc_ci_lo": 0.3393665158371041,
+      "auc_ci_hi": 0.7894913063909773,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     },
     "ica": {
-      "accuracy": 0.3333333333333333,
-      "auc": 0.3055555555555556,
+      "accuracy": 0.5666666666666667,
+      "auc": 0.5511111111111111,
+      "auc_ci_lo": 0.32443518518518516,
+      "auc_ci_hi": 0.7723214285714286,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     },
     "generic": {
-      "accuracy": 0.3333333333333333,
-      "auc": 0.3888888888888889,
+      "accuracy": 0.6,
+      "auc": 0.56,
+      "auc_ci_lo": 0.31992410714285713,
+      "auc_ci_hi": 0.7783547794117643,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     },
     "autoreject": {
-      "accuracy": 0.4166666666666667,
-      "auc": 0.3888888888888889,
+      "accuracy": 0.5333333333333333,
+      "auc": 0.5066666666666667,
+      "auc_ci_lo": 0.2850522875816993,
+      "auc_ci_hi": 0.7277088293650792,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     },
     "ours": {
-      "accuracy": 0.3333333333333333,
-      "auc": 0.3888888888888889,
+      "accuracy": 0.6,
+      "auc": 0.5733333333333334,
+      "auc_ci_lo": 0.3348214285714286,
+      "auc_ci_hi": 0.7870443690296631,
       "baseline": 0.5,
-      "n": 12,
+      "n": 30,
       "n_splits": 5
     }
   }

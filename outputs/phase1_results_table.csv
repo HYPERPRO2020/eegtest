@@ -1,13 +1,22 @@
 dataset,test,metric,value,red_flag_if
-ds003478,A -- pipeline sensitivity,median FAA range across 10 combos,0.253,large swing
-ds003478,B.1 -- quality~group+severity,group coefficient p-value,0.7555,p<0.05 (group predicts contamination)
-ds003478,B confound -- FAA~group+quality,quality coefficient p-value,0.082,p<0.05 (quality confounds FAA-group)
-ds003478,B.2 -- quality-alone classifier,AUC (5-fold CV),0.483,> ~0.65 (noise alone predicts diagnosis)
-ds007615,A -- pipeline sensitivity,median FAA range across 10 combos,0.099,large swing
-ds007615,B.1 -- quality~group+severity,group coefficient p-value,0.7128,p<0.05 (group predicts contamination)
-ds007615,B confound -- FAA~group+quality,quality coefficient p-value,0.2572,p<0.05 (quality confounds FAA-group)
-ds007615,B.2 -- quality-alone classifier,AUC (5-fold CV),0.374,> ~0.65 (noise alone predicts diagnosis)
-mumtaz,A -- pipeline sensitivity,median FAA range across 10 combos,0.168,large swing
-mumtaz,B.1 -- quality~group+severity,group coefficient p-value,,no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs at least 2 recordings per group with a severity value
-mumtaz,B confound -- FAA~group+quality,quality coefficient p-value,0.9982,p<0.05 (quality confounds FAA-group)
-mumtaz,B.2 -- quality-alone classifier,AUC (5-fold CV),0.313,> ~0.65 (noise alone predicts diagnosis)
+ds003478,A -- pipeline sensitivity,"median FAA range, 30 recordings",0.183,large swing
+ds003478,B.1 (frontal) -- quality~group+severity,group coefficient p-value (Holm-corrected),1.0,p<0.05 (group predicts contamination)
+ds003478,B confound (frontal) -- FAA~group+quality,group coefficient p-value (Holm-corrected),1.0,p>=0.05 here alongside a real B.2 leak would undercut the group-FAA link
+ds003478,B.2 (frontal) -- quality-alone classifier,"AUC (5-fold CV, 95% bootstrap CI)","0.530 [0.42, 0.64]",> ~0.65 (noise alone predicts diagnosis)
+ds003478,B.1 (whole-scalp) -- quality~group+severity,group coefficient p-value (Holm-corrected),0.8236,p<0.05 (group predicts contamination)
+ds003478,B confound (whole-scalp) -- FAA~group+quality,group coefficient p-value (Holm-corrected),0.8236,p>=0.05 here alongside a real B.2 leak would undercut the group-FAA link
+ds003478,B.2 (whole-scalp) -- quality-alone classifier,"AUC (5-fold CV, 95% bootstrap CI)","0.588 [0.47, 0.70]",> ~0.65 (noise alone predicts diagnosis)
+ds007615,A -- pipeline sensitivity,"median FAA range, 27 recordings",0.094,large swing
+ds007615,B.1 (frontal) -- quality~group+severity,group coefficient p-value (Holm-corrected),0.0423,p<0.05 (group predicts contamination)
+ds007615,B confound (frontal) -- FAA~group+quality,group coefficient p-value (Holm-corrected),0.0423,p>=0.05 here alongside a real B.2 leak would undercut the group-FAA link
+ds007615,B.2 (frontal) -- quality-alone classifier,"AUC (5-fold CV, 95% bootstrap CI)","0.358 [0.19, 0.54]",> ~0.65 (noise alone predicts diagnosis)
+ds007615,B.1 (whole-scalp) -- quality~group+severity,group coefficient p-value (Holm-corrected),0.0569,p<0.05 (group predicts contamination)
+ds007615,B confound (whole-scalp) -- FAA~group+quality,group coefficient p-value (Holm-corrected),0.0569,p>=0.05 here alongside a real B.2 leak would undercut the group-FAA link
+ds007615,B.2 (whole-scalp) -- quality-alone classifier,"AUC (5-fold CV, 95% bootstrap CI)","0.369 [0.21, 0.55]",> ~0.65 (noise alone predicts diagnosis)
+mumtaz,A -- pipeline sensitivity,"median FAA range, 30 recordings",0.129,large swing
+mumtaz,B.1 (frontal) -- quality~group+severity,group coefficient p-value (Holm-corrected),,no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs at least 2 recordings per group with a severity value
+mumtaz,B confound (frontal) -- FAA~group+quality,group coefficient p-value (Holm-corrected),0.4574,p>=0.05 here alongside a real B.2 leak would undercut the group-FAA link
+mumtaz,B.2 (frontal) -- quality-alone classifier,"AUC (5-fold CV, 95% bootstrap CI)","0.632 [0.48, 0.78]",> ~0.65 (noise alone predicts diagnosis)
+mumtaz,B.1 (whole-scalp) -- quality~group+severity,group coefficient p-value (Holm-corrected),,no clinical severity scores in this batch -- Test B.1 (quality ~ group + severity) needs at least 2 recordings per group with a severity value
+mumtaz,B confound (whole-scalp) -- FAA~group+quality,group coefficient p-value (Holm-corrected),0.6695,p>=0.05 here alongside a real B.2 leak would undercut the group-FAA link
+mumtaz,B.2 (whole-scalp) -- quality-alone classifier,"AUC (5-fold CV, 95% bootstrap CI)","0.676 [0.52, 0.82]",> ~0.65 (noise alone predicts diagnosis)

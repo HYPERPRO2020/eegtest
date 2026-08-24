@@ -76,12 +76,13 @@
   .stat-tile .label { font-size:.78rem; color:var(--text-muted); margin-bottom:6px; }
   .stat-tile .value { font-size:1.7rem; font-weight:600; }
   .stat-tile .sub { font-size:.82rem; color:var(--text-secondary); margin-top:4px; }
-  .verdict-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .verdict-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
   .verdict-card { background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:18px; }
   .verdict-card .test-name { font-size:.78rem; color:var(--text-muted); margin-bottom:8px; }
   .verdict-card .metric { font-size:1.35rem; font-weight:600; margin-bottom:4px; }
   .verdict-card .ask { font-size:.85rem; color:var(--text-secondary); margin-bottom:12px; }
-  .badge { display:inline-flex; align-items:center; gap:6px; font-size:.8rem; font-weight:600; padding:4px 10px; border-radius:999px; }
+  .badge { display:inline-flex; align-items:center; gap:6px; font-size:.8rem; font-weight:600; padding:4px 10px; border-radius:999px;
+    background: color-mix(in srgb, var(--text-muted) 16%, transparent); color: var(--text-muted); }
   .badge.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
   .badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: color-mix(in srgb, var(--warning) 70%, black); }
   .badge .dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
@@ -102,6 +103,9 @@
   footer a { color:var(--series-primary); text-decoration:none; }
   footer a:hover { text-decoration:underline; }
   .footer-links { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px; }
+  @media (max-width:900px) {
+    .verdict-row { grid-template-columns:repeat(2,1fr); }
+  }
   @media (max-width:640px) {
     .stat-row, .verdict-row { grid-template-columns:1fr; }
     .bar-row { grid-template-columns: 90px 1fr 48px; }
@@ -159,87 +163,187 @@
     <p class="dek">FAA computed under 5 preprocessing pipelines (raw, ICA, generic amplitude rejection,
     AutoReject, and <strong>ours</strong> — the endpoint-conditional score used to weight instead of
     reject) × 2 reference schemes, per subject. <strong>Red flag: a big swing means processing
-    decisions, not biology, are steering the result.</strong> Bounded to 12 recordings per dataset —
-    ICA and AutoReject are slow; see caveats.</p>
+    decisions, not biology, are steering the result.</strong> Bounded to up to 30 recordings per
+    dataset (15/group where available) — ICA and AutoReject are slow, even parallelized; see caveats.</p>
     <div class="dataset-block">
           <h3>ds003478 <span class="dataset-sub">(real BDI severity · Univ. of Arizona)</span></h3>
           <div class="stat-row">
-            <div class="stat-tile"><div class="label">Median FAA range (12 subjects)</div>
-              <div class="value">0.344</div><div class="sub">typical swing across the 10 combos</div></div>
+            <div class="stat-tile"><div class="label">Median FAA range (30 subjects)</div>
+              <div class="value">0.184</div><div class="sub">typical swing across the 10 combos</div></div>
             <div class="stat-tile"><div class="label">Max FAA range</div>
-              <div class="value" style="color:var(--warning)">1.917</div>
+              <div class="value" style="color:var(--warning)">1.421</div>
               <div class="sub">largest single-subject swing</div></div>
           </div>
           <div class="card"><div class="bar-row">
           <span class="bar-label">sub-059</span>
-          <div class="bar-track"><div class="bar-fill" style="width:2.4%;background:var(--series-mdd)"></div></div>
-          <span class="bar-value">0.047</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.1%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.042</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-086</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.1%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.042</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-008</span>
+          <div class="bar-track"><div class="bar-fill" style="width:3.2%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.065</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-014</span>
+          <div class="bar-track"><div class="bar-fill" style="width:3.3%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.065</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-081</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.3%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.087</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-053</span>
-          <div class="bar-track"><div class="bar-fill" style="width:5.2%;background:var(--series-mdd)"></div></div>
-          <span class="bar-value">0.104</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.9%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.098</span>
         </div>
 <div class="bar-row">
-          <span class="bar-label">sub-007</span>
-          <div class="bar-track"><div class="bar-fill" style="width:6.3%;background:var(--series-h)"></div></div>
-          <span class="bar-value">0.127</span>
+          <span class="bar-label">sub-061</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.0%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.100</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-066</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.6%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.111</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-011</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.7%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.114</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-006</span>
-          <div class="bar-track"><div class="bar-fill" style="width:6.5%;background:var(--series-h)"></div></div>
-          <span class="bar-value">0.131</span>
+          <div class="bar-track"><div class="bar-fill" style="width:6.2%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.124</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-060</span>
-          <div class="bar-track"><div class="bar-fill" style="width:7.8%;background:var(--series-mdd)"></div></div>
-          <span class="bar-value">0.155</span>
+          <div class="bar-track"><div class="bar-fill" style="width:7.4%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.148</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-007</span>
+          <div class="bar-track"><div class="bar-fill" style="width:8.3%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.165</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-065</span>
+          <div class="bar-track"><div class="bar-fill" style="width:8.3%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.166</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-005</span>
-          <div class="bar-track"><div class="bar-fill" style="width:8.1%;background:var(--series-h)"></div></div>
-          <span class="bar-value">0.163</span>
+          <div class="bar-track"><div class="bar-fill" style="width:8.5%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.169</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-084</span>
+          <div class="bar-track"><div class="bar-fill" style="width:9.1%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.181</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-013</span>
+          <div class="bar-track"><div class="bar-fill" style="width:9.2%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.184</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-080</span>
+          <div class="bar-track"><div class="bar-fill" style="width:9.6%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.192</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-015</span>
+          <div class="bar-track"><div class="bar-fill" style="width:11.3%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.226</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-016</span>
+          <div class="bar-track"><div class="bar-fill" style="width:12.2%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.244</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-063</span>
+          <div class="bar-track"><div class="bar-fill" style="width:13.5%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.271</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-055</span>
-          <div class="bar-track"><div class="bar-fill" style="width:17.2%;background:var(--series-mdd)"></div></div>
-          <span class="bar-value">0.344</span>
+          <div class="bar-track"><div class="bar-fill" style="width:13.8%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.275</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-001</span>
+          <div class="bar-track"><div class="bar-fill" style="width:24.1%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.483</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-058</span>
+          <div class="bar-track"><div class="bar-fill" style="width:25.5%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.510</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-052</span>
           <div class="bar-track"><div class="bar-fill" style="width:26.2%;background:var(--series-mdd)"></div></div>
           <span class="bar-value">0.524</span>
         </div>
 <div class="bar-row">
-          <span class="bar-label">sub-052</span>
-          <div class="bar-track"><div class="bar-fill" style="width:31.0%;background:var(--series-mdd)"></div></div>
-          <span class="bar-value">0.620</span>
+          <span class="bar-label">sub-085</span>
+          <div class="bar-track"><div class="bar-fill" style="width:28.5%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.571</span>
         </div>
 <div class="bar-row">
-          <span class="bar-label">sub-001</span>
-          <div class="bar-track"><div class="bar-fill" style="width:32.1%;background:var(--series-h)"></div></div>
-          <span class="bar-value">0.642</span>
+          <span class="bar-label">sub-012</span>
+          <div class="bar-track"><div class="bar-fill" style="width:37.1%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.742</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-002</span>
-          <div class="bar-track"><div class="bar-fill" style="width:82.6%;background:var(--series-h)"></div></div>
-          <span class="bar-value">1.653</span>
+          <div class="bar-track"><div class="bar-fill" style="width:44.1%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.882</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-009</span>
+          <div class="bar-track"><div class="bar-fill" style="width:47.8%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.955</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-010</span>
+          <div class="bar-track"><div class="bar-fill" style="width:55.7%;background:var(--series-h)"></div></div>
+          <span class="bar-value">1.114</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-004</span>
-          <div class="bar-track"><div class="bar-fill" style="width:95.9%;background:var(--series-h)"></div></div>
-          <span class="bar-value">1.917</span>
+          <div class="bar-track"><div class="bar-fill" style="width:71.0%;background:var(--series-h)"></div></div>
+          <span class="bar-value">1.421</span>
         </div></div>
         </div><div class="dataset-block">
           <h3>ds007615 <span class="dataset-sub">(real BDI-II severity · Univ. of Oslo)</span></h3>
           <div class="stat-row">
-            <div class="stat-tile"><div class="label">Median FAA range (12 subjects)</div>
-              <div class="value">0.101</div><div class="sub">typical swing across the 10 combos</div></div>
+            <div class="stat-tile"><div class="label">Median FAA range (27 subjects)</div>
+              <div class="value">0.094</div><div class="sub">typical swing across the 10 combos</div></div>
             <div class="stat-tile"><div class="label">Max FAA range</div>
               <div class="value" style="color:var(--warning)">0.673</div>
               <div class="sub">largest single-subject swing</div></div>
           </div>
           <div class="card"><div class="bar-row">
+          <span class="bar-label">sub-23</span>
+          <div class="bar-track"><div class="bar-fill" style="width:1.9%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.038</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-60</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.1%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.043</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">sub-07</span>
           <div class="bar-track"><div class="bar-fill" style="width:2.4%;background:var(--series-h)"></div></div>
           <span class="bar-value">0.049</span>
@@ -255,24 +359,64 @@
           <span class="bar-value">0.056</span>
         </div>
 <div class="bar-row">
+          <span class="bar-label">sub-14</span>
+          <div class="bar-track"><div class="bar-fill" style="width:3.0%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.060</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-20</span>
+          <div class="bar-track"><div class="bar-fill" style="width:3.0%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.060</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-24</span>
+          <div class="bar-track"><div class="bar-fill" style="width:3.4%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.068</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-69</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.0%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.079</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">sub-18</span>
           <div class="bar-track"><div class="bar-fill" style="width:4.0%;background:var(--series-mdd)"></div></div>
           <span class="bar-value">0.080</span>
         </div>
 <div class="bar-row">
+          <span class="bar-label">sub-11</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.0%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.081</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-13</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.2%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.083</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">sub-08</span>
           <div class="bar-track"><div class="bar-fill" style="width:4.6%;background:var(--series-mdd)"></div></div>
-          <span class="bar-value">0.091</span>
+          <span class="bar-value">0.092</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-15</span>
+          <div class="bar-track"><div class="bar-fill" style="width:4.7%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.094</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-01</span>
-          <div class="bar-track"><div class="bar-fill" style="width:4.9%;background:var(--series-h)"></div></div>
-          <span class="bar-value">0.098</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.0%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.099</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-37</span>
           <div class="bar-track"><div class="bar-fill" style="width:5.1%;background:var(--series-mdd)"></div></div>
           <span class="bar-value">0.101</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-58</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.1%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.103</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">sub-09</span>
@@ -290,6 +434,31 @@
           <span class="bar-value">0.130</span>
         </div>
 <div class="bar-row">
+          <span class="bar-label">sub-16</span>
+          <div class="bar-track"><div class="bar-fill" style="width:8.3%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.167</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-43</span>
+          <div class="bar-track"><div class="bar-fill" style="width:8.5%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.169</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-67</span>
+          <div class="bar-track"><div class="bar-fill" style="width:10.1%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.202</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-55</span>
+          <div class="bar-track"><div class="bar-fill" style="width:12.3%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.246</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">sub-17</span>
+          <div class="bar-track"><div class="bar-fill" style="width:14.8%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.296</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">sub-30</span>
           <div class="bar-track"><div class="bar-fill" style="width:15.8%;background:var(--series-mdd)"></div></div>
           <span class="bar-value">0.317</span>
@@ -302,21 +471,51 @@
         </div><div class="dataset-block">
           <h3>Mumtaz/HUSM <span class="dataset-sub">(replication check · no severity)</span></h3>
           <div class="stat-row">
-            <div class="stat-tile"><div class="label">Median FAA range (12 subjects)</div>
-              <div class="value">0.207</div><div class="sub">typical swing across the 10 combos</div></div>
+            <div class="stat-tile"><div class="label">Median FAA range (30 subjects)</div>
+              <div class="value">0.130</div><div class="sub">typical swing across the 10 combos</div></div>
             <div class="stat-tile"><div class="label">Max FAA range</div>
-              <div class="value" style="color:var(--warning)">0.964</div>
+              <div class="value" style="color:var(--warning)">1.328</div>
               <div class="sub">largest single-subject swing</div></div>
           </div>
           <div class="card"><div class="bar-row">
+          <span class="bar-label">H_S20</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.4%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.008</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">H_S17</span>
+          <div class="bar-track"><div class="bar-fill" style="width:0.5%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.011</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">H_S16</span>
           <div class="bar-track"><div class="bar-fill" style="width:1.1%;background:var(--series-h)"></div></div>
           <span class="bar-value">0.022</span>
         </div>
 <div class="bar-row">
-          <span class="bar-label">MDD_S15</span>
-          <div class="bar-track"><div class="bar-fill" style="width:2.1%;background:var(--series-mdd)"></div></div>
-          <span class="bar-value">0.042</span>
+          <span class="bar-label">H_S25</span>
+          <div class="bar-track"><div class="bar-fill" style="width:1.1%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.023</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">MDD_S18</span>
+          <div class="bar-track"><div class="bar-fill" style="width:1.9%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.037</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">MDD_S21</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.0%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.041</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">H_S22</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.6%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.052</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">MDD_S25</span>
+          <div class="bar-track"><div class="bar-fill" style="width:2.7%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.054</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">MDD_S13</span>
@@ -324,9 +523,29 @@
           <span class="bar-value">0.056</span>
         </div>
 <div class="bar-row">
+          <span class="bar-label">MDD_S15</span>
+          <div class="bar-track"><div class="bar-fill" style="width:3.3%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.066</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">H_S11</span>
-          <div class="bar-track"><div class="bar-fill" style="width:3.8%;background:var(--series-h)"></div></div>
-          <span class="bar-value">0.076</span>
+          <div class="bar-track"><div class="bar-fill" style="width:3.9%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.079</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">MDD_S20</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.4%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.108</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">MDD_S24_</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.5%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.110</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">MDD_S19</span>
+          <div class="bar-track"><div class="bar-fill" style="width:5.8%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.116</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">H_S10</span>
@@ -339,14 +558,39 @@
           <span class="bar-value">0.130</span>
         </div>
 <div class="bar-row">
+          <span class="bar-label">H_S1</span>
+          <div class="bar-track"><div class="bar-fill" style="width:7.0%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.139</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">H_S24</span>
+          <div class="bar-track"><div class="bar-fill" style="width:8.4%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.168</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">MDD_S11_</span>
           <div class="bar-track"><div class="bar-fill" style="width:10.3%;background:var(--series-mdd)"></div></div>
           <span class="bar-value">0.207</span>
         </div>
 <div class="bar-row">
+          <span class="bar-label">MDD_S23</span>
+          <div class="bar-track"><div class="bar-fill" style="width:10.7%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.215</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">H_S14</span>
           <div class="bar-track"><div class="bar-fill" style="width:11.4%;background:var(--series-h)"></div></div>
           <span class="bar-value">0.227</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">H_S21</span>
+          <div class="bar-track"><div class="bar-fill" style="width:11.8%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.236</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">MDD_S1</span>
+          <div class="bar-track"><div class="bar-fill" style="width:14.6%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.293</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">H_S15</span>
@@ -359,6 +603,16 @@
           <span class="bar-value">0.403</span>
         </div>
 <div class="bar-row">
+          <span class="bar-label">MDD_S22</span>
+          <div class="bar-track"><div class="bar-fill" style="width:21.4%;background:var(--series-mdd)"></div></div>
+          <span class="bar-value">0.427</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">H_S19</span>
+          <div class="bar-track"><div class="bar-fill" style="width:34.6%;background:var(--series-h)"></div></div>
+          <span class="bar-value">0.691</span>
+        </div>
+<div class="bar-row">
           <span class="bar-label">MDD_S14</span>
           <div class="bar-track"><div class="bar-fill" style="width:36.2%;background:var(--series-mdd)"></div></div>
           <span class="bar-value">0.725</span>
@@ -367,6 +621,11 @@
           <span class="bar-label">H_S13</span>
           <div class="bar-track"><div class="bar-fill" style="width:48.2%;background:var(--series-h)"></div></div>
           <span class="bar-value">0.964</span>
+        </div>
+<div class="bar-row">
+          <span class="bar-label">H_S23</span>
+          <div class="bar-track"><div class="bar-fill" style="width:66.4%;background:var(--series-h)"></div></div>
+          <span class="bar-value">1.328</span>
         </div></div>
         </div>
     <div class="legend">
@@ -384,97 +643,97 @@
           <h3>ds003478</h3>
           <div class="card"><div class="bar-row">
           <span class="bar-label">raw</span>
-          <div class="bar-track"><div class="bar-fill" style="width:22.2%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:44.0%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.22</span>
+          <span class="bar-value">0.44 [0.21,0.66]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">ICA</span>
-          <div class="bar-track"><div class="bar-fill" style="width:22.2%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:41.3%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.22</span>
+          <span class="bar-value">0.41 [0.19,0.64]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">generic reject</span>
-          <div class="bar-track"><div class="bar-fill" style="width:41.7%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:34.2%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.42</span>
+          <span class="bar-value">0.34 [0.16,0.56]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">AutoReject</span>
-          <div class="bar-track"><div class="bar-fill" style="width:25.0%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:49.8%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.25</span>
+          <span class="bar-value">0.50 [0.29,0.71]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">ours (endpoint-aware)</span>
-          <div class="bar-track"><div class="bar-fill" style="width:22.2%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:46.2%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.22</span>
+          <span class="bar-value">0.46 [0.23,0.68]</span>
         </div></div>
         </div><div class="dataset-block">
           <h3>ds007615</h3>
           <div class="card"><div class="bar-row">
           <span class="bar-label">raw</span>
-          <div class="bar-track"><div class="bar-fill" style="width:36.1%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:47.8%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.36</span>
+          <span class="bar-value">0.48 [0.25,0.70]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">ICA</span>
-          <div class="bar-track"><div class="bar-fill" style="width:33.3%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:31.1%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.33</span>
+          <span class="bar-value">0.31 [0.12,0.53]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">generic reject</span>
-          <div class="bar-track"><div class="bar-fill" style="width:30.6%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:48.3%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.31</span>
+          <span class="bar-value">0.48 [0.26,0.71]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">AutoReject</span>
-          <div class="bar-track"><div class="bar-fill" style="width:38.9%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:49.4%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.39</span>
+          <span class="bar-value">0.49 [0.26,0.71]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">ours (endpoint-aware)</span>
-          <div class="bar-track"><div class="bar-fill" style="width:36.1%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:47.8%;background:var(--good)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.36</span>
+          <span class="bar-value">0.48 [0.25,0.70]</span>
         </div></div>
         </div><div class="dataset-block">
           <h3>Mumtaz/HUSM</h3>
           <div class="card"><div class="bar-row">
           <span class="bar-label">raw</span>
-          <div class="bar-track"><div class="bar-fill" style="width:30.6%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:57.8%;background:var(--warning)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.31</span>
+          <span class="bar-value">0.58 [0.34,0.79]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">ICA</span>
-          <div class="bar-track"><div class="bar-fill" style="width:30.6%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:55.1%;background:var(--warning)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.31</span>
+          <span class="bar-value">0.55 [0.32,0.77]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">generic reject</span>
-          <div class="bar-track"><div class="bar-fill" style="width:38.9%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:56.0%;background:var(--warning)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.39</span>
+          <span class="bar-value">0.56 [0.32,0.78]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">AutoReject</span>
-          <div class="bar-track"><div class="bar-fill" style="width:38.9%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:50.7%;background:var(--warning)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.39</span>
+          <span class="bar-value">0.51 [0.29,0.73]</span>
         </div>
 <div class="bar-row">
           <span class="bar-label">ours (endpoint-aware)</span>
-          <div class="bar-track"><div class="bar-fill" style="width:38.9%;background:var(--good)"></div>
+          <div class="bar-track"><div class="bar-fill" style="width:57.3%;background:var(--warning)"></div>
             <div class="bar-chance-line"></div></div>
-          <span class="bar-value">0.39</span>
+          <span class="bar-value">0.57 [0.33,0.79]</span>
         </div></div>
         </div>
   </section>
@@ -485,91 +744,191 @@
     <div class="dataset-block">
       <h3>ds003478 <span class="dataset-sub">(real BDI severity · Univ. of Arizona, n=119)</span></h3>
       <div class="verdict-row"><div class="verdict-card">
-      <div class="test-name">B.1</div>
-      <div class="ask">quality ~ group + severity</div>
-      <div class="metric">p = 0.755</div>
+      <div class="test-name">B.1 (frontal)</div>
+      <div class="ask">quality ~ group + severity (Holm-corrected)</div>
+      <div class="metric">p = 1.000</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div><div class="verdict-card">
-      <div class="test-name">Confound check</div>
-      <div class="ask">FAA ~ group + quality</div>
-      <div class="metric">p = 0.082</div>
+      <div class="test-name">Confound check (frontal)</div>
+      <div class="ask">does quality predict FAA? (Holm-corrected)</div>
+      <div class="metric">p = 0.628</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div><div class="verdict-card">
-      <div class="test-name">B.2 — the sharp one</div>
-      <div class="ask">quality alone → group (5-fold CV)</div>
-      <div class="metric">AUC = 0.483</div>
+      <div class="test-name">Group → FAA (frontal)</div>
+      <div class="ask">does group predict FAA, controlling for quality?</div>
+      <div class="metric">p = 1.000</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div><div class="verdict-card">
+      <div class="test-name">B.2 (frontal)</div>
+      <div class="ask">quality alone → group (5-fold CV, 95% CI)</div>
+      <div class="metric">AUC = 0.53 [0.42, 0.64]</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div></div>
+      <div class="verdict-row" style="margin-top:10px"><div class="verdict-card">
+      <div class="test-name">B.1 (whole-scalp)</div>
+      <div class="ask">quality ~ group + severity (Holm-corrected)</div>
+      <div class="metric">p = 0.719</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div><div class="verdict-card">
+      <div class="test-name">Confound check (whole-scalp)</div>
+      <div class="ask">does quality predict FAA? (Holm-corrected)</div>
+      <div class="metric">p = 0.719</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div><div class="verdict-card">
+      <div class="test-name">Group → FAA (whole-scalp)</div>
+      <div class="ask">does group predict FAA, controlling for quality?</div>
+      <div class="metric">p = 0.824</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div><div class="verdict-card">
+      <div class="test-name">B.2 (whole-scalp)</div>
+      <div class="ask">quality alone → group (5-fold CV, 95% CI)</div>
+      <div class="metric">AUC = 0.59 [0.47, 0.70]</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div></div>
     </div><div class="dataset-block">
       <h3>ds007615 <span class="dataset-sub">(real BDI-II severity · Univ. of Oslo, n=49)</span></h3>
       <div class="verdict-row"><div class="verdict-card">
-      <div class="test-name">B.1</div>
-      <div class="ask">quality ~ group + severity</div>
+      <div class="test-name">B.1 (frontal)</div>
+      <div class="ask">quality ~ group + severity (Holm-corrected)</div>
       <div class="metric">p = 0.713</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div><div class="verdict-card">
-      <div class="test-name">Confound check</div>
-      <div class="ask">FAA ~ group + quality</div>
-      <div class="metric">p = 0.257</div>
+      <div class="test-name">Confound check (frontal)</div>
+      <div class="ask">does quality predict FAA? (Holm-corrected)</div>
+      <div class="metric">p = 0.071</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div><div class="verdict-card">
-      <div class="test-name">B.2 — the sharp one</div>
-      <div class="ask">quality alone → group (5-fold CV)</div>
-      <div class="metric">AUC = 0.374</div>
+      <div class="test-name">Group → FAA (frontal)</div>
+      <div class="ask">does group predict FAA, controlling for quality?</div>
+      <div class="metric">p = 0.042</div>
+      <span class="badge good"><span class="dot"></span>significant</span>
+    </div><div class="verdict-card">
+      <div class="test-name">B.2 (frontal)</div>
+      <div class="ask">quality alone → group (5-fold CV, 95% CI)</div>
+      <div class="metric">AUC = 0.36 [0.19, 0.54]</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div></div>
+      <div class="verdict-row" style="margin-top:10px"><div class="verdict-card">
+      <div class="test-name">B.1 (whole-scalp)</div>
+      <div class="ask">quality ~ group + severity (Holm-corrected)</div>
+      <div class="metric">p = 0.719</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div><div class="verdict-card">
+      <div class="test-name">Confound check (whole-scalp)</div>
+      <div class="ask">does quality predict FAA? (Holm-corrected)</div>
+      <div class="metric">p = 0.087</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div><div class="verdict-card">
+      <div class="test-name">Group → FAA (whole-scalp)</div>
+      <div class="ask">does group predict FAA, controlling for quality?</div>
+      <div class="metric">p = 0.057</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div><div class="verdict-card">
+      <div class="test-name">B.2 (whole-scalp)</div>
+      <div class="ask">quality alone → group (5-fold CV, 95% CI)</div>
+      <div class="metric">AUC = 0.37 [0.21, 0.55]</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div></div>
     </div><div class="dataset-block">
       <h3>Mumtaz/HUSM <span class="dataset-sub">(replication check · no severity, n=58)</span></h3>
       <div class="verdict-row"><div class="verdict-card">
-      <div class="test-name">B.1</div>
+      <div class="test-name">B.1 (frontal)</div>
       <div class="ask">quality ~ group + severity</div>
       <div class="metric">skipped — no severity data</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div><div class="verdict-card">
-      <div class="test-name">Confound check</div>
-      <div class="ask">FAA ~ group + quality</div>
-      <div class="metric">p = 0.998</div>
+      <div class="test-name">Confound check (frontal)</div>
+      <div class="ask">does quality predict FAA? (Holm-corrected)</div>
+      <div class="metric">p = 0.457</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
     </div><div class="verdict-card">
-      <div class="test-name">B.2 — the sharp one</div>
-      <div class="ask">quality alone → group (5-fold CV)</div>
-      <div class="metric">AUC = 0.313</div>
+      <div class="test-name">Group → FAA (frontal)</div>
+      <div class="ask">does group predict FAA, controlling for quality?</div>
+      <div class="metric">p = 0.457</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div><div class="verdict-card">
+      <div class="test-name">B.2 (frontal)</div>
+      <div class="ask">quality alone → group (5-fold CV, 95% CI)</div>
+      <div class="metric">AUC = 0.63 [0.48, 0.78]</div>
       <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div></div>
+      <div class="verdict-row" style="margin-top:10px"><div class="verdict-card">
+      <div class="test-name">B.1 (whole-scalp)</div>
+      <div class="ask">quality ~ group + severity</div>
+      <div class="metric">skipped — no severity data</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div><div class="verdict-card">
+      <div class="test-name">Confound check (whole-scalp)</div>
+      <div class="ask">does quality predict FAA? (Holm-corrected)</div>
+      <div class="metric">p = 0.880</div>
+      <span class="badge good"><span class="dot"></span>no red flag</span>
+    </div><div class="verdict-card">
+      <div class="test-name">Group → FAA (whole-scalp)</div>
+      <div class="ask">does group predict FAA, controlling for quality?</div>
+      <div class="metric">p = 0.670</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div><div class="verdict-card">
+      <div class="test-name">B.2 (whole-scalp)</div>
+      <div class="ask">quality alone → group (5-fold CV, 95% CI)</div>
+      <div class="metric">AUC = 0.68 [0.52, 0.82]</div>
+      <span class="badge warn"><span class="dot"></span>flagged</span>
     </div></div>
     </div>
   </section>
 
   <section id="finding">
     <h2><span class="num">06</span>The finding</h2>
-    <p class="dek" style="max-width:100%">On all three datasets, independently, under the current
-    placeholder weights, none of the contamination red flags fired: group/severity doesn't predict
-    contamination (B.1), and contamination alone can't tell healthy from depressed above chance
-    (B.2). That holds up consistently — no evidence here that this endpoint-aware contamination
-    score explains the FAA–group relationship.</p>
-    <p class="dek" style="max-width:100%">On top of that, ds007615 — the dataset with the most
-    statistical power to detect FAA itself — shows a real, significant group effect on FAA
-    (p&nbsp;=&nbsp;0.020) that is <strong>not</strong> explained by quality/contamination
-    (p&nbsp;=&nbsp;0.257, no B.2 leakage either). ds003478 and Mumtaz don't reach significance on
-    that same question, which is inconclusive rather than contradictory — consistent with FAA
-    effects being small and these being modest sample sizes. Reported here plainly, not tuned
-    toward drama either way: this is not proof FAA is a reliable marker everywhere, but on the
-    specific question this project asked — is FAA's group difference actually just
-    contamination? — the answer across all three datasets is no.</p>
+    <p class="dek" style="max-width:100%">Across all three datasets, both quality variants, Test B.1
+    (does group/severity predict contamination) never came back significant — no evidence that
+    diagnosis or symptom severity is itself tied to how contaminated a recording is.</p>
+    <p class="dek" style="max-width:100%">On top of that, ds007615 (p=0.014 raw, p=0.042 Holm-corrected) — the frontal-specific group effect on FAA survives
+        Holm-Bonferroni correction, independent of frontal quality (no B.2 leakage on that variant). The other
+        dataset(s) don't reach significance on that same question, which is inconclusive rather than
+        contradictory — consistent with FAA effects being small and modest sample sizes. Reported here
+        plainly, not tuned toward drama either way.</p>
+    <p class="dek" style="max-width:100%"><strong>One red flag did fire</strong>:
+        Mumtaz/HUSM (whole-scalp) crossed the B.2 leakage threshold (AUC &gt; 0.65) — quality alone showed some
+        ability to predict group there. Reported here rather than smoothed over; see that dataset's B.2
+        card above for the exact AUC and confidence interval.</p>
+  </section>
+
+  <section id="changelog">
+    <h2><span class="num">07</span>v1 → v2: what changed</h2>
+    <p class="dek">Per the "Neureidos Phase 1 Methodology Upgrade" implementation guide
+    (2026-08-22), applied and re-run 2026-08-24. v1 (placeholder-weight, pre-fix) results are
+    archived, not overwritten in place.</p>
+    <ul class="caveats">
+      <li><strong>EMG/alpha band widened</strong> (20,45)&nbsp;→&nbsp;(8,45)&nbsp;Hz per Goncharova
+      et al. (2003) — Peter-approved. Was zero overlap with alpha, so detected EMG contributed
+      nothing to alpha-endpoint quality no matter how severe.</li>
+      <li><strong>Per-dataset mains frequency</strong>: ds003478 notch-filtered at 60&nbsp;Hz
+      (confirmed via its own metadata: University of Arizona, US mains), not the 50&nbsp;Hz every
+      dataset got before this fix.</li>
+      <li><strong><code>quality_alpha_frontal_pct</code></strong> (F3/F4/Fp1/Fp2 only) is now the
+      primary Study B variable — the hypothesis is about frontal contamination specifically, not a
+      whole-scalp average diluted by 15+ unrelated channels. Whole-scalp is still reported
+      alongside every result above, not replaced.</li>
+      <li><strong>Bootstrap 95% CIs</strong> on every AUC and <strong>Holm-Bonferroni correction</strong>
+      on the p-values feeding each finding.</li>
+      <li><strong>Test A scaled up and parallelized</strong> — up to 30 recordings per dataset
+      (15/group where available), up from 12, via joblib.</li>
+      <li><strong>Not done</strong>, on purpose: widening the EMG severity-detector's own 20-45&nbsp;Hz
+      window (separate Peter conversation), real <code>WEIGHT</code> values or the quality-decay
+      function (no numbers supplied yet), an EMG spectral-signature specificity check, and a
+      Stewart et al. (2011) 70-90&nbsp;Hz proxy-band comparison arm.</li>
+    </ul>
   </section>
 
   <section id="caveats">
-    <h2><span class="num">07</span>Caveats — read before citing any of this</h2>
+    <h2><span class="num">08</span>Caveats — read before citing any of this</h2>
     <ul class="caveats">
-      <li><strong>The weights are placeholders.</strong> <code>WEIGHT[artifact.type]</code> is equal
-      weighting (1.0 across the board) pending the real physics-derived values. Every number above is
-      contingent on this.</li>
-      <li><strong>EMG/alpha overlap is currently zero.</strong> The muscle-artifact band (20–45&nbsp;Hz)
-      doesn't overlap alpha (8–13&nbsp;Hz) under the current placeholder band assignment — in tension
-      with the hypothesis that muscle noise sits at the same frequency as alpha. If real EMG
-      contamination extends into alpha, the alpha-quality numbers above likely <em>underestimate</em>
-      contamination there. Needs domain sign-off, not a unilateral widening to make the hypothesis land.</li>
-      <li><strong>Test A and the 5 classifiers ran on 12 recordings per dataset</strong>, bounded by
-      ICA/AutoReject runtime — suggestive, not a large-N result.</li>
+      <li><strong>The per-type weights are still placeholders.</strong> <code>WEIGHT[artifact.type]</code>
+      is equal weighting (1.0 across the board) pending the real physics-derived values — only the EMG
+      *band definition* (which frequencies count as EMG) has real domain sign-off so far, not how much
+      each artifact type should count relative to the others, nor the quality-decay function.</li>
+      <li><strong>Test A and the 5 classifiers ran on up to 30 recordings per dataset</strong>
+      (15/group where available), bounded by ICA/AutoReject runtime even parallelized — larger than
+      v1's 12, still suggestive rather than a full-N result.</li>
       <li><strong>Mumtaz/HUSM has no per-subject severity</strong> in its public deposit — Test B.1 ran
       on ds003478 and ds007615 (two independent cohorts), not Mumtaz; Mumtaz's contribution is Test A
       and B.2/confound-check as a replication.</li>
@@ -577,9 +936,8 @@
       for consistency — chosen to match ds003478's own published groups, not independently re-derived
       per dataset.</li>
       <li><strong>Small samples, small expected effects.</strong> FAA effects are known to be small in
-      the literature — ds007615's significant group effect is the only one of three datasets to reach
-      p&lt;0.05 here; a null result on the other two is informative but not proof of absence, and a
-      significant result on one is not yet a replicated one.</li>
+      the literature. A significant result on one dataset (see above) is not yet a replicated one, and
+      a null result on the others is informative but not proof of absence.</li>
       <li><strong>Offline only.</strong> This is Phase 1 — entirely offline analysis of already-recorded
       public data. A causal/streaming version (deciding using only samples already seen) is a later,
       optional stretch, not part of this finding.</li>

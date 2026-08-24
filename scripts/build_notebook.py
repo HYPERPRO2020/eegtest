@@ -233,8 +233,8 @@ for name in DATASETS:
         if "error" in r:
             print(f"  {pipeline_name:12s} SKIPPED -- {r['error']}")
             continue
-        print(f"  {pipeline_name:12s} accuracy={r['accuracy']:.2f}  AUC={r['auc']:.2f}  "
-              f"(baseline {r['baseline']:.2f}, n={r['n']})")
+        print(f"  {pipeline_name:12s} accuracy={r['accuracy']:.2f}  AUC={r['auc']:.2f} "
+              f"[{r['auc_ci_lo']:.2f}, {r['auc_ci_hi']:.2f}]  (baseline {r['baseline']:.2f}, n={r['n']})")
         clf_rows.append({"dataset": name, "pipeline": pipeline_name, **r})
     print()
 clf_df = pd.DataFrame(clf_rows)
@@ -259,7 +259,10 @@ plt.show()""")
 
 md(r"""## 5. Test B — is contamination itself tied to diagnosis?
 
-Three analyses (`study_b.run_study_b`):
+Three analyses (`study_b.run_study_b`), each run twice per dataset: on `quality_alpha_frontal_pct`
+(F3/F4/Fp1/Fp2 only — **primary**, the direct test of the frontal-muscle-contamination hypothesis)
+and on `quality_alpha_pct` (whole-scalp mean — **secondary**, reported alongside so the channel
+subset isn't picked after seeing which one looks better).
 
 1. **B.1** `quality ~ group + severity` — clinical severity (BDI here), not an EEG-derived
    quantity (using the latter would make this circular — quality is itself computed from
@@ -267,28 +270,40 @@ Three analyses (`study_b.run_study_b`):
    with no severity data.
 2. **B (confound check)** `FAA ~ group + quality` — does data quality confound the very
    FAA-group relationship FAA gets computed for?
-3. **B.2** quality-alone → group classifier (5-fold stratified CV, seeded). Red flag: AUC
-   meaningfully above chance means contamination alone leaks diagnosis.""")
+3. **B.2** quality-alone → group classifier (5-fold stratified CV, seeded), with a bootstrap
+   95% CI on the AUC. Red flag: AUC meaningfully above chance means contamination alone leaks
+   diagnosis.
+
+All p-values feeding the `finding` text are **Holm-Bonferroni corrected** across each variant's
+own family (group coefficient, quality coefficient, severity coefficient) before the
+significance check — a raw, uncorrected p<0.05 across three-ish tests understates how easy that
+threshold is to hit by chance alone.""")
 
 code(r"""study_b = {}
 for name in DATASETS:
     results = json.loads((DATASETS[name]["out_dir"] / "results.json").read_text())
     b = results["study_b"]
     study_b[name] = b
-    print(f"=== {DATASETS[name]['label']} (n={b['n']}, n_with_severity={b['n_with_severity']}) ===")
-    r1 = b["regression_1_quality_on_group_severity"]
-    if r1 is None:
-        print(f"  B.1: SKIPPED -- {b['regression_1_skipped_reason']}")
-    else:
-        print(f"  B.1 quality~group+severity: group p={r1['pvalues']['group_mdd']:.4f}  "
-              f"severity p={r1['pvalues']['clinical_severity']:.4f}  R2={r1['rsquared']:.3f}  n={r1['nobs']}")
-    r2 = b["regression_2_faa_on_group_quality"]
-    print(f"  FAA~group+quality: group p={r2['pvalues']['group_mdd']:.4f}  "
-          f"quality p={r2['pvalues']['quality_alpha_pct']:.4f}  R2={r2['rsquared']:.3f}  n={r2['nobs']}")
-    r3 = b["regression_3_quality_classifies_group"]
-    print(f"  B.2 quality-only classifier: AUC={r3['auc']:.3f}  "
-          f"(baseline {r3['majority_class_baseline']:.3f})  leakage_flag={r3['leakage_flag']}")
-    print(f"  FINDING: {b['finding']}")
+    print(f"=== {DATASETS[name]['label']} ===")
+    for variant_key, variant_label in [("frontal", "FRONTAL (primary)"), ("whole_scalp", "whole-scalp (secondary)")]:
+        v = b[variant_key]
+        print(f"  --- {variant_label}: n={v['n']}, n_with_severity={v['n_with_severity']} ---")
+        qcol = results["study_b"]["quality_variant_primary"] if variant_key == "frontal" else results["study_b"]["quality_variant_secondary"]
+        r1 = v["regression_1_quality_on_group_severity"]
+        if r1 is None:
+            print(f"    B.1: SKIPPED -- {v['regression_1_skipped_reason']}")
+        else:
+            print(f"    B.1 quality~group+severity: group p={r1['pvalues']['group_mdd']:.4f}  "
+                  f"severity p={r1['pvalues']['clinical_severity']:.4f}  R2={r1['rsquared']:.3f}  n={r1['nobs']}")
+        r2 = v["regression_2_faa_on_group_quality"]
+        print(f"    FAA~group+quality: group p={r2['pvalues']['group_mdd']:.4f}  "
+              f"quality p={r2['pvalues'][qcol]:.4f}  R2={r2['rsquared']:.3f}  n={r2['nobs']}")
+        print(f"    Holm-corrected: {v['holm_corrected_pvalues']}")
+        r3 = v["regression_3_quality_classifies_group"]
+        print(f"    B.2 quality-only classifier: AUC={r3['auc']:.3f} "
+              f"(95% CI [{r3['auc_ci_lo']:.2f}, {r3['auc_ci_hi']:.2f}], baseline {r3['majority_class_baseline']:.3f})  "
+              f"leakage_flag={r3['leakage_flag']}")
+    print(f"  FINDING (frontal-based): {b['finding']}")
     print()""")
 
 md(r"""## 6. Results table""")
@@ -296,56 +311,87 @@ md(r"""## 6. Results table""")
 code(r"""rows = []
 for name in DATASETS:
     b = study_b[name]
+    frontal, whole_scalp = b["frontal"], b["whole_scalp"]
     wide = study_a_wide[name]
-    r1 = b["regression_1_quality_on_group_severity"]
-    r2 = b["regression_2_faa_on_group_quality"]
-    r3 = b["regression_3_quality_classifies_group"]
     rows.append({"dataset": name, "test": "A -- pipeline sensitivity",
-                  "metric": "median FAA range across 10 combos", "value": round(float(wide.faa_range.median()), 3),
+                  "metric": f"median FAA range, {len(wide)} recordings", "value": round(float(wide.faa_range.median()), 3),
                   "red_flag_if": "large swing"})
-    rows.append({"dataset": name, "test": "B.1 -- quality~group+severity",
-                  "metric": "group coefficient p-value",
-                  "value": (round(float(r1["pvalues"]["group_mdd"]), 4) if r1 else None),
-                  "red_flag_if": "p<0.05 (group predicts contamination)" if r1 else b["regression_1_skipped_reason"]})
-    rows.append({"dataset": name, "test": "B confound -- FAA~group+quality",
-                  "metric": "quality coefficient p-value", "value": round(float(r2["pvalues"]["quality_alpha_pct"]), 4),
-                  "red_flag_if": "p<0.05 (quality confounds FAA-group)"})
-    rows.append({"dataset": name, "test": "B.2 -- quality-alone classifier",
-                  "metric": "AUC (5-fold CV)", "value": round(float(r3["auc"]), 3),
-                  "red_flag_if": "> ~0.65 (noise alone predicts diagnosis)"})
+    for variant_name, v in [("frontal", frontal), ("whole-scalp", whole_scalp)]:
+        r1 = v["regression_1_quality_on_group_severity"]
+        r2 = v["regression_2_faa_on_group_quality"]
+        r3 = v["regression_3_quality_classifies_group"]
+        rows.append({"dataset": name, "test": f"B.1 ({variant_name}) -- quality~group+severity",
+                      "metric": "group coefficient p-value (Holm-corrected)",
+                      "value": (round(v["holm_corrected_pvalues"].get("group_mdd", float("nan")), 4) if r1 else None),
+                      "red_flag_if": "p<0.05 (group predicts contamination)" if r1 else v["regression_1_skipped_reason"]})
+        rows.append({"dataset": name, "test": f"B confound ({variant_name}) -- FAA~group+quality",
+                      "metric": "group coefficient p-value (Holm-corrected)",
+                      "value": round(v["holm_corrected_pvalues"]["group_mdd"], 4),
+                      "red_flag_if": "p>=0.05 here alongside a real B.2 leak would undercut the group-FAA link"})
+        rows.append({"dataset": name, "test": f"B.2 ({variant_name}) -- quality-alone classifier",
+                      "metric": "AUC (5-fold CV, 95% bootstrap CI)",
+                      "value": f"{r3['auc']:.3f} [{r3['auc_ci_lo']:.2f}, {r3['auc_ci_hi']:.2f}]",
+                      "red_flag_if": "> ~0.65 (noise alone predicts diagnosis)"})
 results_table = pd.DataFrame(rows)
 results_table.to_csv(REPO_ROOT / "outputs" / "phase1_results_table.csv", index=False)
 display(results_table)""")
 
-md(r"""## 7. Caveats — read before citing any of the above
+md(r"""## 7. v1 -> v2: what changed and why
 
-- **`WEIGHT` is an equal-weighting placeholder**, not Peter's derived physics-based values. Every
-  number above is contingent on this; swap `bands.WEIGHT` for the real values and re-run once they
-  exist — a one-line change, not a redesign.
-- **EMG/alpha overlap is currently zero** (Part 2) — if real muscle artifact does extend into
-  alpha, as the brief's own hypothesis claims, the alpha-quality numbers above likely
-  *underestimate* contamination there. Needs Peter's sign-off on `ARTIFACT_BANDS["emg"]`.
-- **Test A ran on a bounded subsample** (12 of each dataset's recordings) for runtime reasons
-  (ICA + AutoReject are slow per recording) — suggestive, not a large-N result. Raise
-  `pipeline.STUDY_A_N_PER_GROUP` to widen it.
-- **Mumtaz/HUSM has no per-subject severity** in its public deposit — Test B.1 ran on ds003478
+Per the "Neureidos Phase 1 Methodology Upgrade" implementation guide (2026-08-22), applied and
+re-run 2026-08-24. v1 (placeholder-weight, pre-fix) results are archived at
+`outputs_v1_placeholder_weights/`, not overwritten in place:
+
+- **`ARTIFACT_BANDS["emg"]` widened (20,45) → (8,45) Hz** per Goncharova et al. (2003) --
+  Peter-approved. Was zero overlap with alpha, so detected EMG contributed nothing to the
+  alpha-endpoint quality score no matter how severe.
+- **Per-dataset mains frequency**: ds003478 notch-filtered at 60 Hz (confirmed via its own
+  `eeg.json`: `PowerLineFrequency: 60`, Univ. of Arizona), not the 50 Hz every dataset got before
+  this fix -- `detect_line_noise()` was checking the wrong frequency entirely for ds003478.
+- **`quality_alpha_frontal_pct`** (F3/F4/Fp1/Fp2 only) is now the primary Study B variable --
+  the actual hypothesis is about frontal contamination, not a whole-scalp average diluted by
+  15+ unrelated channels.
+- **Bootstrap 95% CIs** on every AUC (Study B.2 and the 5 per-pipeline classifiers) and
+  **Holm-Bonferroni correction** on the p-values feeding `finding`.
+- **Study A scaled from 12 to up to 30 recordings** (15/group where available) and
+  **parallelized** (joblib) -- was the real bottleneck on going past 12.
+
+**Not done**, on purpose: widening `detect_emg`'s own 20-45 Hz severity-measurement window
+(separate Peter conversation), setting real `WEIGHT` values or the quality-decay function (no
+actual numbers supplied yet), an EMG spectral-signature specificity check, resolving whether
+Mumtaz/HUSM's original paper reports severity not in the public deposit (checked; not found in
+searchable sources), and a Stewart et al. (2011) 70-90 Hz proxy-band comparison arm. All flagged,
+none silently dropped.""")
+
+md(r"""## 8. Caveats — read before citing any of the above
+
+- **`WEIGHT` is still an equal-weighting placeholder**, not Peter's derived physics-based values
+  -- only `ARTIFACT_BANDS["emg"]` (the band definition) has real domain sign-off so far, not the
+  per-type weights or the quality-decay function. Every number above is contingent on this.
+- **Test A ran on a bounded subsample** (up to 30 of each dataset's recordings, 15/group where
+  available) for runtime reasons (ICA + AutoReject are slow per recording, even parallelized) --
+  larger than v1's 12, still suggestive rather than a full-N result.
+- **Mumtaz/HUSM has no per-subject severity** in its public deposit -- Test B.1 ran on ds003478
   and ds007615 (two independent cohorts), not Mumtaz. Mumtaz's contribution here is Test A and
   B.2/B confound-check as a replication check, not a full run of all three Study B analyses.
+- **ds003478 and ds007615 use the same BDI(>13)/BDI(<7) group thresholds** for consistency --
+  chosen to match ds003478's own published groups, not independently re-derived per dataset.
 - **ds003478's own README notes some channels were already interpolated** in a subset of files
-  before this public release ("There are no raw data to revert to instead") — `manifest.py`'s
+  before this public release ("There are no raw data to revert to instead") -- `manifest.py`'s
   "still looks raw" check is a heuristic and can't detect this from the file header alone; flagged
   here as a caveat on ds003478's "raw, not pre-cleaned" status, not something this pipeline can
   verify or fix.
-- **Statistical power**: FAA effects are known to be small in the literature; a null result on
-  B.1/B confound/B.2 is informative but not proof of absence, and is reported here rather than
-  hidden either way, per the brief's own instruction.
-- **The 5 per-pipeline classifiers (Part 4b) run on n=12** (Test A's bounded subsample) — every
-  AUC came back at or below chance across all three datasets, including ds007615 despite its
-  significant group-level effect on FAA (Part 5) — a classifier needs more than a mean
-  difference to beat chance at n=12. Too small to rule out a real small effect either way. Raise
-  `pipeline.STUDY_A_N_PER_GROUP` and re-run if this needs to be more than indicative.
+- **Statistical power**: FAA effects are known to be small in the literature. ds007615's
+  Holm-corrected group effect (Part 5) is the one significant result across three datasets and
+  two quality variants each -- real and independently corroborated by the whole-scalp variant,
+  but not yet replicated by ds003478 or Mumtaz, and a single significant result among several
+  tests is not the same thing as a confirmed effect.
+- **The 5 per-pipeline classifiers (Part 4b)** stayed at/below chance in every dataset, including
+  ds007615 despite its significant group-level regression result -- a single-feature classifier
+  needs more than a mean group difference to beat chance at this sample size; the CI on each AUC
+  makes that uncertainty explicit rather than implying false precision.
 - **Causal/streaming version** (feeding the quality index a recording sample-by-sample, no
-  look-ahead) is explicitly a later, optional stretch per the brief — not required for this
+  look-ahead) is explicitly a later, optional stretch per the brief -- not required for this
   notebook's finding, and not implemented here.""")
 
 nb["cells"] = cells
