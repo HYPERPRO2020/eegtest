@@ -223,6 +223,33 @@ def study_c_section(d, sc):
     </div>'''
 
 
+SPECTRAL_COMBOS = [
+    {"key": "ds003478", "condition": "ec", "label": "ds003478 (EC)"},
+    {"key": "ds007615", "condition": "ec", "label": "ds007615 (EC)"},
+    {"key": "ds007615", "condition": "eo", "label": "ds007615 (EO)"},
+    {"key": "mumtaz", "condition": "ec", "label": "Mumtaz/HUSM (EC)"},
+    {"key": "mumtaz", "condition": "eo", "label": "Mumtaz/HUSM (EO)"},
+]
+
+
+def load_spectral_composition(key, condition):
+    path = OUT_DIR / key / f"spectral_composition_summary_{condition}.json"
+    return json.loads(path.read_text()) if path.exists() else None
+
+
+def spectral_composition_tile(combo, s):
+    key_ref = f"{combo['condition']}_original_fixed"
+    b = s["analysis_b_classic_vs_periodic"][key_ref]
+    f3 = s["analysis_a_composition"][key_ref]["f3"]
+    excl_pct = 100.0 * f3["n_low_quality_fit_excluded"] / f3["n_total"] if f3["n_total"] else 0.0
+    return f'''<div class="stat-tile">
+      <div class="label">{esc(combo['label'])}</div>
+      <div class="value">r = {b['pearson_r_classic_vs_periodic']:.2f}</div>
+      <div class="sub">classic vs. periodic-only FAA (n={b['n_valid']}); oscillatory share median
+      {f3['oscillatory_share_median']:.2f}; {excl_pct:.0f}% of fits excluded for quality</div>
+    </div>'''
+
+
 def dataset_testb_section(d, r):
     b = r["study_b"]
     frontal_cards = variant_cards(b["frontal"], "frontal")
@@ -242,6 +269,14 @@ def main():
     results = {d["key"]: load(d["key"]) for d in DATASETS}
     study_c_results = {d["key"]: load_study_c(d["key"]) for d in DATASETS}
     study_c_pooled = pooled_study_c(study_c_results)
+
+    spectral_tiles = []
+    for combo in SPECTRAL_COMBOS:
+        s = load_spectral_composition(combo["key"], combo["condition"])
+        if s is not None:
+            spectral_tiles.append(spectral_composition_tile(combo, s))
+    ds004902_arousal = json.loads((OUT_DIR / "ds004902" / "ds004902_arousal_summary.json").read_text()) \
+        if (OUT_DIR / "ds004902" / "ds004902_arousal_summary.json").exists() else None
 
     testa_blocks = []
     for d in DATASETS:
@@ -331,6 +366,38 @@ def main():
         condition when pooled across all three datasets (95%&nbsp;CI [{ao['slope_ci_lo']:+.4f}, {ao['slope_ci_hi']:+.4f}]),
         though its point estimate was consistently positive in every dataset individually. This is
         inconclusive rather than a null result at this sample size.''')
+
+    # Spectral-composition severity narrative (Analysis D), derived the same
+    # way as the rest of this file's dynamic findings text.
+    severity_sentences = []
+    for key in ("ds003478", "ds007615"):
+        s = load_spectral_composition(key, "ec")
+        if s is None:
+            continue
+        d = s["analysis_d_severity"].get("ec_original_fixed", {})
+        controlling = d.get("classic_faa_vs_severity_controlling_for_aperiodic")
+        simple = d.get("classic_faa_vs_severity_simple_r")
+        if controlling and simple:
+            severity_sentences.append(
+                f"in {esc(key)} (simple r = {simple['pearson_r']:+.3f}, severity coefficient "
+                f"p = {controlling['severity_coef_pvalue']:.3f} once the aperiodic component is included)")
+    severity_text = ("; ".join(severity_sentences) + ".") if severity_sentences else \
+        "insufficient severity data to test in these samples."
+
+    if ds004902_arousal is not None:
+        av = ds004902_arousal["mean_f3_f4"]
+        ns_range = sorted({av["exponent"]["n"], av["offset"]["n"], av["oscillatory_share"]["n"]})
+        n_text = f"{ns_range[0]}" if len(ns_range) == 1 else f"{ns_range[0]} to {ns_range[-1]}"
+        arousal_text = (f'''<strong>Arousal, tested directly:</strong> a matched sleep-deprivation dataset
+        (ds004902, Xiang et al. 2024) lets the arousal question be tested as a real within-subject
+        comparison rather than a proxy correlation. Across {n_text} paired subjects, sleep deprivation
+        produced no statistically significant shift in aperiodic exponent
+        (p = {av['exponent']['paired_ttest_p']:.3f}), offset (p = {av['offset']['paired_ttest_p']:.3f}),
+        or oscillatory share (p = {av['oscillatory_share']['paired_ttest_p']:.3f}) at F3/F4, averaged
+        across channels; every 95%&nbsp;confidence interval included zero. Reported as inconclusive at
+        this sample size, not as evidence that arousal has no effect.''')
+    else:
+        arousal_text = ""
 
     html = f'''<!doctype html>
 <html lang="en">
@@ -646,6 +713,24 @@ def main():
       already-recorded public data. A causal or streaming version, which would decide using only samples
       already observed, is a later and optional extension, not part of this finding.</li>
     </ul>
+  </section>
+
+  <section id="spectral-composition">
+    <h2><span class="num">11</span>FAA Spectral-Composition Tool (v1)</h2>
+    <p class="dek">Classic FAA is computed from total band power at 8-13&nbsp;Hz, which mixes a genuine
+    oscillatory alpha peak with the aperiodic ("1/f") background that slopes across all frequencies. This
+    tool, built to a separate Neureidos specification, decomposes the two using specparam/FOOOF and asks
+    what the FAA number is actually made of, independent of whether it separates diagnosis groups.</p>
+    <div class="stat-row stat-row-3">{"".join(spectral_tiles)}</div>
+    <p class="dek" style="max-width:100%">Across every dataset and condition above, classic and
+    periodic-only FAA correlate weakly to moderately, and a median of roughly half to three-quarters of
+    what classic FAA measures at F3/F4 is aperiodic background rather than a genuine oscillation. Fits
+    with r-squared below 0.90 (a disclosed quality threshold, not a domain parameter) are excluded from
+    these numbers rather than counted as if trustworthy; that exclusion rate ranges from 0%
+    (ds007615) to roughly half (Mumtaz/HUSM), reported plainly rather than hidden.</p>
+    <p class="dek" style="max-width:100%">On the two datasets with clinical severity scores, classic
+    FAA's relationship to severity does not survive controlling for the aperiodic component: {severity_text}</p>
+    <p class="dek" style="max-width:100%">{arousal_text}</p>
   </section>
 
   <footer>

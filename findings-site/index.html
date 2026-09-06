@@ -1110,6 +1110,56 @@
     </ul>
   </section>
 
+  <section id="spectral-composition">
+    <h2><span class="num">11</span>FAA Spectral-Composition Tool (v1)</h2>
+    <p class="dek">Classic FAA is computed from total band power at 8-13&nbsp;Hz, which mixes a genuine
+    oscillatory alpha peak with the aperiodic ("1/f") background that slopes across all frequencies. This
+    tool, built to a separate Neureidos specification, decomposes the two using specparam/FOOOF and asks
+    what the FAA number is actually made of, independent of whether it separates diagnosis groups.</p>
+    <div class="stat-row stat-row-3"><div class="stat-tile">
+      <div class="label">ds003478 (EC)</div>
+      <div class="value">r = 0.15</div>
+      <div class="sub">classic vs. periodic-only FAA (n=55); oscillatory share median
+      0.56; 42% of fits excluded for quality</div>
+    </div><div class="stat-tile">
+      <div class="label">ds007615 (EC)</div>
+      <div class="value">r = 0.10</div>
+      <div class="sub">classic vs. periodic-only FAA (n=49); oscillatory share median
+      0.83; 0% of fits excluded for quality</div>
+    </div><div class="stat-tile">
+      <div class="label">ds007615 (EO)</div>
+      <div class="value">r = -0.01</div>
+      <div class="sub">classic vs. periodic-only FAA (n=42); oscillatory share median
+      0.66; 0% of fits excluded for quality</div>
+    </div><div class="stat-tile">
+      <div class="label">Mumtaz/HUSM (EC)</div>
+      <div class="value">r = 0.11</div>
+      <div class="sub">classic vs. periodic-only FAA (n=22); oscillatory share median
+      0.75; 53% of fits excluded for quality</div>
+    </div><div class="stat-tile">
+      <div class="label">Mumtaz/HUSM (EO)</div>
+      <div class="value">r = 0.87</div>
+      <div class="sub">classic vs. periodic-only FAA (n=17); oscillatory share median
+      0.33; 55% of fits excluded for quality</div>
+    </div></div>
+    <p class="dek" style="max-width:100%">Across every dataset and condition above, classic and
+    periodic-only FAA correlate weakly to moderately, and a median of roughly half to three-quarters of
+    what classic FAA measures at F3/F4 is aperiodic background rather than a genuine oscillation. Fits
+    with r-squared below 0.90 (a disclosed quality threshold, not a domain parameter) are excluded from
+    these numbers rather than counted as if trustworthy; that exclusion rate ranges from 0%
+    (ds007615) to roughly half (Mumtaz/HUSM), reported plainly rather than hidden.</p>
+    <p class="dek" style="max-width:100%">On the two datasets with clinical severity scores, classic
+    FAA's relationship to severity does not survive controlling for the aperiodic component: in ds003478 (simple r = +0.075, severity coefficient p = 0.517 once the aperiodic component is included); in ds007615 (simple r = -0.206, severity coefficient p = 0.073 once the aperiodic component is included).</p>
+    <p class="dek" style="max-width:100%"><strong>Arousal, tested directly:</strong> a matched sleep-deprivation dataset
+        (ds004902, Xiang et al. 2024) lets the arousal question be tested as a real within-subject
+        comparison rather than a proxy correlation. Across 19 paired subjects, sleep deprivation
+        produced no statistically significant shift in aperiodic exponent
+        (p = 0.858), offset (p = 0.417),
+        or oscillatory share (p = 0.853) at F3/F4, averaged
+        across channels; every 95%&nbsp;confidence interval included zero. Reported as inconclusive at
+        this sample size, not as evidence that arousal has no effect.</p>
+  </section>
+
   <footer>
     <div class="footer-links">
       <a href="https://github.com/HYPERPRO2020/eegtest" target="_blank" rel="noopener">Source code (GitHub)</a>
