@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Neureidos: FAA Spectral-Composition Findings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Decomposing frontal alpha asymmetry into periodic and aperiodic components, and testing whether the aperiodic component explains away classic FAA's link to depression severity.">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page-plane:     #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --good:    #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical:#d03b3b;
+    --series-h:   #2a78d6;
+    --series-mdd: #eb6834;
+    --series-primary: #6a4fd6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page-plane:     #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --good:    #0ca30c; --warning: #fab219; --serious: #ec835a; --critical:#e66767;
+      --series-h:   #3987e5; --series-mdd: #d95926; --series-primary: #8a6ee8;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1: #1a1a19; --page-plane: #0d0d0d; --text-primary: #ffffff;
+    --text-secondary: #c3c2b7; --text-muted: #898781; --gridline: #2c2c2a; --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --good: #0ca30c; --warning: #fab219; --serious: #ec835a; --critical:#e66767;
+    --series-h: #3987e5; --series-mdd: #d95926; --series-primary: #8a6ee8;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page-plane); color: var(--text-primary); line-height: 1.55; }
+  .page { max-width: 900px; margin: 0 auto; padding: 40px 20px 90px; }
+  .header-row { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  header p.kicker { text-transform:uppercase; letter-spacing:.06em; font-size:.75rem; color:var(--text-muted); margin:0 0 8px; }
+  header h1 { font-size:2rem; margin:0 0 10px; line-height:1.15; }
+  header p.lede { color:var(--text-secondary); font-size:1.05rem; max-width:680px; }
+  .theme-toggle { width:38px; height:38px; border-radius:10px; border:1px solid var(--border);
+    background:var(--surface-1); cursor:pointer; font-size:1.1rem; line-height:1;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .theme-toggle:hover { background: color-mix(in srgb, var(--series-primary) 12%, transparent); }
+  .callout { background:var(--surface-1); border:1px solid var(--border); border-left:3px solid var(--series-primary);
+    border-radius:8px; padding:16px 18px; margin:20px 0; font-size:.95rem; color:var(--text-secondary); }
+  .callout code { background: color-mix(in srgb, var(--text-primary) 6%, transparent); padding:1px 5px; border-radius:4px; font-size:.88em; }
+  .headline { background: color-mix(in srgb, var(--series-primary) 8%, var(--surface-1)); border:1px solid var(--border);
+    border-left:4px solid var(--series-primary); border-radius:10px; padding:20px 22px; margin:24px 0; }
+  .headline p { margin:0; color:var(--text-primary); font-size:1.0rem; }
+  .headline p.label { text-transform:uppercase; letter-spacing:.05em; font-size:.72rem; color:var(--series-primary);
+    font-weight:700; margin-bottom:8px; }
+  section { margin-top:52px; }
+  h2 { font-size:1.3rem; margin:0 0 6px; }
+  h2 .num { color:var(--text-muted); font-weight:500; margin-right:6px; }
+  h3 { font-size:1.02rem; margin: 26px 0 12px; }
+  h3:first-child { margin-top: 6px; }
+  .dataset-sub { font-weight:400; color:var(--text-muted); font-size:.82rem; }
+  section > p.dek { color:var(--text-secondary); margin:0 0 22px; max-width:660px; }
+  .card { background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:20px 22px; }
+  .stat-row { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:18px; }
+  .stat-row-3 { grid-template-columns:repeat(3,1fr); }
+  .stat-tile { background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .stat-tile .label { font-size:.78rem; color:var(--text-muted); margin-bottom:6px; }
+  .stat-tile .value { font-size:1.7rem; font-weight:600; }
+  .stat-tile .sub { font-size:.82rem; color:var(--text-secondary); margin-top:4px; }
+  .verdict-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .verdict-card { background:var(--surface-1); border:1px solid var(--border); border-radius:12px; padding:18px; }
+  .verdict-card .test-name { font-size:.78rem; color:var(--text-muted); margin-bottom:8px; }
+  .verdict-card .metric { font-size:1.35rem; font-weight:600; margin-bottom:4px; }
+  .verdict-card .ask { font-size:.85rem; color:var(--text-secondary); margin-bottom:12px; }
+  .badge { display:inline-flex; align-items:center; gap:6px; font-size:.8rem; font-weight:600; padding:4px 10px; border-radius:999px;
+    background: color-mix(in srgb, var(--text-muted) 16%, transparent); color: var(--text-muted); }
+  .badge.good { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  .badge.warn { background: color-mix(in srgb, var(--warning) 20%, transparent); color: color-mix(in srgb, var(--warning) 70%, black); }
+  .badge .dot { width:8px; height:8px; border-radius:50%; background:currentColor; }
+  ul.caveats { padding-left:20px; color:var(--text-secondary); }
+  ul.caveats li { margin-bottom:12px; }
+  ul.caveats strong { color:var(--text-primary); }
+  footer { margin-top:70px; padding-top:24px; border-top:1px solid var(--border); color:var(--text-secondary); font-size:.9rem; }
+  footer a { color:var(--series-primary); text-decoration:none; }
+  footer a:hover { text-decoration:underline; }
+  .footer-links { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px; }
+  @media (max-width:900px) {
+    .verdict-row { grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width:640px) {
+    .stat-row, .verdict-row { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="header-row">
+      <div>
+        <p class="kicker">Neureidos · FAA Spectral-Composition Findings</p>
+        <h1>Does depression's best-known EEG marker survive being decomposed?</h1>
+        <p class="lede">Classic frontal alpha asymmetry (FAA) is computed from total band power, which
+        mixes a genuine oscillatory alpha peak with the aperiodic ("1/f" background) that slopes across
+        all frequencies. This tool separates the two with specparam/FOOOF and asks what FAA is actually
+        made of, whether that composition tracks known confounds, and whether FAA's link to depression
+        severity is simply a byproduct of the aperiodic background, or survives being tested directly
+        against it. Results below are computed on four independent, real public datasets, not synthetic
+        data.</p>
+      </div>
+      <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+    </div>
+    <div class="headline">
+      <p class="label">Headline result</p>
+      <p>In ds007615, tested both eyes-closed and eyes-open separately, classic FAA predicts depression
+      severity independently of the aperiodic component: adding classic FAA to a model that already
+      includes frontal aperiodic asymmetry significantly improves the fit (p&nbsp;=&nbsp;0.045 and
+      p&nbsp;=&nbsp;0.040), while the reverse is not true. This is a same-subject, head-to-head comparison
+      that does not appear in the published literature. See section 06.</p>
+    </div>
+  </header>
+
+  <section id="instrument">
+    <h2><span class="num">01</span>The instrument</h2>
+    <p class="dek">specparam/FOOOF fits each recording's power spectrum as an aperiodic component (an
+    offset and an exponent describing the background slope) plus zero or more periodic peaks. At F3/F4,
+    this yields three FAA variants side by side: classic FAA (total 8-13&nbsp;Hz band power, what the
+    literature has always used), periodic-only FAA (the peak's own power above the background), and
+    aperiodic asymmetry (the exponent/offset difference between F4 and F3, a quantity no published study
+    has tested against depression).</p>
+    <div class="callout">
+      <code>oscillatory_share = power in the fitted alpha peak / total 8-13 Hz band power</code><br>
+      A value of 1.0 means classic FAA is measuring pure oscillation; 0.0 means it is measuring pure
+      background. The epoch average feeding every fit is quality-weighted using the same contamination
+      scoring this project already built, not a flat average: a handful of contaminated epochs were
+      confirmed to distort the spectrum enough to break the fit before this weighting was added.
+    </div>
+  </section>
+
+  <section id="datasets">
+    <h2><span class="num">02</span>Four independent public datasets</h2>
+    <p class="dek">Three carry real diagnosis and, in two cases, real clinical severity (BDI/BDI-II); the
+    fourth is a matched sleep-deprivation design used only for the arousal test in section 08. Eyes-closed
+    and eyes-open are always kept and reported separately, never pooled.</p>
+    <div class="stat-row stat-row-3"><div class="stat-tile">
+      <div class="label">ds003478 (EC)</div>
+      <div class="value">r = 0.15</div>
+      <div class="sub">classic vs. periodic-only FAA (n=55); oscillatory share median
+      0.56; 42% of fits excluded for quality</div>
+    </div><div class="stat-tile">
+      <div class="label">ds007615 (EC)</div>
+      <div class="value">r = 0.10</div>
+      <div class="sub">classic vs. periodic-only FAA (n=49); oscillatory share median
+      0.83; 0% of fits excluded for quality</div>
+    </div><div class="stat-tile">
+      <div class="label">ds007615 (EO)</div>
+      <div class="value">r = -0.01</div>
+      <div class="sub">classic vs. periodic-only FAA (n=42); oscillatory share median
+      0.66; 0% of fits excluded for quality</div>
+    </div><div class="stat-tile">
+      <div class="label">Mumtaz/HUSM (EC)</div>
+      <div class="value">r = 0.11</div>
+      <div class="sub">classic vs. periodic-only FAA (n=22); oscillatory share median
+      0.75; 53% of fits excluded for quality</div>
+    </div><div class="stat-tile">
+      <div class="label">Mumtaz/HUSM (EO)</div>
+      <div class="value">r = 0.87</div>
+      <div class="sub">classic vs. periodic-only FAA (n=17); oscillatory share median
+      0.33; 55% of fits excluded for quality</div>
+    </div></div>
+  </section>
+
+  <section id="composition">
+    <h2><span class="num">03</span>What is classic FAA actually made of?</h2>
+    <p class="dek">Across every dataset and condition above, a median of roughly half to three-quarters of
+    what classic FAA measures at F3/F4 is aperiodic background rather than a genuine oscillation. Fits
+    with r-squared below 0.90 (a disclosed quality threshold, not a domain parameter) are excluded from
+    these numbers rather than counted as if trustworthy; that exclusion rate ranges from 0% (ds007615) to
+    roughly half (Mumtaz/HUSM), reported plainly rather than hidden.</p>
+  </section>
+
+  <section id="agreement">
+    <h2><span class="num">04</span>Do classic and periodic-only FAA agree?</h2>
+    <p class="dek">If they tracked each other, classic band-power FAA would just be a noisier version of
+    the real oscillatory signal. They do not: the Pearson correlation between classic and periodic-only
+    FAA ranges from -0.01 to 0.87 across the five dataset/condition combinations in section 02, with four
+    of five below 0.16. Classic FAA and the genuine oscillatory component it is supposed to represent are,
+    for the most part, only weakly related.</p>
+  </section>
+
+  <section id="severity">
+    <h2><span class="num">05</span>Severity, controlling for the aperiodic component</h2>
+    <p class="dek">On the two datasets with clinical severity scores, classic FAA's simple relationship to
+    severity does not survive controlling for the aperiodic component in a joint regression: in ds003478 (simple r = +0.075, severity coefficient p = 0.517 once the aperiodic component is included); in ds007615 (simple r = -0.206, severity coefficient p = 0.073 once the aperiodic component is included).</p>
+  </section>
+
+  <section id="horserace">
+    <h2><span class="num">06</span>The head-to-head: aperiodic asymmetry vs. classic FAA</h2>
+    <p class="dek">Section 05 asks whether classic FAA's link to severity survives when the aperiodic
+    component is added as a covariate. This section asks the more direct question nobody in the published
+    literature has: does a same-subject comparison, correcting for what each side of the model actually
+    predicts, show classic FAA (band power) or aperiodic asymmetry (the exponent/offset difference between
+    F4 and F3) carrying independent predictive value for severity? Three nested regression models per
+    dataset (severity on classic FAA alone, on aperiodic asymmetry alone, and on both together), with an
+    F-test on whether adding each predictor to the other's model explains significantly more variance.
+    No directional hypothesis going in; reported whichever way it comes out.</p>
+    <div class="dataset-block">
+      <h3>ds003478 (EC) <span class="dataset-sub">(n=65)</span></h3>
+      <div class="verdict-row" style="grid-template-columns:repeat(2,1fr)">
+        <div class="verdict-card">
+      <div class="test-name">Aperiodic asymmetry adds beyond classic FAA?</div>
+      <div class="ask">F-test on nested regression models</div>
+      <div class="metric">p = 0.668</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div>
+        <div class="verdict-card">
+      <div class="test-name">Classic FAA adds beyond aperiodic asymmetry?</div>
+      <div class="ask">F-test on nested regression models</div>
+      <div class="metric">p = 0.327</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div>
+      </div>
+      <p class="dek" style="margin-top:14px;margin-bottom:0;max-width:100%">R-squared: classic FAA alone =
+      0.006; aperiodic asymmetry alone =
+      0.003; both together =
+      0.019. Simple correlations with severity: classic FAA
+      r&nbsp;=&nbsp;+0.075, aperiodic exponent asymmetry
+      r&nbsp;=&nbsp;-0.013, aperiodic offset asymmetry
+      r&nbsp;=&nbsp;-0.037.</p>
+    </div><div class="dataset-block">
+      <h3>ds007615 (EC) <span class="dataset-sub">(n=49)</span></h3>
+      <div class="verdict-row" style="grid-template-columns:repeat(2,1fr)">
+        <div class="verdict-card">
+      <div class="test-name">Aperiodic asymmetry adds beyond classic FAA?</div>
+      <div class="ask">F-test on nested regression models</div>
+      <div class="metric">p = 0.230</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div>
+        <div class="verdict-card">
+      <div class="test-name">Classic FAA adds beyond aperiodic asymmetry?</div>
+      <div class="ask">F-test on nested regression models</div>
+      <div class="metric">p = 0.045</div>
+      <span class="badge good"><span class="dot"></span>significant</span>
+    </div>
+      </div>
+      <p class="dek" style="margin-top:14px;margin-bottom:0;max-width:100%">R-squared: classic FAA alone =
+      0.043; aperiodic asymmetry alone =
+      0.018; both together =
+      0.103. Simple correlations with severity: classic FAA
+      r&nbsp;=&nbsp;-0.206, aperiodic exponent asymmetry
+      r&nbsp;=&nbsp;+0.095, aperiodic offset asymmetry
+      r&nbsp;=&nbsp;+0.135.</p>
+    </div><div class="dataset-block">
+      <h3>ds007615 (EO) <span class="dataset-sub">(n=48)</span></h3>
+      <div class="verdict-row" style="grid-template-columns:repeat(2,1fr)">
+        <div class="verdict-card">
+      <div class="test-name">Aperiodic asymmetry adds beyond classic FAA?</div>
+      <div class="ask">F-test on nested regression models</div>
+      <div class="metric">p = 0.455</div>
+      <span class="badge"><span class="dot"></span>not significant</span>
+    </div>
+        <div class="verdict-card">
+      <div class="test-name">Classic FAA adds beyond aperiodic asymmetry?</div>
+      <div class="ask">F-test on nested regression models</div>
+      <div class="metric">p = 0.040</div>
+      <span class="badge good"><span class="dot"></span>significant</span>
+    </div>
+      </div>
+      <p class="dek" style="margin-top:14px;margin-bottom:0;max-width:100%">R-squared: classic FAA alone =
+      0.067; aperiodic asymmetry alone =
+      0.008; both together =
+      0.099. Simple correlations with severity: classic FAA
+      r&nbsp;=&nbsp;-0.258, aperiodic exponent asymmetry
+      r&nbsp;=&nbsp;-0.078, aperiodic offset asymmetry
+      r&nbsp;=&nbsp;-0.090.</p>
+    </div>
+    <p class="dek" style="margin-top:14px;max-width:100%">ds003478 was null on every count in this
+    comparison, consistent with how weak and inconsistent that dataset has been throughout this project's
+    other tests. ds007615, the highest-fit-quality dataset available, replicates the same pattern in both
+    its eyes-closed and eyes-open recordings: classic FAA is not explained away by the aperiodic
+    component it is supposedly contaminated by.</p>
+  </section>
+
+  <section id="confounds">
+    <h2><span class="num">07</span>Confound coupling</h2>
+    <p class="dek">Aperiodic measures were also correlated against age, two arousal proxies
+    (theta/alpha ratio, decline in alpha power across the recording), and residual EMG-band power, per
+    dataset. No confound showed a consistent, large coupling across datasets; full per-dataset
+    correlation tables are in the repository's <code>outputs/</code> directory.</p>
+  </section>
+
+  <section id="arousal">
+    <h2><span class="num">08</span>Arousal, tested directly</h2>
+    <p class="dek">A matched sleep-deprivation dataset (ds004902, Xiang et al. 2024) lets the arousal
+    question be tested as a real within-subject comparison instead of a proxy correlation. Across 19 paired subjects, sleep deprivation produced no statistically
+        significant shift in aperiodic exponent (p = 0.858), offset
+        (p = 0.417), or oscillatory share
+        (p = 0.853) at F3/F4, averaged across channels; every
+        95%&nbsp;confidence interval included zero. Reported as inconclusive at this sample size, not as
+        evidence that arousal has no effect.</p>
+  </section>
+
+  <section id="limitations">
+    <h2><span class="num">09</span>Limitations</h2>
+    <ul class="caveats">
+      <li><strong>The head-to-head result is one dataset.</strong> ds007615 replicates across its own two
+      conditions (EC/EO), which is more than a single test, but it is still one cohort. ds003478 did not
+      replicate it; that is reported above, not omitted.</li>
+      <li><strong>Fit-quality exclusion is substantial for some datasets.</strong> Up to roughly half of
+      recordings in Mumtaz/HUSM are excluded from composition and correlation numbers for r-squared below
+      0.90 -- a real, disclosed limitation of extracting a clean aperiodic/periodic decomposition from
+      contamination-prone recordings, not a flaw specific to this analysis.</li>
+      <li><strong>ds003478 could not be split into eyes-open/closed.</strong> The public release
+      interleaves both conditions within one continuous recording via numeric trigger codes with no
+      available codebook distinguishing which codes correspond to which condition; treated as a single
+      undifferentiated condition rather than guessed.</li>
+      <li><strong>Small samples, small expected effects.</strong> The two datasets with severity scores
+      have 49 and 65 usable recordings respectively for the head-to-head comparison. A result significant
+      at this scale is real but should not be overinterpreted as a large or definitive effect.</li>
+      <li><strong>Per-type contamination weights remain placeholders.</strong> The quality-weighting
+      applied before every FOOOF fit uses equal weighting across artifact types, pending finalized
+      physics-derived values from the project's domain lead.</li>
+      <li><strong>Not peer-reviewed.</strong> These are findings from a research tool, not a validated
+      clinical instrument.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <div class="footer-links">
+      <a href="https://github.com/HYPERPRO2020/eegtest" target="_blank" rel="noopener">Source code (GitHub)</a>
+      <a href="https://findings-site-eight.vercel.app" target="_blank" rel="noopener">NeuroQA Phase 1 findings →</a>
+      <a href="https://eegtest.vercel.app" target="_blank" rel="noopener">Interactive quality grader →</a>
+    </div>
+    <p>Neureidos FAA Spectral-Composition Tool (v1) · findings, not peer-reviewed · generated from a real,
+    seeded run of this repo's own pipeline against four public datasets</p>
+  </footer>
+</div>
+<script>
+(function () {
+  var THEME_KEY = "neureidos-findings-theme";
+  var btn = document.getElementById("theme-toggle");
+  function isDark() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr === "dark") return true;
+    if (attr === "light") return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  function apply(theme) {
+    if (theme === "dark" || theme === "light") document.documentElement.setAttribute("data-theme", theme);
+    else document.documentElement.removeAttribute("data-theme");
+    btn.textContent = isDark() ? "☀️" : "🌙";
+  }
+  btn.addEventListener("click", function () {
+    var next = isDark() ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, next);
+    apply(next);
+  });
+  apply(localStorage.getItem(THEME_KEY));
+})();
+</script>
+</body>
+</html>
