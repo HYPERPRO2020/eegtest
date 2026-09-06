@@ -1,0 +1,92 @@
+{
+  "ds003478_ec": {
+    "n": 65,
+    "simple_correlations_with_severity": {
+      "classic_faa": 0.07535100045295419,
+      "aperiodic_asymmetry_exponent": -0.01286780607695599,
+      "aperiodic_asymmetry_offset": -0.037374390992377514
+    },
+    "model_classic_faa_only": {
+      "r_squared": 0.0056777732692609995,
+      "nobs": 65
+    },
+    "model_aperiodic_asymmetry_only": {
+      "r_squared": 0.0030211703410338853,
+      "nobs": 65
+    },
+    "model_both": {
+      "r_squared": 0.018740055370256137,
+      "nobs": 65
+    },
+    "does_aperiodic_add_beyond_classic": {
+      "f_stat": 0.40600822061546477,
+      "p_value": 0.668091842137347,
+      "significant": false
+    },
+    "does_classic_add_beyond_aperiodic": {
+      "f_stat": 0.9771640960483318,
+      "p_value": 0.32680488158088383,
+      "significant": false
+    }
+  },
+  "ds007615_ec": {
+    "n": 49,
+    "simple_correlations_with_severity": {
+      "classic_faa": -0.2063219632288192,
+      "aperiodic_asymmetry_exponent": 0.09538557073717654,
+      "aperiodic_asymmetry_offset": 0.13455352017233674
+    },
+    "model_classic_faa_only": {
+      "r_squared": 0.04256875251059411,
+      "nobs": 49
+    },
+    "model_aperiodic_asymmetry_only": {
+      "r_squared": 0.018443659639393317,
+      "nobs": 49
+    },
+    "model_both": {
+      "r_squared": 0.10302408426066001,
+      "nobs": 49
+    },
+    "does_aperiodic_add_beyond_classic": {
+      "f_stat": 1.5164788045120339,
+      "p_value": 0.230487118411987,
+      "significant": false
+    },
+    "does_classic_add_beyond_aperiodic": {
+      "f_stat": 4.243279045925971,
+      "p_value": 0.045217627963347384,
+      "significant": true
+    }
+  },
+  "ds007615_eo": {
+    "n": 48,
+    "simple_correlations_with_severity": {
+      "classic_faa": -0.2580914778595399,
+      "aperiodic_asymmetry_exponent": -0.07813232806763007,
+      "aperiodic_asymmetry_offset": -0.08992062094196554
+    },
+    "model_classic_faa_only": {
+      "r_squared": 0.06661121094372124,
+      "nobs": 48
+    },
+    "model_aperiodic_asymmetry_only": {
+      "r_squared": 0.008212903574472463,
+      "nobs": 48
+    },
+    "model_both": {
+      "r_squared": 0.09944907022850658,
+      "nobs": 48
+    },
+    "does_aperiodic_add_beyond_classic": {
+      "f_stat": 0.8022121574496478,
+      "p_value": 0.45478420303033973,
+      "significant": false
+    },
+    "does_classic_add_beyond_aperiodic": {
+      "f_stat": 4.457706055332278,
+      "p_value": 0.040459969419919806,
+      "significant": true
+    }
+  }
+}
