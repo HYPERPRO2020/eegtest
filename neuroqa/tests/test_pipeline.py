@@ -656,6 +656,209 @@ def test_faa_classifiers_one_independent_result_per_pipeline():
     assert all("error" in v for v in result_tiny.values())
 
 
+def test_spectral_composition_detects_planted_peak_and_no_peak():
+    """A synthetic spectrum with a clear planted alpha oscillation must be
+    fit with peak_present=True, a CF near the planted frequency, and an
+    oscillatory_share strictly between 0 and 1; a pure-aperiodic spectrum
+    (no oscillation at all) must report peak_present=False, all periodic
+    fields NaN, and oscillatory_share exactly 0.0 (not NaN -- see module
+    docstring: these two use deliberately different no-peak conventions)."""
+    from fooof.sim.gen import gen_power_spectrum
+    from spectral_composition import fit_fooof
+
+    freqs, powers = gen_power_spectrum([1, 40], [0, 1], [10, 0.4, 1.2])
+    with_peak = fit_fooof(freqs, powers, aperiodic_mode="fixed")
+    assert with_peak["peak_present"] is True
+    assert abs(with_peak["alpha_cf"] - 10.0) < 1.0
+    assert 0.0 < with_peak["oscillatory_share"] < 1.0
+    assert with_peak["low_quality_fit"] is False  # clean synthetic spectrum, should fit well
+
+    freqs2, powers2 = gen_power_spectrum([1, 40], [0, 1], [])
+    no_peak = fit_fooof(freqs2, powers2, aperiodic_mode="fixed")
+    assert no_peak["peak_present"] is False
+    assert np.isnan(no_peak["alpha_cf"]) and np.isnan(no_peak["alpha_pw"]) and np.isnan(no_peak["alpha_bw"])
+    assert no_peak["oscillatory_share"] == 0.0
+
+
+def test_spectral_composition_flags_low_quality_fit():
+    """A spectrum that genuinely doesn't follow an aperiodic+peaks shape
+    (confirmed on real ds003478 recordings -- EMG bleed near 40 Hz and
+    filter-edge effects near 1 Hz both routinely break the power-law
+    assumption over the spec's full 1-40 Hz fit range) must be flagged
+    low_quality_fit=True via MIN_R_SQUARED, not silently reported as if the
+    decomposition were trustworthy (spec Sec. 5: 'flag ... and report how
+    many were excluded and why')."""
+    from spectral_composition import MIN_R_SQUARED, fit_fooof
+
+    rng = np.random.default_rng(0)
+    freqs = np.arange(1, 40, 0.5)
+    # Deliberately non-power-law: flat-ish with a rising tail at the high
+    # end (mimics the real EMG-bleed pattern) plus a dip-then-rise at the
+    # low end (mimics real filter-edge effects) -- neither a clean 1/f decay.
+    powers = np.full_like(freqs, 500.0)
+    powers[freqs < 4] = np.array([1500, 1700, 1350, 700, 130, 90])[: (freqs < 4).sum()]
+    powers[freqs > 34] = np.linspace(30, 1100, (freqs > 34).sum())
+    powers += rng.normal(0, 20, size=freqs.shape)
+    powers = np.clip(powers, 1.0, None)
+
+    r = fit_fooof(freqs, powers, aperiodic_mode="fixed")
+    assert r["r_squared"] < MIN_R_SQUARED, r["r_squared"]
+    assert r["low_quality_fit"] is True
+
+
+def test_spectral_composition_both_aperiodic_modes_recover_planted_exponent():
+    """Both aperiodic_mode='fixed' and 'knee' (spec Sec. 6 robustness check)
+    must run without crashing and recover an exponent close to the planted
+    value on a clean synthetic spectrum."""
+    from fooof.sim.gen import gen_power_spectrum
+    from spectral_composition import fit_fooof
+
+    freqs, powers = gen_power_spectrum([1, 40], [0, 1.5], [10, 0.4, 1.2])
+    for mode in ("fixed", "knee"):
+        r = fit_fooof(freqs, powers, aperiodic_mode=mode)
+        assert abs(r["exponent"] - 1.5) < 0.3, (mode, r["exponent"])
+        assert r["r_squared"] > 0.9
+
+
+def test_faa_variants_classic_faa_sign_follows_planted_asymmetry():
+    """classic_faa's sign must follow the planted F3/F4 alpha-amplitude
+    asymmetry, matching faa.compute_faa's existing directional-sanity
+    convention (test_faa_sign_follows_planted_asymmetry above)."""
+    from spectral_composition import faa_variants, spectral_composition_for_recording
+
+    raw_f4_bigger = make_synthetic_raw(alpha_amp_f3=6.0, alpha_amp_f4=14.0, seed=2)
+    data = epoch(raw_f4_bigger)
+    comp = spectral_composition_for_recording(data, raw_f4_bigger.ch_names, SFREQ)
+    variants = faa_variants(comp["F3"], comp["F4"])
+    assert variants["classic_faa"] > 0  # F4 louder alpha -> positive classic FAA
+
+    raw_f3_bigger = make_synthetic_raw(alpha_amp_f3=14.0, alpha_amp_f4=6.0, seed=2)
+    data2 = epoch(raw_f3_bigger)
+    comp2 = spectral_composition_for_recording(data2, raw_f3_bigger.ch_names, SFREQ)
+    variants2 = faa_variants(comp2["F3"], comp2["F4"])
+    assert variants2["classic_faa"] < 0
+
+
+def test_faa_variants_periodic_only_faa_is_nan_not_zero_when_no_peak():
+    """periodic_only_faa must be NaN (not 0.0) whenever either channel lacks
+    a detected peak -- spec Sec. 5: 'do not impute 0'. Constructed directly
+    from fit_fooof-shaped dicts rather than real data, since reliably
+    forcing a real synthetic recording to have zero detected peaks at both
+    channels is not the point of this test -- the branch logic is."""
+    from spectral_composition import faa_variants
+
+    has_peak = {"peak_present": True, "alpha_pw": 0.5, "exponent": 1.0, "offset": 0.0, "classic_band_power": 1.0}
+    no_peak = {"peak_present": False, "alpha_pw": float("nan"), "exponent": 1.0, "offset": 0.0, "classic_band_power": 1.0}
+
+    v = faa_variants(no_peak, has_peak)
+    assert v["both_peaks_present"] is False
+    assert np.isnan(v["periodic_only_faa"])
+
+    v2 = faa_variants(has_peak, has_peak)
+    assert v2["both_peaks_present"] is True
+    assert v2["periodic_only_faa"] == 0.0  # equal PW on both sides
+
+
+def test_spectral_composition_for_recording_only_targets_f3_f4_by_default():
+    """v1 targets F3/F4 only (spec Sec. 3: 'keep all channels stored for
+    later; F3/F4 are the v1 target') -- the default `channels` argument
+    must not silently expand to every channel in the recording."""
+    from spectral_composition import spectral_composition_for_recording
+
+    raw = make_synthetic_raw(seed=3)
+    data = epoch(raw)
+    comp = spectral_composition_for_recording(data, raw.ch_names, SFREQ)
+    assert set(comp.keys()) == {"F3", "F4"}
+
+
+def test_quality_weighted_psd_downweights_a_contaminated_epoch():
+    """The whole reason quality_weighted_psd replaced a flat average (see
+    module docstring): a handful of badly-contaminated epochs must not be
+    allowed to distort the averaged spectrum the way a flat mean would.
+    Plant one epoch with a huge broadband amplitude blowout and confirm the
+    quality-weighted PSD stays close to the clean epochs' own spectrum,
+    while a flat mean is pulled noticeably further away."""
+    from spectral_composition import avg_psd, quality_weighted_psd
+
+    raw = make_synthetic_raw(seed=5)
+    data = epoch(raw)  # (n_epochs, n_channels, n_samples), uV
+    contaminated = data.copy()
+    blown_epoch = 0
+    # A constant DC offset would be neutralized by welch()'s own per-segment
+    # detrending (its default removes the mean before computing the
+    # periodogram) -- broadband noise isn't, and is what a real muscle/
+    # movement burst actually looks like spectrally.
+    rng = np.random.default_rng(6)
+    contaminated[blown_epoch] += rng.normal(0, 200.0, size=contaminated.shape[1:])
+
+    freqs, flat_psd = avg_psd(contaminated, raw.ch_names, SFREQ)  # flat mean, no weights
+    freqs_w, weighted_psd = quality_weighted_psd(contaminated, raw.ch_names, SFREQ)
+    freqs_clean, clean_psd = avg_psd(data, raw.ch_names, SFREQ)  # ground truth: no contamination at all
+
+    i3 = raw.ch_names.index("F3")
+    # Low-frequency bins carry most of a broadband amplitude blowout's added
+    # power -- compare there, where the distortion should be starkest.
+    low = (freqs >= 1) & (freqs <= 4)
+    flat_dist = np.abs(np.log(flat_psd[i3][low]) - np.log(clean_psd[i3][low])).mean()
+    weighted_dist = np.abs(np.log(weighted_psd[i3][low]) - np.log(clean_psd[i3][low])).mean()
+    assert weighted_dist < flat_dist
+
+
+def test_theta_alpha_ratio_reflects_relative_band_power():
+    """theta_alpha_ratio must be small when alpha dominates theta, and grow
+    when theta power is boosted relative to alpha -- a direct sanity check
+    on the arousal-proxy formula (spec Sec. 4.C), not just that it runs."""
+    from spectral_composition import avg_psd, theta_alpha_ratio
+
+    raw = make_synthetic_raw(alpha_amp_f3=20.0, alpha_amp_f4=20.0, seed=7)
+    data = epoch(raw)
+    freqs, psd = avg_psd(data, raw.ch_names, SFREQ)
+    i3 = raw.ch_names.index("F3")
+    ratio_alpha_dominant = theta_alpha_ratio(freqs, psd[i3])
+
+    # Boost this same recording's theta (4-8Hz) content directly in the PSD
+    # (cheaper and more targeted than re-synthesizing a whole raw signal)
+    # and confirm the ratio increases as expected.
+    boosted = psd[i3].copy()
+    theta_mask = (freqs >= 4) & (freqs <= 8)
+    boosted[theta_mask] *= 50.0
+    ratio_theta_boosted = theta_alpha_ratio(freqs, boosted)
+
+    assert ratio_theta_boosted > ratio_alpha_dominant
+
+
+def test_alpha_power_trend_sign_follows_planted_within_recording_decline():
+    """alpha_power_trend's slope must be negative when alpha power is
+    planted to genuinely decline across the recording, and near-zero for a
+    stationary signal -- the arousal-decline proxy (spec Sec. 4.C) needs to
+    actually track a real within-recording change, not just return a
+    number."""
+    from spectral_composition import alpha_power_trend
+
+    rng = np.random.default_rng(8)
+    n_samples = int(DURATION_SEC * SFREQ)
+    t = np.arange(n_samples) / SFREQ
+    ch_names = ["F3", "F4"]
+    # Alpha amplitude ramps from strong to weak across the recording --
+    # a real within-recording decline, not epoch-to-epoch noise.
+    envelope = np.linspace(1.0, 0.05, n_samples)
+    raw_data = rng.normal(0, 3e-6, size=(len(ch_names), n_samples))
+    for i in range(len(ch_names)):
+        raw_data[i] += 15e-6 * envelope * np.sin(2 * np.pi * 10.0 * t)
+    import mne
+    info = mne.create_info(ch_names, sfreq=SFREQ, ch_types="eeg")
+    raw = mne.io.RawArray(raw_data, info, verbose=False)
+    data = epoch(raw)
+
+    trend = alpha_power_trend(data, ch_names, SFREQ)
+    assert trend["F3"] < 0 and trend["F4"] < 0
+
+    stationary_raw = make_synthetic_raw(seed=9)
+    stationary_data = epoch(stationary_raw)
+    stationary_trend = alpha_power_trend(stationary_data, stationary_raw.ch_names, SFREQ)
+    assert abs(stationary_trend["F3"]) < abs(trend["F3"])
+
+
 if __name__ == "__main__":
     import pytest
     raise SystemExit(pytest.main([__file__, "-v"]))

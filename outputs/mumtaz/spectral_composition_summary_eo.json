@@ -1,0 +1,408 @@
+{
+  "n_recordings": 61,
+  "n_rows": 240,
+  "analysis_a_composition": {
+    "eo_original_fixed": {
+      "f3": {
+        "n_total": 60,
+        "n_low_quality_fit_excluded": 33,
+        "r_squared_median": 0.8850496617790317,
+        "r_squared_mean": 0.8891522455287753,
+        "r_squared_p25": 0.8272022270066445,
+        "r_squared_p75": 0.9622926694278647,
+        "peak_present_rate": 0.8148148148148148,
+        "oscillatory_share_median": 0.32791201985475293,
+        "oscillatory_share_mean": 0.3812513404360611,
+        "oscillatory_share_p25": 0.21407840188037766,
+        "oscillatory_share_p75": 0.5259991783013849
+      },
+      "f4": {
+        "n_total": 60,
+        "n_low_quality_fit_excluded": 34,
+        "r_squared_median": 0.8913578477425337,
+        "r_squared_mean": 0.8884545259280984,
+        "r_squared_p25": 0.837937164432474,
+        "r_squared_p75": 0.9550468517037689,
+        "peak_present_rate": 0.7307692307692307,
+        "oscillatory_share_median": 0.3569745521350969,
+        "oscillatory_share_mean": 0.3815402596268586,
+        "oscillatory_share_p25": 0.17394160485400273,
+        "oscillatory_share_p75": 0.6030488245407378
+      }
+    },
+    "eo_original_knee": {
+      "f3": {
+        "n_total": 60,
+        "n_low_quality_fit_excluded": 7,
+        "r_squared_median": 0.9654512907995325,
+        "r_squared_mean": 0.9468905254682985,
+        "r_squared_p25": 0.9438155906210886,
+        "r_squared_p75": 0.976479289043896,
+        "peak_present_rate": 0.4339622641509434,
+        "oscillatory_share_median": 0.07477951129344917,
+        "oscillatory_share_mean": 0.18245665780298623,
+        "oscillatory_share_p25": 0.0008564064956407577,
+        "oscillatory_share_p75": 0.34686071715212935
+      },
+      "f4": {
+        "n_total": 60,
+        "n_low_quality_fit_excluded": 11,
+        "r_squared_median": 0.961475421477903,
+        "r_squared_mean": 0.9228684258518816,
+        "r_squared_p25": 0.9375645375632007,
+        "r_squared_p75": 0.979403175557391,
+        "peak_present_rate": 0.4489795918367347,
+        "oscillatory_share_median": 0.1826325106450461,
+        "oscillatory_share_mean": 0.21620772270508287,
+        "oscillatory_share_p25": 0.0007282650197325661,
+        "oscillatory_share_p75": 0.3812204609437759
+      }
+    },
+    "eo_average_fixed": {
+      "f3": {
+        "n_total": 60,
+        "n_low_quality_fit_excluded": 39,
+        "r_squared_median": 0.8695162577071858,
+        "r_squared_mean": 0.823910458968064,
+        "r_squared_p25": 0.7421737954328785,
+        "r_squared_p75": 0.9542089374895959,
+        "peak_present_rate": 0.9047619047619048,
+        "oscillatory_share_median": 0.628025139231698,
+        "oscillatory_share_mean": 0.5343303613024426,
+        "oscillatory_share_p25": 0.3329863896037448,
+        "oscillatory_share_p75": 0.7645289391741954
+      },
+      "f4": {
+        "n_total": 60,
+        "n_low_quality_fit_excluded": 35,
+        "r_squared_median": 0.8652259778624187,
+        "r_squared_mean": 0.8333700532718747,
+        "r_squared_p25": 0.7621766014778903,
+        "r_squared_p75": 0.9468497010455128,
+        "peak_present_rate": 0.88,
+        "oscillatory_share_median": 0.5219178935352169,
+        "oscillatory_share_mean": 0.49087251975070195,
+        "oscillatory_share_p25": 0.22174074624577306,
+        "oscillatory_share_p75": 0.7234712130962466
+      }
+    },
+    "eo_average_knee": {
+      "f3": {
+        "n_total": 60,
+        "n_low_quality_fit_excluded": 14,
+        "r_squared_median": 0.9405825427332224,
+        "r_squared_mean": 0.923924049033037,
+        "r_squared_p25": 0.9051161108723803,
+        "r_squared_p75": 0.9750622134932775,
+        "peak_present_rate": 0.5217391304347826,
+        "oscillatory_share_median": 0.27807449235499515,
+        "oscillatory_share_mean": 0.29732064293196075,
+        "oscillatory_share_p25": 0.015063179731878505,
+        "oscillatory_share_p75": 0.5353516101303442
+      },
+      "f4": {
+        "n_total": 60,
+        "n_low_quality_fit_excluded": 12,
+        "r_squared_median": 0.9463426476710177,
+        "r_squared_mean": 0.9183999898127885,
+        "r_squared_p25": 0.9019254622003865,
+        "r_squared_p75": 0.9745845559840453,
+        "peak_present_rate": 0.4791666666666667,
+        "oscillatory_share_median": 0.2740429435948404,
+        "oscillatory_share_mean": 0.27603610859933,
+        "oscillatory_share_p25": 0.01955302504306034,
+        "oscillatory_share_p75": 0.4687961741616693
+      }
+    }
+  },
+  "analysis_b_classic_vs_periodic": {
+    "eo_original_fixed": {
+      "n_total": 60,
+      "n_valid": 17,
+      "n_dropped_no_peak": 6,
+      "n_dropped_low_quality_fit": 37,
+      "pearson_r_classic_vs_periodic": 0.865586216913265
+    },
+    "eo_original_knee": {
+      "n_total": 60,
+      "n_valid": 18,
+      "n_dropped_no_peak": 29,
+      "n_dropped_low_quality_fit": 13,
+      "pearson_r_classic_vs_periodic": 0.7237906320646096
+    },
+    "eo_average_fixed": {
+      "n_total": 60,
+      "n_valid": 17,
+      "n_dropped_no_peak": 0,
+      "n_dropped_low_quality_fit": 43,
+      "pearson_r_classic_vs_periodic": 0.306187906182328
+    },
+    "eo_average_knee": {
+      "n_total": 60,
+      "n_valid": 21,
+      "n_dropped_no_peak": 20,
+      "n_dropped_low_quality_fit": 19,
+      "pearson_r_classic_vs_periodic": 0.4795392548725254
+    }
+  },
+  "analysis_c_confound_coupling": {
+    "eo_original_fixed": {
+      "n_good_fit": 23,
+      "n_total": 60,
+      "correlations": {
+        "aperiodic_asymmetry_exponent": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 23,
+            "pearson_r": 0.034149567230157545
+          },
+          "alpha_power_trend": {
+            "n": 23,
+            "pearson_r": 0.3016208331676903
+          },
+          "emg_band_power": {
+            "n": 23,
+            "pearson_r": 0.0439969429261942
+          }
+        },
+        "aperiodic_asymmetry_offset": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 23,
+            "pearson_r": -0.030703168458530387
+          },
+          "alpha_power_trend": {
+            "n": 23,
+            "pearson_r": 0.26619770627009204
+          },
+          "emg_band_power": {
+            "n": 23,
+            "pearson_r": -0.16821417677436462
+          }
+        },
+        "oscillatory_share": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 23,
+            "pearson_r": -0.016858703151458213
+          },
+          "alpha_power_trend": {
+            "n": 23,
+            "pearson_r": 0.1446648445395332
+          },
+          "emg_band_power": {
+            "n": 23,
+            "pearson_r": -0.3151092626611957
+          }
+        }
+      }
+    },
+    "eo_original_knee": {
+      "n_good_fit": 47,
+      "n_total": 60,
+      "correlations": {
+        "aperiodic_asymmetry_exponent": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 47,
+            "pearson_r": 0.08932571781129889
+          },
+          "alpha_power_trend": {
+            "n": 47,
+            "pearson_r": -0.004008247777127068
+          },
+          "emg_band_power": {
+            "n": 47,
+            "pearson_r": -0.06177930319509541
+          }
+        },
+        "aperiodic_asymmetry_offset": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 47,
+            "pearson_r": 0.11531505087756894
+          },
+          "alpha_power_trend": {
+            "n": 47,
+            "pearson_r": -0.0040934406924292765
+          },
+          "emg_band_power": {
+            "n": 47,
+            "pearson_r": -0.08637358823472577
+          }
+        },
+        "oscillatory_share": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 47,
+            "pearson_r": -0.06318243042105658
+          },
+          "alpha_power_trend": {
+            "n": 47,
+            "pearson_r": -0.10780961458827082
+          },
+          "emg_band_power": {
+            "n": 47,
+            "pearson_r": 0.10571877830991831
+          }
+        }
+      }
+    },
+    "eo_average_fixed": {
+      "n_good_fit": 17,
+      "n_total": 60,
+      "correlations": {
+        "aperiodic_asymmetry_exponent": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 17,
+            "pearson_r": 0.5097123613623876
+          },
+          "alpha_power_trend": {
+            "n": 17,
+            "pearson_r": 0.15466160973907028
+          },
+          "emg_band_power": {
+            "n": 17,
+            "pearson_r": 0.016739103775123335
+          }
+        },
+        "aperiodic_asymmetry_offset": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 17,
+            "pearson_r": 0.44118055615372304
+          },
+          "alpha_power_trend": {
+            "n": 17,
+            "pearson_r": 0.29785322295776295
+          },
+          "emg_band_power": {
+            "n": 17,
+            "pearson_r": -0.2731292937558046
+          }
+        },
+        "oscillatory_share": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 17,
+            "pearson_r": -0.158708912902027
+          },
+          "alpha_power_trend": {
+            "n": 17,
+            "pearson_r": -0.38234427313870606
+          },
+          "emg_band_power": {
+            "n": 17,
+            "pearson_r": 0.12368230487451072
+          }
+        }
+      }
+    },
+    "eo_average_knee": {
+      "n_good_fit": 41,
+      "n_total": 60,
+      "correlations": {
+        "aperiodic_asymmetry_exponent": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 41,
+            "pearson_r": 0.006471613389472758
+          },
+          "alpha_power_trend": {
+            "n": 41,
+            "pearson_r": 0.038288933590070004
+          },
+          "emg_band_power": {
+            "n": 41,
+            "pearson_r": -0.0078883835704125
+          }
+        },
+        "aperiodic_asymmetry_offset": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 41,
+            "pearson_r": 0.015173599035352385
+          },
+          "alpha_power_trend": {
+            "n": 41,
+            "pearson_r": 0.03827444900740705
+          },
+          "emg_band_power": {
+            "n": 41,
+            "pearson_r": 0.0037259210410178338
+          }
+        },
+        "oscillatory_share": {
+          "age": {
+            "n": 0,
+            "pearson_r": NaN
+          },
+          "theta_alpha_ratio": {
+            "n": 41,
+            "pearson_r": 0.26859175384086986
+          },
+          "alpha_power_trend": {
+            "n": 41,
+            "pearson_r": 0.07357109513366206
+          },
+          "emg_band_power": {
+            "n": 41,
+            "pearson_r": -0.1363489172691129
+          }
+        }
+      }
+    }
+  },
+  "analysis_d_severity": {
+    "eo_original_fixed": {
+      "n": 0,
+      "skipped_reason": "fewer than 6 usable rows with severity"
+    },
+    "eo_original_knee": {
+      "n": 0,
+      "skipped_reason": "fewer than 6 usable rows with severity"
+    },
+    "eo_average_fixed": {
+      "n": 0,
+      "skipped_reason": "fewer than 6 usable rows with severity"
+    },
+    "eo_average_knee": {
+      "n": 0,
+      "skipped_reason": "fewer than 6 usable rows with severity"
+    }
+  }
+}
