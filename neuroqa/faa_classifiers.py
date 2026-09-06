@@ -16,7 +16,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
 from study_a import PIPELINES
@@ -66,10 +66,23 @@ def classify_by_pipeline(study_a_long_rows: list[dict], reference: str = "origin
         # Bootstrap CI: with n as small as MIN_N=4, a bare point-estimate AUC
         # invites over-interpretation -- see study_b.bootstrap_auc_ci.
         _, auc_ci_lo, auc_ci_hi = bootstrap_auc_ci(y, proba) if not np.isnan(auc) else (float("nan"),) * 3
+
+        # Per-group breakdown (Peter, verbal, 2026-09-06): "plug in the
+        # healthy data, see if some of them report them as healthy and some
+        # of them don't ... and also the same for depression" -- i.e.
+        # sensitivity/specificity, not just a single blended accuracy/AUC
+        # number. tn/fp/fn/tp order matches confusion_matrix's labels=[0,1]
+        # convention (0=healthy, 1=depressed, per the y construction above).
+        tn, fp, fn, tp = confusion_matrix(y, pred, labels=[0, 1]).ravel()
+        sensitivity = float(tp / (tp + fn)) if (tp + fn) > 0 else float("nan")  # depressed correctly flagged
+        specificity = float(tn / (tn + fp)) if (tn + fp) > 0 else float("nan")  # healthy correctly cleared
+
         results[pipeline] = {
             "accuracy": float(accuracy_score(y, pred)),
             "auc": auc,
             "auc_ci_lo": auc_ci_lo, "auc_ci_hi": auc_ci_hi,
+            "sensitivity": sensitivity, "specificity": specificity,
+            "n_depressed": int(tp + fn), "n_healthy": int(tn + fp),
             "baseline": baseline,
             "n": int(len(y)),
             "n_splits": n_splits,

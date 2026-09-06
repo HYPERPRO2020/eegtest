@@ -656,6 +656,41 @@ def test_faa_classifiers_one_independent_result_per_pipeline():
     assert all("error" in v for v in result_tiny.values())
 
 
+def test_faa_classifiers_reports_sensitivity_and_specificity_separately():
+    """Peter's ask, verbal (2026-09-06): don't just report one blended
+    accuracy/AUC number -- report, separately, how many of the known-healthy
+    recordings get correctly called healthy (specificity) and how many of
+    the known-depressed recordings get correctly called depressed
+    (sensitivity). Constructed with perfectly-separable FAA values (a big
+    gap between the two groups) so the classifier's predictions -- and
+    therefore the expected confusion matrix -- are known in advance, not
+    just "whatever the classifier happens to do."""
+    from study_a import PIPELINES
+    from faa_classifiers import classify_by_pipeline
+
+    rng = np.random.default_rng(11)
+    rows = []
+    # 6 healthy clustered tightly near -5, 6 depressed clustered tightly
+    # near +5 -- a gap wide enough that 5-fold CV logistic regression should
+    # separate them perfectly regardless of fold composition.
+    for i in range(6):
+        for pipeline in PIPELINES:
+            rows.append({"file": f"h{i}", "group": "healthy", "pipeline": pipeline,
+                         "reference": "original", "faa": -5.0 + rng.normal(0, 0.05)})
+    for i in range(6):
+        for pipeline in PIPELINES:
+            rows.append({"file": f"d{i}", "group": "depressed", "pipeline": pipeline,
+                         "reference": "original", "faa": 5.0 + rng.normal(0, 0.05)})
+
+    result = classify_by_pipeline(rows)
+    for pipeline in PIPELINES:
+        r = result[pipeline]
+        assert "error" not in r, r
+        assert r["n_healthy"] == 6 and r["n_depressed"] == 6
+        assert r["sensitivity"] == 1.0, (pipeline, r)  # every depressed recording correctly flagged
+        assert r["specificity"] == 1.0, (pipeline, r)  # every healthy recording correctly cleared
+
+
 def test_spectral_composition_detects_planted_peak_and_no_peak():
     """A synthetic spectrum with a clear planted alpha oscillation must be
     fit with peak_present=True, a CF near the planted frequency, and an
