@@ -86,6 +86,39 @@ def test_manifest_validation_accepts_clean_synthetic_file(tmp_path):
     assert {"F3", "F4"}.issubset(set(result.channels_found))
 
 
+def test_manifest_validation_recognizes_hyphenated_reference_channel_names(tmp_path):
+    """A channel literally named "A2-A1" (Mumtaz/HUSM's real naming: every
+    channel there carries a "-LE" linked-ears suffix, and the differential
+    reference itself is "A2-A1", not a bare "A1"/"A2") must be recognized
+    as a present reference/mastoid channel, not flagged as missing --
+    confirmed this exact pattern produced a false-positive "no reference
+    channel found" warning on all 58 real Mumtaz recordings before the
+    tokenized match replaced the old exact-whole-name match."""
+    ch_names = [f"EEG {ch}-LE" for ch in CH_NAMES if ch not in ("F3", "F4")] + \
+        ["EEG F3-LE", "EEG F4-LE", "EEG A2-A1"]
+    info = mne.create_info(ch_names, sfreq=SFREQ, ch_types="eeg")
+    raw = mne.io.RawArray(np.zeros((len(ch_names), int(SFREQ * 120))), info, verbose=False)
+    path = tmp_path / "sub_hyphenated_ref.fif"
+    raw.save(str(path), verbose=False)
+    result = validate_recording(path, {"diagnosis_raw": "healthy", "severity_raw": "1"})
+    assert result.ok, result.reasons
+    assert not any("reference channel" in w for w in result.warnings), result.warnings
+
+
+def test_manifest_validation_still_flags_a_montage_with_no_reference_channel(tmp_path):
+    """The tokenized match must not become so loose it stops firing at all
+    -- a montage with genuinely no A1/A2/M1/M2/REF/LM/RM channel anywhere
+    should still get the warning."""
+    ch_names = [f"EEG {ch}" for ch in CH_NAMES]  # plain 10-20 names, no reference channel
+    info = mne.create_info(ch_names, sfreq=SFREQ, ch_types="eeg")
+    raw = mne.io.RawArray(np.zeros((len(ch_names), int(SFREQ * 120))), info, verbose=False)
+    path = tmp_path / "sub_no_ref.fif"
+    raw.save(str(path), verbose=False)
+    result = validate_recording(path, {"diagnosis_raw": "healthy", "severity_raw": "1"})
+    assert result.ok, result.reasons
+    assert any("reference channel" in w for w in result.warnings), result.warnings
+
+
 def test_manifest_validation_rejects_missing_f3_f4(tmp_path):
     info = mne.create_info(["Fp1", "Fp2", "O1", "O2"], sfreq=SFREQ, ch_types="eeg")
     raw = mne.io.RawArray(np.zeros((4, int(SFREQ * 120))), info, verbose=False)

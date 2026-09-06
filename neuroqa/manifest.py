@@ -44,6 +44,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import io
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -236,8 +237,17 @@ def _reference_state_warnings(raw: mne.io.BaseRaw, matched: dict[str, str]) -> l
             f"(<{MIN_MONTAGE_CHANNELS}) -- looks more like a pre-extracted channel "
             "subset than a full raw montage; check this wasn't already reduced"
         )
+    # Exact whole-name match misses real-world channel labels like
+    # "EEG A2-A1" or "EEG Fp1-LE" (Mumtaz/HUSM: every channel there carries
+    # a "-LE" linked-ears suffix, and the differential reference itself is
+    # named "A2-A1", not a bare "A1"/"A2") -- confirmed this produced a
+    # false-positive "no reference channel" warning on all 58 accepted
+    # Mumtaz recordings, none of which actually lack one. Tokenize on
+    # non-alphanumeric separators so "EEG A2-A1" is checked as
+    # {"EEG","A2","A1"}, not compared as one literal string.
     has_mastoid_or_ref = any(
-        c.upper() in {"A1", "A2", "M1", "M2", "REF", "LM", "RM"} for c in raw.ch_names
+        token.upper() in {"A1", "A2", "M1", "M2", "REF", "LM", "RM"}
+        for c in raw.ch_names for token in re.split(r"[^A-Za-z0-9]+", c) if token
     )
     if not has_mastoid_or_ref and n_montage_hits >= MIN_MONTAGE_CHANNELS:
         warnings.append(
