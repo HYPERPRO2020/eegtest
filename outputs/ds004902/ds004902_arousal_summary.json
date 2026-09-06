@@ -1,0 +1,80 @@
+{
+  "F3": {
+    "exponent": {
+      "n": 20,
+      "mean_sd_minus_ns": 0.025160626288454724,
+      "ci_lo": -0.08221636864940324,
+      "ci_hi": 0.12827337929650026,
+      "nonzero": false,
+      "paired_ttest_p": 0.6550088401386195
+    },
+    "offset": {
+      "n": 20,
+      "mean_sd_minus_ns": -0.08678275750989457,
+      "ci_lo": -0.2871336858632708,
+      "ci_hi": 0.06737227417092853,
+      "nonzero": false,
+      "paired_ttest_p": 0.363939460392216
+    },
+    "oscillatory_share": {
+      "n": 20,
+      "mean_sd_minus_ns": -0.007825285876315738,
+      "ci_lo": -0.09455307910009181,
+      "ci_hi": 0.07741054870070507,
+      "nonzero": false,
+      "paired_ttest_p": 0.8625607400830921
+    }
+  },
+  "F4": {
+    "exponent": {
+      "n": 21,
+      "mean_sd_minus_ns": 0.04980527385942021,
+      "ci_lo": -0.09906574765109422,
+      "ci_hi": 0.20272516994236953,
+      "nonzero": false,
+      "paired_ttest_p": 0.5163621966971694
+    },
+    "offset": {
+      "n": 21,
+      "mean_sd_minus_ns": 0.003390063623251227,
+      "ci_lo": -0.18247345607427748,
+      "ci_hi": 0.18735925528890393,
+      "nonzero": false,
+      "paired_ttest_p": 0.9715743737862202
+    },
+    "oscillatory_share": {
+      "n": 21,
+      "mean_sd_minus_ns": -0.008574402096968201,
+      "ci_lo": -0.09306850025848527,
+      "ci_hi": 0.06961803251455248,
+      "nonzero": false,
+      "paired_ttest_p": 0.8444903958998418
+    }
+  },
+  "mean_f3_f4": {
+    "exponent": {
+      "n": 19,
+      "mean_sd_minus_ns": 0.010593779153466359,
+      "ci_lo": -0.10860732680000257,
+      "ci_hi": 0.11302060810541838,
+      "nonzero": false,
+      "paired_ttest_p": 0.857524315312431
+    },
+    "offset": {
+      "n": 19,
+      "mean_sd_minus_ns": -0.07432347461565908,
+      "ci_lo": -0.2631538854571282,
+      "ci_hi": 0.08419744381110338,
+      "nonzero": false,
+      "paired_ttest_p": 0.4165904460586875
+    },
+    "oscillatory_share": {
+      "n": 19,
+      "mean_sd_minus_ns": -0.008596708062836057,
+      "ci_lo": -0.0997064481926308,
+      "ci_hi": 0.08057332204016689,
+      "nonzero": false,
+      "paired_ttest_p": 0.8526915143964368
+    }
+  }
+}
