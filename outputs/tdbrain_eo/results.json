@@ -1,0 +1,1410 @@
+{
+  "seed": 0,
+  "n_recordings": 486,
+  "n_study_a_recordings": 12,
+  "study_a": {
+    "long": [
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.0114
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.8062
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0194
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0056
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.01
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0233
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 1.144
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.007
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0067
+      },
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.02
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1365
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.1606
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.155
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1402
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1375
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.2186
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1935
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1871
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1976
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.2167
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": -0.1182
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.2515
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.1127
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": -0.1017
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": -0.1173
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0095
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.4492
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0149
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0278
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.014
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.2234
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.3546
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.2411
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.2091
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.2257
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.168
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.3884
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1486
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1181
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1693
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.2043
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.006
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.2043
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.216
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.2053
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.412
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.0441
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.3203
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1091
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.4146
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0508
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": -0.0534
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.0093
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0754
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0512
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1009
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1169
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0893
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0933
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1004
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1868
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.2048
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1466
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1775
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1879
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1421
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.232
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.1345
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1659
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1391
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.3351
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.3153
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.3011
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.3159
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.3354
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0002
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.172
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.1195
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0314
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0004
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1838
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.2145
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1838
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1849
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1825
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.0834
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.3007
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.117
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0953
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.0824
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1635
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.1788
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1779
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1844
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1643
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.0309
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.1354
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": 0.0786
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.0586
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.031
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.1366
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.1802
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": 0.1327
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.1246
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.1373
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": -0.113
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": -0.1239
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0292
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": -0.0571
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": -0.1126
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "original",
+        "faa": 0.0418
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "original",
+        "faa": 0.0614
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "original",
+        "faa": -0.098
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "original",
+        "faa": 0.0389
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "original",
+        "faa": 0.0384
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "raw",
+        "reference": "average",
+        "faa": 0.1202
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ica",
+        "reference": "average",
+        "faa": 0.2538
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "generic",
+        "reference": "average",
+        "faa": -0.0217
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "autoreject",
+        "reference": "average",
+        "faa": 0.1092
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "pipeline": "ours",
+        "reference": "average",
+        "faa": 0.1161
+      }
+    ],
+    "wide": [
+      {
+        "file": "sub-87999321_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "raw_original": -0.0114,
+        "ica_original": 0.8062,
+        "generic_original": 0.0194,
+        "autoreject_original": 0.0056,
+        "ours_original": -0.01,
+        "raw_average": -0.0233,
+        "ica_average": 1.144,
+        "generic_average": -0.007,
+        "autoreject_average": -0.0067,
+        "ours_average": -0.02,
+        "faa_range": 1.1673,
+        "faa_std": 0.40007297784279305
+      },
+      {
+        "file": "sub-88000181_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "raw_original": 0.1365,
+        "ica_original": 0.1606,
+        "generic_original": 0.155,
+        "autoreject_original": 0.1402,
+        "ours_original": 0.1375,
+        "raw_average": 0.2186,
+        "ica_average": 0.1935,
+        "generic_average": 0.1871,
+        "autoreject_average": 0.1976,
+        "ours_average": 0.2167,
+        "faa_range": 0.08209999999999998,
+        "faa_std": 0.0305641636561513
+      },
+      {
+        "file": "sub-88000313_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "raw_original": -0.1182,
+        "ica_original": -0.2515,
+        "generic_original": -0.1127,
+        "autoreject_original": -0.1017,
+        "ours_original": -0.1173,
+        "raw_average": 0.0095,
+        "ica_average": 0.4492,
+        "generic_average": 0.0149,
+        "autoreject_average": 0.0278,
+        "ours_average": 0.014,
+        "faa_range": 0.7007,
+        "faa_std": 0.1770957650538262
+      },
+      {
+        "file": "sub-88000489_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "raw_original": 0.2234,
+        "ica_original": 0.3546,
+        "generic_original": 0.2411,
+        "autoreject_original": 0.2091,
+        "ours_original": 0.2257,
+        "raw_average": 0.168,
+        "ica_average": 0.3884,
+        "generic_average": 0.1486,
+        "autoreject_average": 0.1181,
+        "ours_average": 0.1693,
+        "faa_range": 0.27030000000000004,
+        "faa_std": 0.08223471347308266
+      },
+      {
+        "file": "sub-88000533_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "raw_original": 0.2043,
+        "ica_original": -0.006,
+        "generic_original": 0.2043,
+        "autoreject_original": 0.216,
+        "ours_original": 0.2053,
+        "raw_average": 0.412,
+        "ica_average": -0.0441,
+        "generic_average": 0.3203,
+        "autoreject_average": 0.1091,
+        "ours_average": 0.4146,
+        "faa_range": 0.4587,
+        "faa_std": 0.14695093602968307
+      },
+      {
+        "file": "sub-88001661_ses-1_task-restEO_eeg.bdf",
+        "group": "depressed",
+        "raw_original": 0.0508,
+        "ica_original": -0.0534,
+        "generic_original": 0.0093,
+        "autoreject_original": 0.0754,
+        "ours_original": 0.0512,
+        "raw_average": 0.1009,
+        "ica_average": 0.1169,
+        "generic_average": 0.0893,
+        "autoreject_average": 0.0933,
+        "ours_average": 0.1004,
+        "faa_range": 0.1703,
+        "faa_std": 0.049216835534195
+      },
+      {
+        "file": "sub-87958013_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "raw_original": 0.1868,
+        "ica_original": 0.2048,
+        "generic_original": 0.1466,
+        "autoreject_original": 0.1775,
+        "ours_original": 0.1879,
+        "raw_average": 0.1421,
+        "ica_average": 0.232,
+        "generic_average": 0.1345,
+        "autoreject_average": 0.1659,
+        "ours_average": 0.1391,
+        "faa_range": 0.0975,
+        "faa_std": 0.030400980247353868
+      },
+      {
+        "file": "sub-87958057_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "raw_original": 0.3351,
+        "ica_original": 0.3153,
+        "generic_original": 0.3011,
+        "autoreject_original": 0.3159,
+        "ours_original": 0.3354,
+        "raw_average": -0.0002,
+        "ica_average": 0.172,
+        "generic_average": -0.1195,
+        "autoreject_average": -0.0314,
+        "ours_average": -0.0004,
+        "faa_range": 0.45489999999999997,
+        "faa_std": 0.17204458753474344
+      },
+      {
+        "file": "sub-87958061_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "raw_original": 0.1838,
+        "ica_original": 0.2145,
+        "generic_original": 0.1838,
+        "autoreject_original": 0.1849,
+        "ours_original": 0.1825,
+        "raw_average": -0.0834,
+        "ica_average": 0.3007,
+        "generic_average": -0.117,
+        "autoreject_average": -0.0953,
+        "ours_average": -0.0824,
+        "faa_range": 0.4177,
+        "faa_std": 0.1522991953360227
+      },
+      {
+        "file": "sub-87958105_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "raw_original": 0.1635,
+        "ica_original": 0.1788,
+        "generic_original": 0.1779,
+        "autoreject_original": 0.1844,
+        "ours_original": 0.1643,
+        "raw_average": 0.0309,
+        "ica_average": 0.1354,
+        "generic_average": 0.0786,
+        "autoreject_average": 0.0586,
+        "ours_average": 0.031,
+        "faa_range": 0.1535,
+        "faa_std": 0.06032552030442837
+      },
+      {
+        "file": "sub-87958149_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "raw_original": 0.1366,
+        "ica_original": 0.1802,
+        "generic_original": 0.1327,
+        "autoreject_original": 0.1246,
+        "ours_original": 0.1373,
+        "raw_average": -0.113,
+        "ica_average": -0.1239,
+        "generic_average": -0.0292,
+        "autoreject_average": -0.0571,
+        "ours_average": -0.1126,
+        "faa_range": 0.3041,
+        "faa_std": 0.11850477796274714
+      },
+      {
+        "file": "sub-87958197_ses-1_task-restEO_eeg.bdf",
+        "group": "healthy",
+        "raw_original": 0.0418,
+        "ica_original": 0.0614,
+        "generic_original": -0.098,
+        "autoreject_original": 0.0389,
+        "ours_original": 0.0384,
+        "raw_average": 0.1202,
+        "ica_average": 0.2538,
+        "generic_average": -0.0217,
+        "autoreject_average": 0.1092,
+        "ours_average": 0.1161,
+        "faa_range": 0.3518,
+        "faa_std": 0.08903538004636136
+      }
+    ],
+    "combo_cols": [
+      "autoreject_average",
+      "autoreject_original",
+      "generic_average",
+      "generic_original",
+      "ica_average",
+      "ica_original",
+      "ours_average",
+      "ours_original",
+      "raw_average",
+      "raw_original"
+    ]
+  },
+  "study_b": {
+    "n": 486,
+    "n_with_severity": 161,
+    "quality_variant_primary": "quality_alpha_frontal_pct",
+    "quality_variant_secondary": "quality_alpha_pct",
+    "frontal": {
+      "n": 486,
+      "n_with_severity": 161,
+      "regression_1_quality_on_group_severity": null,
+      "regression_1_skipped_reason": "only 161 recording(s) in this batch carry a severity score -- below the 6-observation floor for a 3-parameter regression to be worth trusting",
+      "regression_2_faa_on_group_quality": {
+        "params": {
+          "const": 0.6681899282935996,
+          "group_mdd": -0.14083366654981477,
+          "quality_alpha_frontal_pct": -0.005835824051073164
+        },
+        "pvalues": {
+          "const": 0.25371139248445784,
+          "group_mdd": 0.0015158595153382123,
+          "quality_alpha_frontal_pct": 0.3587582204758021
+        },
+        "conf_int": {
+          "const": [
+            -0.4807280868007783,
+            1.8171079433879775
+          ],
+          "group_mdd": [
+            -0.22758372767292545,
+            -0.054083605426704096
+          ],
+          "quality_alpha_frontal_pct": [
+            -0.01831853321190903,
+            0.0066468851097627015
+          ]
+        },
+        "rsquared": 0.023670756210719124,
+        "nobs": 486
+      },
+      "regression_2_raw_faa_on_group_quality": {
+        "params": {
+          "const": 0.6854620535057621,
+          "group_mdd": -0.1407208465731802,
+          "quality_alpha_frontal_pct": -0.006029263532210972
+        },
+        "pvalues": {
+          "const": 0.2604678943423787,
+          "group_mdd": 0.0023125791503748913,
+          "quality_alpha_frontal_pct": 0.3621807995029536
+        },
+        "conf_int": {
+          "const": [
+            -0.5100350037663381,
+            1.8809591107778623
+          ],
+          "group_mdd": [
+            -0.23098789907677808,
+            -0.05045379406958235
+          ],
+          "quality_alpha_frontal_pct": [
+            -0.019018042428968818,
+            0.006959515364546874
+          ]
+        },
+        "rsquared": 0.02201118311623218,
+        "nobs": 486
+      },
+      "regression_2_raw_skipped_reason": null,
+      "mediation_analysis": {
+        "acme": {
+          "point": -0.003995369738655943,
+          "ci_lo": -0.016366139353094968,
+          "ci_hi": 0.004868891200341471
+        },
+        "ade": {
+          "point": -0.14083366654981477,
+          "ci_lo": -0.2243069138982701,
+          "ci_hi": -0.06338919238316307
+        },
+        "total_effect": {
+          "point": -0.14482903628847063,
+          "ci_lo": -0.22763893209522224,
+          "ci_hi": -0.06802663051998935
+        },
+        "proportion_mediated": 0.02758680055495199,
+        "n_boot_valid": 2000
+      },
+      "mediation_analysis_skipped_reason": null,
+      "regression_3_quality_classifies_group": {
+        "accuracy": 0.6378600823045267,
+        "auc": 0.5319797887000459,
+        "auc_ci_lo": 0.4790565182696883,
+        "auc_ci_hi": 0.5854550676839567,
+        "majority_class_baseline": 0.6399176954732511,
+        "n": 486,
+        "n_splits": 5,
+        "leakage_flag": false
+      },
+      "holm_corrected_pvalues": {
+        "group_mdd": 0.0030317190306764245,
+        "quality_alpha_frontal_pct": 0.3587582204758021
+      }
+    },
+    "whole_scalp": {
+      "n": 486,
+      "n_with_severity": 161,
+      "regression_1_quality_on_group_severity": null,
+      "regression_1_skipped_reason": "only 161 recording(s) in this batch carry a severity score -- below the 6-observation floor for a 3-parameter regression to be worth trusting",
+      "regression_2_faa_on_group_quality": {
+        "params": {
+          "const": 0.748322946560938,
+          "group_mdd": -0.13897217060431843,
+          "quality_alpha_pct": -0.006755560683711012
+        },
+        "pvalues": {
+          "const": 0.2589948423936442,
+          "group_mdd": 0.0018457711930321824,
+          "quality_alpha_pct": 0.3517870891040569
+        },
+        "conf_int": {
+          "const": [
+            -0.5527743929178552,
+            2.049420286039731
+          ],
+          "group_mdd": [
+            -0.2261766033514513,
+            -0.051767737857185595
+          ],
+          "quality_alpha_pct": [
+            -0.020997515791738714,
+            0.00748639442431669
+          ]
+        },
+        "rsquared": 0.023720866152931563,
+        "nobs": 486
+      },
+      "regression_2_raw_faa_on_group_quality": {
+        "params": {
+          "const": 0.746902801409022,
+          "group_mdd": -0.13900052920421196,
+          "quality_alpha_pct": -0.006745474456843966
+        },
+        "pvalues": {
+          "const": 0.27893022564535674,
+          "group_mdd": 0.0027513563759569426,
+          "quality_alpha_pct": 0.37159320088562503
+        },
+        "conf_int": {
+          "const": [
+            -0.6070228054664157,
+            2.1008284082844595
+          ],
+          "group_mdd": [
+            -0.22974571094187285,
+            -0.04825534746655109
+          ],
+          "quality_alpha_pct": [
+            -0.021565693611587257,
+            0.008074744697899327
+          ]
+        },
+        "rsquared": 0.021946344961972564,
+        "nobs": 486
+      },
+      "regression_2_raw_skipped_reason": null,
+      "mediation_analysis": {
+        "acme": {
+          "point": -0.0058568656841514345,
+          "ci_lo": -0.02071996982698713,
+          "ci_hi": 0.004750738726834771
+        },
+        "ade": {
+          "point": -0.13897217060431843,
+          "ci_lo": -0.22128009671545806,
+          "ci_hi": -0.06227344037160724
+        },
+        "total_effect": {
+          "point": -0.14482903628847063,
+          "ci_lo": -0.22763893209522224,
+          "ci_hi": -0.06802663051998935
+        },
+        "proportion_mediated": 0.040439858154449934,
+        "n_boot_valid": 2000
+      },
+      "mediation_analysis_skipped_reason": null,
+      "regression_3_quality_classifies_group": {
+        "accuracy": 0.6563786008230452,
+        "auc": 0.5566835094166284,
+        "auc_ci_lo": 0.502851849633584,
+        "auc_ci_hi": 0.6142417401458456,
+        "majority_class_baseline": 0.6399176954732511,
+        "n": 486,
+        "n_splits": 5,
+        "leakage_flag": true
+      },
+      "holm_corrected_pvalues": {
+        "group_mdd": 0.003691542386064365,
+        "quality_alpha_pct": 0.3517870891040569
+      }
+    },
+    "regression_1_quality_on_group_severity": null,
+    "regression_1_skipped_reason": "only 161 recording(s) in this batch carry a severity score -- below the 6-observation floor for a 3-parameter regression to be worth trusting",
+    "regression_2_faa_on_group_quality": {
+      "params": {
+        "const": 0.6681899282935996,
+        "group_mdd": -0.14083366654981477,
+        "quality_alpha_frontal_pct": -0.005835824051073164
+      },
+      "pvalues": {
+        "const": 0.25371139248445784,
+        "group_mdd": 0.0015158595153382123,
+        "quality_alpha_frontal_pct": 0.3587582204758021
+      },
+      "conf_int": {
+        "const": [
+          -0.4807280868007783,
+          1.8171079433879775
+        ],
+        "group_mdd": [
+          -0.22758372767292545,
+          -0.054083605426704096
+        ],
+        "quality_alpha_frontal_pct": [
+          -0.01831853321190903,
+          0.0066468851097627015
+        ]
+      },
+      "rsquared": 0.023670756210719124,
+      "nobs": 486
+    },
+    "regression_2_raw_faa_on_group_quality": {
+      "params": {
+        "const": 0.6854620535057621,
+        "group_mdd": -0.1407208465731802,
+        "quality_alpha_frontal_pct": -0.006029263532210972
+      },
+      "pvalues": {
+        "const": 0.2604678943423787,
+        "group_mdd": 0.0023125791503748913,
+        "quality_alpha_frontal_pct": 0.3621807995029536
+      },
+      "conf_int": {
+        "const": [
+          -0.5100350037663381,
+          1.8809591107778623
+        ],
+        "group_mdd": [
+          -0.23098789907677808,
+          -0.05045379406958235
+        ],
+        "quality_alpha_frontal_pct": [
+          -0.019018042428968818,
+          0.006959515364546874
+        ]
+      },
+      "rsquared": 0.02201118311623218,
+      "nobs": 486
+    },
+    "mediation_analysis": {
+      "acme": {
+        "point": -0.003995369738655943,
+        "ci_lo": -0.016366139353094968,
+        "ci_hi": 0.004868891200341471
+      },
+      "ade": {
+        "point": -0.14083366654981477,
+        "ci_lo": -0.2243069138982701,
+        "ci_hi": -0.06338919238316307
+      },
+      "total_effect": {
+        "point": -0.14482903628847063,
+        "ci_lo": -0.22763893209522224,
+        "ci_hi": -0.06802663051998935
+      },
+      "proportion_mediated": 0.02758680055495199,
+      "n_boot_valid": 2000
+    },
+    "regression_3_quality_classifies_group": {
+      "accuracy": 0.6378600823045267,
+      "auc": 0.5319797887000459,
+      "auc_ci_lo": 0.4790565182696883,
+      "auc_ci_hi": 0.5854550676839567,
+      "majority_class_baseline": 0.6399176954732511,
+      "n": 486,
+      "n_splits": 5,
+      "leakage_flag": false
+    },
+    "finding": "group predicts FAA independent of frontal quality (Holm-Bonferroni corrected), and quality alone doesn't predict group above chance -- consistent with FAA carrying real signal in this sample, not just contamination correlated with diagnosis. A robustness check using unweighted (raw) FAA in place of NeuroQA's own quality-weighted FAA reaches the same conclusion (raw-FAA group p=0.002, uncorrected)."
+  },
+  "faa_classifiers_by_pipeline": {
+    "raw": {
+      "accuracy": 0.5,
+      "auc": 0.4444444444444444,
+      "auc_ci_lo": 0.1102777777777778,
+      "auc_ci_hi": 0.800416666666667,
+      "sensitivity": 0.5,
+      "specificity": 0.5,
+      "n_depressed": 6,
+      "n_healthy": 6,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    },
+    "ica": {
+      "accuracy": 0.25,
+      "auc": 0.2222222222222222,
+      "auc_ci_lo": 0.0,
+      "auc_ci_hi": 0.5714285714285714,
+      "sensitivity": 0.16666666666666666,
+      "specificity": 0.3333333333333333,
+      "n_depressed": 6,
+      "n_healthy": 6,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    },
+    "generic": {
+      "accuracy": 0.5,
+      "auc": 0.36111111111111116,
+      "auc_ci_lo": 0.03703703703703704,
+      "auc_ci_hi": 0.7428571428571429,
+      "sensitivity": 0.5,
+      "specificity": 0.5,
+      "n_depressed": 6,
+      "n_healthy": 6,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    },
+    "autoreject": {
+      "accuracy": 0.5,
+      "auc": 0.41666666666666663,
+      "auc_ci_lo": 0.08571428571428569,
+      "auc_ci_hi": 0.7780381944444447,
+      "sensitivity": 0.5,
+      "specificity": 0.5,
+      "n_depressed": 6,
+      "n_healthy": 6,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    },
+    "ours": {
+      "accuracy": 0.5,
+      "auc": 0.41666666666666663,
+      "auc_ci_lo": 0.08571428571428569,
+      "auc_ci_hi": 0.7780381944444447,
+      "sensitivity": 0.5,
+      "specificity": 0.5,
+      "n_depressed": 6,
+      "n_healthy": 6,
+      "baseline": 0.5,
+      "n": 12,
+      "n_splits": 5
+    }
+  }
+}
